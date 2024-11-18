@@ -1,2 +1,0 @@
-# eliaBackend
-Backend de TFG
