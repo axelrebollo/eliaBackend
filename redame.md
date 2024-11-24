@@ -28,3 +28,5 @@ src/
 ├── Middlewares/
 └── Models/
 ```
+El proyecto se crea en un solo repositorio para facilitar el desarrollo. 
+Cada microservicio es independiente en su carpeta y únicamente están unidos en el proyecto general.
