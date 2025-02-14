@@ -1,18 +1,26 @@
-package com.axel.user.domain.entities;
+package com.axel.user.infrastructure.JpaEntities;
 
 import com.axel.user.domain.valueObjects.Role;
+import jakarta.persistence.*;
 
-public class User {
+@Entity
+@Table(name= "user")
+public class UserEntity {
+    //Table from database
 
-    private long idUser;
+    //attributes
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long idUser;
+
     private String email;
     private String password;
     private Role role;
 
     //constructor
-    public User() {}
+    public UserEntity() {}
 
-    public User(String email, String password, Role role) {
+    public UserEntity(String email, String password, Role role) {
         this.email = email;
         this.password = password;
         this.role = role;

@@ -1,28 +1,15 @@
-package com.axel.user.domain.entities;
+package com.axel.user.application.DTOs;
 
 import com.axel.user.domain.valueObjects.Role;
 
-public class User {
+public class UserRequest {
 
-    private long idUser;
+    //attributes
     private String email;
     private String password;
     private Role role;
 
-    //constructor
-    public User() {}
-
-    public User(String email, String password, Role role) {
-        this.email = email;
-        this.password = password;
-        this.role = role;
-    }
-
     //getters
-    public Long getId() {
-        return idUser;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -36,10 +23,6 @@ public class User {
     }
 
     //setters
-    public void setId(Long id) {
-        this.idUser = id;
-    }
-
     public void setEmail(String email) {
         this.email = email;
     }
