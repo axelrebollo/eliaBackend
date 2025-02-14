@@ -1,0 +1,55 @@
+services:
+  postgres-user:
+    image: postgres:latest
+    container_name: postgres_container_userdb
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: axelia
+      POSTGRES_DB: userdb
+    ports:
+      - "54320:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data_userdb
+
+  postgres-notebook:
+    image: postgres:latest
+    container_name: postgres_container_notebookdb
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: axelia
+      POSTGRES_DB: notebookdb
+    ports:
+      - "54321:5433"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data_notebookdb
+
+#  user-service:
+#    build: ./user
+#    container_name: user_service
+#    restart: always
+#    ports:
+#      - "18080:18080"
+#    depends_on:
+#      - postgres-user
+#    environment:
+#      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/userdb
+#      SPRING_DATASOURCE_USERNAME: admin
+#      SPRING_DATASOURCE_PASSWORD: axelia
+
+#  notebook-service:
+#    build: ./notebook
+#    container_name: notebook_service
+#    restart: always
+#    ports:
+#      - "18081:18081"
+#    depends_on:
+#      - postgres-notebook
+#    environment:
+#      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5433/notebookdb
+#      SPRING_DATASOURCE_USERNAME: admin
+#      SPRING_DATASOURCE_PASSWORD: axelia
+
+volumes:
+  postgres_data:
