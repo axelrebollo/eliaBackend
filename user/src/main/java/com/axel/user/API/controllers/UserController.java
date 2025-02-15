@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.axel.user.domain.exceptions.UserCreationException;   //To remove
+import com.axel.user.domain.exceptions.UserCreationException;
 
 @RestController
 @RequestMapping("/users")
@@ -24,7 +24,8 @@ public class UserController {
     @PostMapping
     public ResponseEntity<?> registerUser(@RequestBody UserRequest userRequest) {
         try{
-            UserResponse userResponse  = userCaseRegisterUser.registerUser(userRequest.getEmail(), userRequest.getPassword(), userRequest.getRole());
+            UserResponse userResponse  = userCaseRegisterUser.registerUser(
+                    userRequest.getEmail(), userRequest.getPassword(), userRequest.getRole());
             return new ResponseEntity<>(userResponse, HttpStatus.CREATED);
         }
         catch(UserCreationException e){

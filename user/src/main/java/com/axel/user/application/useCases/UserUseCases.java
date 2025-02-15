@@ -29,8 +29,14 @@ public class UserUseCases {
         this.userService = userService;
     }
 
+    //Register user or create a new user
     public UserResponse registerUser(final String email, final String password, Role role) {
         User user;
+
+        //Check data
+        if(email.isEmpty() || password.isEmpty() || role == null){
+            throw new UserCreationException("El usuario tiene algún campo vacío");
+        }
 
         //create user entity domain and check that user not exists
         if(this.userService.validateUser(email)){
