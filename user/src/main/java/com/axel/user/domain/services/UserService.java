@@ -3,19 +3,21 @@ package com.axel.user.domain.services;
 import com.axel.user.domain.entities.User;
 import com.axel.user.domain.repositories.UserRepository;
 import com.axel.user.domain.valueObjects.Role;
-import com.axel.user.infrastructure.JpaEntities.UserEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class UserService {
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    @Autowired
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     //Check into DB that the user not exists
     public boolean validateUser(String email){
-        boolean result = false;
-        UserEntity userEntity = userRepository.findByEmail(email);
-        if(userEntity != null){
-            result = true;
-        }
-        return result;
+        return userRepository.findByEmail(email) == null;
     }
 
     //Create an Entity User

@@ -9,30 +9,31 @@ import com.axel.user.domain.services.UserService;
 import com.axel.user.domain.valueObjects.Role;
 import com.axel.user.infrastructure.JpaEntities.UserEntity;
 import com.axel.user.infrastructure.adapters.UserAdapter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserUseCases {
 
     private final UserRepository userRepository;
-    CriptoService criptoService;
-    UserAdapter userAdapter;
+    private final CriptoService criptoService;
+    private final UserAdapter userAdapter;
+    private final UserService userService;
 
     //contructor
-    public UserUseCases(UserRepository userRepository) {
+    @Autowired
+    public UserUseCases(UserRepository userRepository, CriptoService criptoService, UserAdapter userAdapter, UserService userService) {
         this.userRepository = userRepository;
-        criptoService = new CriptoService();
-        userAdapter = new UserAdapter();
+        this.criptoService = criptoService;
+        this.userAdapter = userAdapter;
+        this.userService = userService;
     }
 
     public UserResponse registerUser(final String email, final String password, Role role) {
-        UserResponse userResponse = null;
-        User user = null;
-        UserService userService = new UserService();
-        UserRepository userRepository = this.userRepository;
+        User user;
 
         //create user entity domain and check that user not exists
-        if(userService.validateUser(email)){
+        if(this.userService.validateUser(email)){
             user = userService.createModelUser(email, password, role);
         }
         else{
@@ -46,15 +47,12 @@ public class UserUseCases {
         //Save user into database
         try{
             UserEntity userEntity = userAdapter.UserToUserEntity(user);
-            userRepository.save(userEntity);
+            this.userRepository.save(userEntity);
 
-            userResponse = new UserResponse(user.getEmail(), user.getRole().toString());
+            return new UserResponse(user.getEmail(), user.getRole().toString());
         }
         catch(Exception e){
             throw new UserCreationException("Fallo al guardar el usuario en la base de datos");
         }
-
-        return userResponse;
     }
-
 }

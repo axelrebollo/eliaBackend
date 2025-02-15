@@ -4,17 +4,23 @@ import com.axel.user.domain.valueObjects.Role;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name= "user")
+@Table(name= "userEntity")
 public class UserEntity {
-    //Table from database
 
     //attributes
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name= "idUser")
     private Long idUser;
 
+    @Column(name="email", nullable=false, unique=true)
     private String email;
+
+    @Column(name="password", nullable=false)
     private String password;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name="role", nullable=false, columnDefinition = "VARCHAR(255)")
     private Role role;
 
     //constructor
