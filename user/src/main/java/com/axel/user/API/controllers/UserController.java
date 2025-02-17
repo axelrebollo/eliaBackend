@@ -2,29 +2,32 @@ package com.axel.user.API.controllers;
 
 import com.axel.user.application.DTOs.UserRequest;
 import com.axel.user.application.DTOs.UserResponse;
-import com.axel.user.application.useCases.UserUseCases;
+import com.axel.user.application.useCases.RegisterUseCase;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import com.axel.user.domain.exceptions.UserCreationException;
 
 @RestController
 @RequestMapping("/users")
+@CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
 
-    private final UserUseCases userCaseRegisterUser;
+    private final RegisterUseCase registerUseCase;
 
     @Autowired
-    public UserController(UserUseCases UCRegisterUser) {
-        this.userCaseRegisterUser = UCRegisterUser;
+    public UserController(RegisterUseCase UCRegisterUser) {
+        this.registerUseCase = UCRegisterUser;
     }
 
     //Register new user endpoint
     @PostMapping
     public ResponseEntity<?> registerUser(@RequestBody UserRequest userRequest) {
         try{
-            UserResponse userResponse  = userCaseRegisterUser.registerUser(
+            UserResponse userResponse  = registerUseCase.registerUser(
                     userRequest.getEmail(), userRequest.getPassword(), userRequest.getRole());
             return new ResponseEntity<>(userResponse, HttpStatus.CREATED);
         }

@@ -1,30 +1,23 @@
-package com.axel.user.infrastructure.JpaEntities;
+package com.axel.user.application.DTOs;
 
-import jakarta.persistence.*;
-
-@Entity
-@Table(name= "userEntity")
-public class UserEntity {
-
-    //attributes
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name= "idUser")
-    private Long idUser;
-
-    @Column(name="email", nullable=false, unique=true)
+public class UserApplication {
+    private long idUser;
     private String email;
-
-    @Column(name="password", nullable=false)
     private String password;
-
-    @Column(name="role", nullable=false)
     private String role;
 
     //constructor
-    public UserEntity() {}
+    public UserApplication() {}
 
-    public UserEntity(String email, String password, String role) {
+    public UserApplication(String email, String password, String role) {
+        this.idUser = 0;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+    }
+
+    public UserApplication(long idUser, String email, String password, String role) {
+        this.idUser = idUser;
         this.email = email;
         this.password = password;
         this.role = role;

@@ -1,13 +1,11 @@
 package com.axel.user.application.DTOs;
 
-import com.axel.user.domain.valueObjects.Role;
-
 public class UserRequest {
 
     //attributes
     private String email;
     private String password;
-    private Role role;
+    private String role;
 
     //getters
     public String getEmail() {
@@ -18,7 +16,7 @@ public class UserRequest {
         return password;
     }
 
-    public Role getRole() {
+    public String getRole() {
         return role;
     }
 
@@ -31,7 +29,7 @@ public class UserRequest {
         this.password = password;
     }
 
-    public void setRole(Role role) {
+    public void setRole(String role) {
         this.role = role;
     }
 }
