@@ -1,7 +1,7 @@
 package com.axel.user.infrastructure.repositories;
 
 import com.axel.user.application.DTOs.UserApplication;
-import com.axel.user.application.repositories.UserRepository;
+import com.axel.user.application.repositories.IUserRepository;
 
 import com.axel.user.infrastructure.adapters.UserAdapterInfrastructure;
 import com.axel.user.infrastructure.persistence.JpaRepository;
@@ -10,7 +10,7 @@ import com.axel.user.infrastructure.JpaEntities.UserEntity;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class UserRepositoryImpl implements UserRepository {
+public class UserRepositoryImpl implements IUserRepository {
     private final JpaRepository jpaUserRepository;
     private final UserAdapterInfrastructure userAdapterInfrastructure = new UserAdapterInfrastructure();
 

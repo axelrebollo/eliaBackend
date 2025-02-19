@@ -3,27 +3,27 @@ package com.axel.user.application.useCases;
 import com.axel.user.application.DTOs.UserApplication;
 import com.axel.user.application.DTOs.UserResponse;
 import com.axel.user.application.adapters.UserAdapterApplication;
-import com.axel.user.application.repositories.UserRepository;
+import com.axel.user.application.exceptions.ApplicationException;
+import com.axel.user.application.services.IRegisterUserCase;
+import com.axel.user.application.repositories.IUserRepository;
 
 import com.axel.user.domain.entities.User;
-import com.axel.user.domain.services.UserService;
+import com.axel.user.domain.services.interfaces.IUserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.axel.user.domain.exceptions.UserCreationException;
-
 @Service
-public class RegisterUseCase {
+public class RegisterUseCaseImpl implements IRegisterUserCase {
 
-    private final UserRepository userRepository;
-    private final UserService userService;
+    private final IUserRepository userRepository;
+    private final IUserService userService;
     private final UserAdapterApplication userAdapterApplication;
 
     //contructor
     @Autowired
-    public RegisterUseCase(UserRepository userRepository, UserService userService,
-                           UserAdapterApplication userAdapterApplication){
+    public RegisterUseCaseImpl(IUserRepository userRepository, IUserService userService,
+                               UserAdapterApplication userAdapterApplication){
         this.userRepository = userRepository;
         this.userService = userService;
         this.userAdapterApplication = userAdapterApplication;
@@ -35,7 +35,7 @@ public class RegisterUseCase {
 
         //Check data
         if(email.isEmpty() || password.isEmpty() || role.isEmpty()){
-            throw new UserCreationException("El usuario tiene algún campo vacío");
+            throw new ApplicationException("El usuario tiene algún campo vacío");
         }
 
         //create user entity domain and check that user not exists
@@ -43,22 +43,23 @@ public class RegisterUseCase {
             userDomain = userService.createModelUser(email, password, role);
         }
         else{
-            throw new UserCreationException("El usuario ya existe en el sistema, por favor intentelo de nuevo.");
+            throw new ApplicationException("El usuario ya existe en el sistema, por favor intentelo de nuevo.");
         }
 
         //convert user domain to user application
-        UserApplication userApplication = userAdapterApplication.toApplication(userDomain.getEmail(), userDomain.getPassword(), userDomain.getRole().toString());
+        UserApplication userApplication = userAdapterApplication.toApplication(
+                userDomain.getEmail(), userDomain.getPassword(), userDomain.getRole().toString());
 
         //Save user into database
         try{
             userApplication = this.userRepository.save(userApplication);
             if(userApplication == null){
-                throw new UserCreationException("El guardado del usuario es null, fallo en el guardado");
+                throw new ApplicationException("Error al guardar el usuario, el usuario es nulo");
             }
             return new UserResponse(userApplication.getEmail(), userApplication.getRole());
         }
         catch(Exception e){
-            throw new UserCreationException("Fallo al guardar el usuario en la base de datos");
+            throw new ApplicationException("Fallo al guardar el usuario en la base de datos", e);
         }
     }
 }
