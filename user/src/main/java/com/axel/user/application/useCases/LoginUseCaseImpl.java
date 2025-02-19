@@ -44,6 +44,9 @@ public class LoginUseCaseImpl implements ILoginUserCase {
         if(isPasswordCorrect){
             //generate token
         }
+        else{
+            throw new ApplicationException("La contraseña no es correcta");
+        }
 
         //return userResponse + token
         return new UserResponse(userApplication.getEmail(), userApplication.getRole());
