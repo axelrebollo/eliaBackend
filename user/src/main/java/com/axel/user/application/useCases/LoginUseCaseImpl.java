@@ -54,6 +54,6 @@ public class LoginUseCaseImpl implements ILoginUserCase {
         }
 
         //return userResponse + token
-        return new UserResponseToken(userApplication.getEmail(), userApplication.getRole(), token);
+        return new UserResponseToken(token);
     }
 }
