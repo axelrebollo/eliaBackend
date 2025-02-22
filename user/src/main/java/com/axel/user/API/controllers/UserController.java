@@ -3,6 +3,7 @@ package com.axel.user.API.controllers;
 import com.axel.user.API.exceptions.APIException;
 import com.axel.user.application.DTOs.UserRequest;
 import com.axel.user.application.DTOs.UserResponse;
+import com.axel.user.application.DTOs.UserResponseToken;
 import com.axel.user.application.exceptions.ApplicationException;
 import com.axel.user.application.services.ILoginUserCase;
 import com.axel.user.application.services.IRegisterUserCase;
@@ -43,7 +44,7 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody UserRequest userRequest) {
         try {
-            UserResponse userResponse = loginUserCase.loginUser(userRequest.getEmail(), userRequest.getPassword());
+            UserResponseToken userResponse = loginUserCase.loginUser(userRequest.getEmail(), userRequest.getPassword());
             return new ResponseEntity<>(userResponse, HttpStatus.ACCEPTED);
         } catch (ApplicationException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);

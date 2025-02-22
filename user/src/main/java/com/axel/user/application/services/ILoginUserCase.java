@@ -1,7 +1,7 @@
 package com.axel.user.application.services;
 
-import com.axel.user.application.DTOs.UserResponse;
+import com.axel.user.application.DTOs.UserResponseToken;
 
 public interface ILoginUserCase {
-    public UserResponse loginUser(String email, String password);
+    public UserResponseToken loginUser(String email, String password);
 }
