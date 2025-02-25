@@ -4,7 +4,7 @@ import com.axel.user.domain.valueObjects.Role;
 
 public class User {
 
-    private long idUser;
+    private int idUser;
     private String email;
     private String password;
     private Role role;
@@ -19,7 +19,7 @@ public class User {
         this.role = role;
     }
 
-    public User(long idUser, String email, String password, Role role) {
+    public User(int idUser, String email, String password, Role role) {
         this.idUser = idUser;
         this.email = email;
         this.password = password;
@@ -27,7 +27,7 @@ public class User {
     }
 
     //getters
-    public Long getId() {
+    public int getId() {
         return idUser;
     }
 
@@ -44,7 +44,7 @@ public class User {
     }
 
     //setters
-    public void setId(Long id) {
+    public void setId(int id) {
         this.idUser = id;
     }
 

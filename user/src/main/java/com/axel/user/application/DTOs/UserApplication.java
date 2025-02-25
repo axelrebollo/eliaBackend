@@ -1,7 +1,7 @@
 package com.axel.user.application.DTOs;
 
 public class UserApplication {
-    private long idUser;
+    private int idUser;
     private String email;
     private String password;
     private String role;
@@ -16,7 +16,7 @@ public class UserApplication {
         this.role = role;
     }
 
-    public UserApplication(long idUser, String email, String password, String role) {
+    public UserApplication(int idUser, String email, String password, String role) {
         this.idUser = idUser;
         this.email = email;
         this.password = password;
@@ -24,7 +24,7 @@ public class UserApplication {
     }
 
     //getters
-    public Long getId() {
+    public int getId() {
         return idUser;
     }
 
@@ -41,7 +41,7 @@ public class UserApplication {
     }
 
     //setters
-    public void setId(Long id) {
+    public void setId(int id) {
         this.idUser = id;
     }
 

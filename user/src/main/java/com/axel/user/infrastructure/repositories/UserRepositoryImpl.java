@@ -4,18 +4,20 @@ import com.axel.user.application.DTOs.UserApplication;
 import com.axel.user.application.repositories.IUserRepository;
 
 import com.axel.user.infrastructure.adapters.UserAdapterInfrastructure;
-import com.axel.user.infrastructure.persistence.JpaRepository;
+import com.axel.user.infrastructure.persistence.JpaUserRepository;
 import com.axel.user.infrastructure.JpaEntities.UserEntity;
 
 import org.springframework.stereotype.Repository;
 
 @Repository
 public class UserRepositoryImpl implements IUserRepository {
-    private final JpaRepository jpaUserRepository;
-    private final UserAdapterInfrastructure userAdapterInfrastructure = new UserAdapterInfrastructure();
+    private final JpaUserRepository jpaUserRepository;
+    private final UserAdapterInfrastructure userAdapterInfrastructure;
 
-    public UserRepositoryImpl(JpaRepository jpaUserRepository) {
+    public UserRepositoryImpl(JpaUserRepository jpaUserRepository,
+                              UserAdapterInfrastructure userAdapterInfrastructure) {
         this.jpaUserRepository = jpaUserRepository;
+        this.userAdapterInfrastructure = userAdapterInfrastructure;
     }
 
     @Override
@@ -28,6 +30,12 @@ public class UserRepositoryImpl implements IUserRepository {
     @Override
     public UserApplication findByEmail(String email) {
         UserEntity userEntity = jpaUserRepository.findByEmail(email);
+        return userAdapterInfrastructure.toApplication(userEntity);
+    }
+
+    @Override
+    public UserApplication findByIdUser(int idUser){
+        UserEntity userEntity = jpaUserRepository.findByIdUser(idUser);
         return userAdapterInfrastructure.toApplication(userEntity);
     }
 }
