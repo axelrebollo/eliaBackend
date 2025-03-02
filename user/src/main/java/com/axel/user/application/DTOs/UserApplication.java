@@ -1,6 +1,7 @@
 package com.axel.user.application.DTOs;
 
 public class UserApplication {
+    //Attributes
     private int idUser;
     private String email;
     private String password;

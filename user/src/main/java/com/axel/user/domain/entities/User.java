@@ -4,12 +4,13 @@ import com.axel.user.domain.valueObjects.Role;
 
 public class User {
 
+    //Attributes
     private int idUser;
     private String email;
     private String password;
     private Role role;
 
-    //constructor
+    //constructors
     public User() {}
 
     public User(String email, String password, Role role) {

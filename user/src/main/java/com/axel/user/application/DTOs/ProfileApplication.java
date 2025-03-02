@@ -1,13 +1,14 @@
 package com.axel.user.application.DTOs;
 
 public class ProfileApplication {
+    //Attributes
     private int idProfile;
     private int idUser;
     private String name;
     private String surname1;
     private String surname2;
 
-    //constructor
+    //constructors
     public ProfileApplication() {}
 
     public ProfileApplication(int idUser, String name, String surname1, String surname2) {

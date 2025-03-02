@@ -8,19 +8,21 @@ import com.axel.user.application.repositories.IJWTRepository;
 import com.axel.user.application.repositories.IProfileRepository;
 import com.axel.user.application.repositories.IUserRepository;
 import com.axel.user.application.services.IManageProfileUseCase;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ManageProfileUseCaseImpl implements IManageProfileUseCase {
 
+    //Dependency injection
     private IJWTRepository jwtRepository;
     private IUserRepository userRepository;
     private IProfileRepository profileRepository;
 
+    //Constructor
     @Autowired
-    public ManageProfileUseCaseImpl(IJWTRepository jwtRepository, IUserRepository userRepository,
+    public ManageProfileUseCaseImpl(IJWTRepository jwtRepository,
+                                    IUserRepository userRepository,
                                     IProfileRepository profileRepository) {
         this.jwtRepository = jwtRepository;
         this.userRepository = userRepository;
@@ -47,6 +49,10 @@ public class ManageProfileUseCaseImpl implements IManageProfileUseCase {
         //User
         UserApplication user = userRepository.findByEmail(email);
 
+        if(user == null) {
+            throw new ApplicationException("El usuario no existe");
+        }
+
         //getProfile
         ProfileApplication profileApplication = profileRepository.findProfileByIdUser(user.getId());
 
@@ -58,6 +64,7 @@ public class ManageProfileUseCaseImpl implements IManageProfileUseCase {
                 profileApplication.getSurname2());
     }
 
+    //Creates empty profile when user is created
     public ProfileResponse addProfile(int idUser){
         if(idUser <= 0) {
             throw new ApplicationException("El usuario no existe en el sistema. Error con el idUser");

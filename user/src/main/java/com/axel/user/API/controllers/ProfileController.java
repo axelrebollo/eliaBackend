@@ -1,15 +1,12 @@
 package com.axel.user.API.controllers;
 
-import com.axel.user.API.exceptions.APIException;
 import com.axel.user.application.DTOs.ProfileResponse;
 import com.axel.user.application.exceptions.ApplicationException;
 import com.axel.user.application.services.IManageProfileUseCase;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.Map;
 
 @RestController
@@ -17,13 +14,16 @@ import java.util.Map;
 @CrossOrigin(origins = "http://localhost:3000")
 public class ProfileController {
 
+    //Dependency injection
     private final IManageProfileUseCase manageProfileUserCase;
 
+    //Constructor
     @Autowired
     public ProfileController(IManageProfileUseCase manageProfileUserCase) {
         this.manageProfileUserCase = manageProfileUserCase;
     }
 
+    //Endpoints
     @GetMapping("/getProfile")
     public ResponseEntity<?> getProfile(@RequestParam String token) {
         try{

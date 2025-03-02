@@ -1,17 +1,16 @@
 package com.axel.user.infrastructure.adapters;
 
 import com.axel.user.application.DTOs.UserApplication;
-
 import com.axel.user.infrastructure.JpaEntities.UserEntity;
-
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserAdapterInfrastructure {
 
+    //Constructor
     public UserAdapterInfrastructure(){}
 
-    //Map application to infrastructure
+    //Map application to infrastructure (id default)
     public UserEntity fromApplication(UserApplication userApplication) {
         if(userApplication == null){
             return null;
@@ -19,7 +18,7 @@ public class UserAdapterInfrastructure {
         return new UserEntity(userApplication.getEmail(), userApplication.getPassword(), userApplication.getRole());
     }
 
-    //Map application to infrastructure
+    //Map application to infrastructure with id
     public UserEntity fromApplicationWithIdUser(UserApplication userApplication) {
         if(userApplication == null){
             return null;

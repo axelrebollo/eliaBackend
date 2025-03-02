@@ -21,7 +21,7 @@ public class UserEntity {
     @Column(name="role", nullable=false)
     private String role;
 
-    //constructor
+    //constructors
     public UserEntity() {}
 
     public UserEntity(String email, String password, String role) {

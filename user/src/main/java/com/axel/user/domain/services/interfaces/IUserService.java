@@ -4,6 +4,6 @@ import com.axel.user.domain.entities.User;
 
 public interface IUserService {
     public User createModelUser(String email, String password, String role);
-    public String decriptPassword(String password);
+    public String decryptPassword(String password);
     public boolean isIdenticalPassword(String passwordUser, String passwordDB);
 }

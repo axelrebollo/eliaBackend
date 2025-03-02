@@ -25,7 +25,7 @@ public class ProfileEntity {
     @Column(name= "surname2")
     private String surname2;
 
-    //constructor
+    //constructors
     public ProfileEntity() {}
 
     public ProfileEntity(UserEntity user, String name, String surname1, String surname2) {

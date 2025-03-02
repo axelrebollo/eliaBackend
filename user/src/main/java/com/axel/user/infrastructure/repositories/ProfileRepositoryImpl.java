@@ -12,10 +12,12 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class ProfileRepositoryImpl implements IProfileRepository {
+    //Dependency injection
     private final JpaProfileRepository jpaProfileRepository;
     private final ProfileAdapterInfrastructure profileAdapterInfrastructure;
     private final UserAdapterInfrastructure userAdapterInfrastructure;
 
+    //Constructor
     public ProfileRepositoryImpl(JpaUserRepository jpaUserRepository,
                                  ProfileAdapterInfrastructure profileAdapterInfrastructure,
                                  JpaProfileRepository jpaProfileRepository, UserAdapterInfrastructure userAdapterInfrastructure) {
@@ -24,6 +26,7 @@ public class ProfileRepositoryImpl implements IProfileRepository {
         this.userAdapterInfrastructure = userAdapterInfrastructure;
     }
 
+    //Find profile by idUser
     public ProfileApplication findProfileByIdUser(int idUser){
         ProfileEntity profileEntity;
         try{
@@ -35,6 +38,7 @@ public class ProfileRepositoryImpl implements IProfileRepository {
         return profileAdapterInfrastructure.toApplication(profileEntity);
     }
 
+    //Create profile from ProfileApplication
     public ProfileApplication addProfile(ProfileApplication profile){
         ProfileEntity profileEntity = profileAdapterInfrastructure.fromApplication(profile);
         try{

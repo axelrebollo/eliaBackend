@@ -6,24 +6,25 @@ import com.axel.user.application.exceptions.ApplicationException;
 import com.axel.user.application.repositories.IJWTRepository;
 import com.axel.user.application.repositories.IUserRepository;
 import com.axel.user.application.services.ILoginUserCase;
-
 import com.axel.user.domain.services.interfaces.IUserService;
-
 import org.springframework.stereotype.Service;
 
 @Service
 public class LoginUseCaseImpl implements ILoginUserCase {
 
+    //Dependency injection
     private final IUserRepository userRepository;
     private final IUserService userService;
     private final IJWTRepository jwtRepository;
 
+    //Constructor
     public LoginUseCaseImpl(IUserRepository userRepository, IUserService userService, IJWTRepository jwtRepository) {
         this.userRepository = userRepository;
         this.userService = userService;
         this.jwtRepository = jwtRepository;
     }
 
+    //Login user case
     public UserResponseToken loginUser(final String email, final String password) {
         //check the data imported
         if(email == null || password == null) {
@@ -37,9 +38,9 @@ public class LoginUseCaseImpl implements ILoginUserCase {
             throw new ApplicationException("El usuario no existe");
         }
 
-        //decript password
-        String decriptedPassword = userService.decriptPassword(userApplication.getPassword());
-        userApplication.setPassword(decriptedPassword);
+        //decrypt password
+        String decryptedPassword = userService.decryptPassword(userApplication.getPassword());
+        userApplication.setPassword(decryptedPassword);
 
         //check passwords
         boolean isPasswordCorrect = userService.isIdenticalPassword(userApplication.getPassword(), password);

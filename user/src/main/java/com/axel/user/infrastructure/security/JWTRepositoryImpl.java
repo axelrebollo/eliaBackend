@@ -7,7 +7,6 @@ import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.MacAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
-
 import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
@@ -29,12 +28,12 @@ public class JWTRepositoryImpl implements IJWTRepository {
         Date issuedAt = new Date(System.currentTimeMillis());
         Date expiration = new Date(System.currentTimeMillis() + JWT_EXPIRATION);
 
-        //Adittional Claims
+        //Additional Claims
         Map<String, Object> claims = new HashMap<>();
         claims.put("email", email);
         claims.put("role", role);
 
-        //Firm
+        //Signature key
         SecretKey key = getKey();
         MacAlgorithm signatureAlgorithm = Jwts.SIG.HS256;
 

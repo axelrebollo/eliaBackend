@@ -10,8 +10,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class ProfileAdapterInfrastructure {
 
+    //Dependency injection
     private final UserRepositoryImpl userRepositoryImpl;
 
+    //Constructor
     public ProfileAdapterInfrastructure(UserRepositoryImpl userRepositoryImpl) {
         this.userRepositoryImpl = userRepositoryImpl;
     }
@@ -22,10 +24,10 @@ public class ProfileAdapterInfrastructure {
             return null;
         }
 
-        //find User into database and parse to UserEntity
+        //Find User into database and parse to UserEntity
         UserApplication userApplication = userRepositoryImpl.findByIdUser(profileApplication.getIdUser());
 
-        //from userApplication to UserEntity
+        //From userApplication to UserEntity
         UserAdapterInfrastructure userAdapterInfrastructure = new UserAdapterInfrastructure();
         UserEntity userEntity = userAdapterInfrastructure.fromApplicationWithIdUser(userApplication);
 
@@ -33,6 +35,7 @@ public class ProfileAdapterInfrastructure {
                 profileApplication.getSurname1(), profileApplication.getSurname2());
     }
 
+    //Map infrastructure to application
     public ProfileApplication toApplication(ProfileEntity profileEntity){
         if(profileEntity == null){
             return null;

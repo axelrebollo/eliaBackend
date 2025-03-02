@@ -8,22 +8,21 @@ import com.axel.user.application.exceptions.ApplicationException;
 import com.axel.user.application.services.IManageProfileUseCase;
 import com.axel.user.application.services.IRegisterUserCase;
 import com.axel.user.application.repositories.IUserRepository;
-
 import com.axel.user.domain.entities.User;
 import com.axel.user.domain.services.interfaces.IUserService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class RegisterUseCaseImpl implements IRegisterUserCase {
 
+    //Dependency injection
     private final IUserRepository userRepository;
     private final IUserService userService;
     private final UserAdapterApplication userAdapterApplication;
     private final IManageProfileUseCase manageProfileUseCase;
 
-    //contructor
+    //Constructor
     @Autowired
     public RegisterUseCaseImpl(IUserRepository userRepository,
                                IUserService userService,
@@ -35,7 +34,7 @@ public class RegisterUseCaseImpl implements IRegisterUserCase {
         this.manageProfileUseCase = manageProfileUseCase;
     }
 
-    //Register user or create a new user
+    //Register use case
     public UserResponse registerUser(final String email, final String password, String role) {
         User userDomain;
 

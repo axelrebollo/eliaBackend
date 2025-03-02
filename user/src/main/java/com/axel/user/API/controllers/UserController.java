@@ -6,12 +6,10 @@ import com.axel.user.application.DTOs.UserResponseToken;
 import com.axel.user.application.exceptions.ApplicationException;
 import com.axel.user.application.services.ILoginUserCase;
 import com.axel.user.application.services.IRegisterUserCase;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.Map;
 
 @RestController
@@ -19,16 +17,20 @@ import java.util.Map;
 @CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
 
+    //Dependency injection
     private final IRegisterUserCase registerUserCase;
     private final ILoginUserCase loginUserCase;
 
+    //Constructor
     @Autowired
     public UserController(IRegisterUserCase registerUserCase, ILoginUserCase loginUserCase) {
         this.registerUserCase = registerUserCase;
         this.loginUserCase = loginUserCase;
     }
 
-    //Register new user endpoint
+    //Endpoints
+
+    //Register new user
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody UserRequest userRequest) {
         try{
@@ -42,7 +44,7 @@ public class UserController {
         }
     }
 
-    //login user into app
+    //Login user into app
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody UserRequest userRequest) {
         try {

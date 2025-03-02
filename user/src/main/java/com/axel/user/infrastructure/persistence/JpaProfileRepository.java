@@ -8,5 +8,7 @@ import org.springframework.stereotype.Repository;
 public interface JpaProfileRepository extends JpaRepository<ProfileEntity, Integer> {
     //Find by user
     public ProfileEntity findByUserId(int idUser);
+
+    //Save (create) profile
     public ProfileEntity save(ProfileEntity profile);
 }

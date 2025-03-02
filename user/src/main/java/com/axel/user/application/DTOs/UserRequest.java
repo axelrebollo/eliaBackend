@@ -6,6 +6,13 @@ public class UserRequest {
     private String password;
     private String role;
 
+    //Constructor
+    public UserRequest(String email, String password, String role) {
+        this.email = email;
+        this.password = password;
+        this.role = role;
+    }
+
     //getters
     public String getEmail() {
         return email;

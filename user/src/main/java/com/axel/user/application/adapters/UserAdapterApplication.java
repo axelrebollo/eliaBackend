@@ -1,12 +1,11 @@
 package com.axel.user.application.adapters;
 
 import com.axel.user.application.DTOs.UserApplication;
-
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserAdapterApplication {
-
+    //Constructor
     public UserAdapterApplication(){}
 
     //Map API to Application

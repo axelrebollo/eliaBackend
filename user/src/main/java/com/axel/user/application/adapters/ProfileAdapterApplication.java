@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ProfileAdapterApplication {
-
+    //Constructor
     public ProfileAdapterApplication() {}
 
     //Map API to Application
