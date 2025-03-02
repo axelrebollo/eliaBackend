@@ -4,6 +4,7 @@ import com.axel.user.application.DTOs.UserApplication;
 import com.axel.user.application.repositories.IUserRepository;
 
 import com.axel.user.infrastructure.adapters.UserAdapterInfrastructure;
+import com.axel.user.infrastructure.exceptions.InfrastructureException;
 import com.axel.user.infrastructure.persistence.JpaUserRepository;
 import com.axel.user.infrastructure.JpaEntities.UserEntity;
 
@@ -29,7 +30,13 @@ public class UserRepositoryImpl implements IUserRepository {
 
     @Override
     public UserApplication findByEmail(String email) {
-        UserEntity userEntity = jpaUserRepository.findByEmail(email);
+        UserEntity userEntity;
+        try{
+            userEntity = jpaUserRepository.findByEmail(email);
+        }
+        catch(InfrastructureException e){
+            throw new InfrastructureException("Hubo un error con la búsqueda en la base de datos: ",e);
+        }
         return userAdapterInfrastructure.toApplication(userEntity);
     }
 

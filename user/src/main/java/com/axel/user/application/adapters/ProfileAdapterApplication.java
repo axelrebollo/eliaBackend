@@ -1,7 +1,9 @@
 package com.axel.user.application.adapters;
 
 import com.axel.user.application.DTOs.ProfileApplication;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ProfileAdapterApplication {
 
     public ProfileAdapterApplication() {}

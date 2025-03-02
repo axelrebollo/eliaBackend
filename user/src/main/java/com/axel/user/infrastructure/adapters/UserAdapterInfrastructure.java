@@ -19,6 +19,14 @@ public class UserAdapterInfrastructure {
         return new UserEntity(userApplication.getEmail(), userApplication.getPassword(), userApplication.getRole());
     }
 
+    //Map application to infrastructure
+    public UserEntity fromApplicationWithIdUser(UserApplication userApplication) {
+        if(userApplication == null){
+            return null;
+        }
+        return new UserEntity(userApplication.getId(), userApplication.getEmail(), userApplication.getPassword(), userApplication.getRole());
+    }
+
     //Map infrastructure to application
     public UserApplication toApplication(UserEntity userEntity) {
         if(userEntity == null){

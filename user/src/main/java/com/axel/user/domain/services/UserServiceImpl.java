@@ -1,6 +1,7 @@
 package com.axel.user.domain.services;
 
 import com.axel.user.domain.entities.User;
+import com.axel.user.domain.exceptions.DomainException;
 import com.axel.user.domain.services.interfaces.IUserService;
 import com.axel.user.domain.valueObjects.Role;
 
@@ -18,14 +19,20 @@ public class UserServiceImpl implements IUserService {
         if(role.equals("TEACHER")){
             roleEnum = Role.TEACHER;
         }
-        else{
+        else if(role.equals("STUDENT")){
             roleEnum = Role.STUDENT;
+        }
+        else{
+            throw new DomainException("Error con el rol del usuario.");
         }
 
         //encriptPassword
         CriptoService criptoService = new CriptoService();
         String passwordEncripted = criptoService.encrypt(password);
-
+        if(passwordEncripted == null){
+            throw new DomainException("Error con la encriptación del password.");
+        }
+        
         return new User(email, passwordEncripted, roleEnum);
     }
 

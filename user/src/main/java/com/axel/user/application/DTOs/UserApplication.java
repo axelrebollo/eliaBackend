@@ -6,7 +6,7 @@ public class UserApplication {
     private String password;
     private String role;
 
-    //constructor
+    //constructors
     public UserApplication() {}
 
     public UserApplication(String email, String password, String role) {

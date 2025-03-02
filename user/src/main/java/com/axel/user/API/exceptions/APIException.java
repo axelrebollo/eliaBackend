@@ -1,11 +1,16 @@
 package com.axel.user.API.exceptions;
 
+import org.springframework.http.HttpStatus;
+
 public class APIException extends RuntimeException {
-    public APIException(String message, Throwable cause) {
-      super(message, cause);
+    private final HttpStatus status;
+
+    public APIException(String message, HttpStatus status) {
+      super(message);
+      this.status = status;
     }
 
-    public APIException(String message) {
-      super(message);
+    public HttpStatus getStatus() {
+      return status;
     }
 }

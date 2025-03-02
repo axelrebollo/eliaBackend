@@ -25,16 +25,16 @@ public class JWTRepositoryImpl implements IJWTRepository {
 
     //Generates JWT token from email and role
     public String generateToken(String email, String role) {
-        // Fecha de emisión y expiración
+        //Creation date and expiration date
         Date issuedAt = new Date(System.currentTimeMillis());
         Date expiration = new Date(System.currentTimeMillis() + JWT_EXPIRATION);
 
-        // Claims adicionales
+        //Adittional Claims
         Map<String, Object> claims = new HashMap<>();
         claims.put("email", email);
         claims.put("role", role);
 
-        // Clave de firma
+        //Firm
         SecretKey key = getKey();
         MacAlgorithm signatureAlgorithm = Jwts.SIG.HS256;
 

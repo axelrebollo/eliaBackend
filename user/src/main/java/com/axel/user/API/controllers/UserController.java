@@ -1,6 +1,5 @@
 package com.axel.user.API.controllers;
 
-import com.axel.user.API.exceptions.APIException;
 import com.axel.user.application.DTOs.UserRequest;
 import com.axel.user.application.DTOs.UserResponse;
 import com.axel.user.application.DTOs.UserResponseToken;
@@ -12,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
@@ -35,8 +36,9 @@ public class UserController {
                     userRequest.getEmail(), userRequest.getPassword(), userRequest.getRole());
             return new ResponseEntity<>(userResponse, HttpStatus.CREATED);
         }
-        catch(APIException e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        catch(ApplicationException e){
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(Map.of("Error", e.getMessage(), "status", HttpStatus.CONFLICT.value()));
         }
     }
 
@@ -46,8 +48,10 @@ public class UserController {
         try {
             UserResponseToken userResponse = loginUserCase.loginUser(userRequest.getEmail(), userRequest.getPassword());
             return new ResponseEntity<>(userResponse, HttpStatus.ACCEPTED);
-        } catch (ApplicationException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+        catch(ApplicationException e){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("Error", e.getMessage(), "status", HttpStatus.UNAUTHORIZED.value()));
         }
     }
 }

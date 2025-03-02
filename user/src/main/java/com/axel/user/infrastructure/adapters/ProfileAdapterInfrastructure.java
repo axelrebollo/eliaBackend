@@ -27,7 +27,7 @@ public class ProfileAdapterInfrastructure {
 
         //from userApplication to UserEntity
         UserAdapterInfrastructure userAdapterInfrastructure = new UserAdapterInfrastructure();
-        UserEntity userEntity = userAdapterInfrastructure.fromApplication(userApplication);
+        UserEntity userEntity = userAdapterInfrastructure.fromApplicationWithIdUser(userApplication);
 
         return new ProfileEntity(userEntity, profileApplication.getName(),
                 profileApplication.getSurname1(), profileApplication.getSurname2());

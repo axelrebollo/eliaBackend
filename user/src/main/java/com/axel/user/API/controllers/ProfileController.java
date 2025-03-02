@@ -2,12 +2,15 @@ package com.axel.user.API.controllers;
 
 import com.axel.user.API.exceptions.APIException;
 import com.axel.user.application.DTOs.ProfileResponse;
+import com.axel.user.application.exceptions.ApplicationException;
 import com.axel.user.application.services.IManageProfileUseCase;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/profiles")
@@ -27,8 +30,9 @@ public class ProfileController {
             ProfileResponse profileResponse = manageProfileUserCase.getProfile(token);
             return new ResponseEntity<>(profileResponse, HttpStatus.OK);
         }
-        catch(APIException e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        catch(ApplicationException e){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("Error", e.getMessage(), "status", HttpStatus.UNAUTHORIZED.value()));
         }
     }
 }

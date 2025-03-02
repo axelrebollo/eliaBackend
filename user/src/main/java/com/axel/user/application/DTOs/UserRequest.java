@@ -1,7 +1,6 @@
 package com.axel.user.application.DTOs;
 
 public class UserRequest {
-
     //attributes
     private String email;
     private String password;
