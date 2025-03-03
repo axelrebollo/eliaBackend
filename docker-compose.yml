@@ -21,7 +21,7 @@ services:
       POSTGRES_PASSWORD: axelia
       POSTGRES_DB: notebookdb
     ports:
-      - "54321:5433"
+      - "54321:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data_notebookdb
 
