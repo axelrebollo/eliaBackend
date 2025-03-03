@@ -73,7 +73,51 @@ public class ManageProfileUseCaseImpl implements IManageProfileUseCase {
         ProfileApplication profileApplication = new ProfileApplication(idUser, "-", "-","-");
 
         //create profile
-        ProfileApplication profileApplicationResponse = profileRepository.addProfile(profileApplication);
+        ProfileApplication profileApplicationResponse = profileRepository.save(profileApplication);
+
+        return new ProfileResponse(profileApplicationResponse.getName(),
+                profileApplicationResponse.getSurname1(), profileApplicationResponse.getSurname2());
+    }
+
+    public ProfileResponse updateProfile(String token, String name, String surname1, String surname2){
+        if(token == null) {
+            throw new ApplicationException("Error con la autenticación con el token de acceso.");
+        }
+
+        //deserialize token to email
+        String email;
+        email = jwtRepository.getEmailFromToken(token);
+
+        if(email == null) {
+            throw new ApplicationException("Error, no existe email en el token de acceso o el token es incorrecto.");
+        }
+
+        if(!jwtRepository.isTokenValid(token, email)) {
+            throw new ApplicationException("Token inválido");
+        }
+
+        if(name == null || name.isEmpty() || surname1 == null || surname1.isEmpty() ||
+                surname2 == null || surname2.isEmpty()) {
+            throw new ApplicationException("Algún dato está vacío o incompleto. (nombre o apellidos");
+        }
+
+        //User
+        UserApplication user = userRepository.findByEmail(email);
+
+        if(user == null) {
+            throw new ApplicationException("El usuario no existe");
+        }
+
+        //Update profile
+        ProfileApplication profileApplication = profileRepository.findProfileByIdUser(user.getId());
+        profileApplication.setName(name);
+        profileApplication.setSurname1(surname1);
+        profileApplication.setSurname2(surname2);
+        ProfileApplication profileApplicationResponse = profileRepository.save(profileApplication);
+
+        if(profileApplicationResponse == null) {
+            throw new ApplicationException("Ha habido un problema al actualizar el perfil del usuario");
+        }
 
         return new ProfileResponse(profileApplicationResponse.getName(),
                 profileApplicationResponse.getSurname1(), profileApplicationResponse.getSurname2());

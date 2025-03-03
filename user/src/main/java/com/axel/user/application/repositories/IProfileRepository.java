@@ -7,5 +7,5 @@ public interface IProfileRepository {
     public ProfileApplication findProfileByIdUser(int idUser);
 
     //Create profile from ProfileApplication
-    public ProfileApplication addProfile(ProfileApplication profile);
+    public ProfileApplication save(ProfileApplication profile);
 }

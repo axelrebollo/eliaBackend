@@ -35,6 +35,14 @@ public class ProfileEntity {
         this.surname2 = surname2;
     }
 
+    public ProfileEntity(int idProfile, UserEntity user, String name, String surname1, String surname2) {
+        this.idProfile = idProfile;
+        this.user = user;
+        this.name = name;
+        this.surname1 = surname1;
+        this.surname2 = surname2;
+    }
+
     //getters
     public int getId() {
         return idProfile;

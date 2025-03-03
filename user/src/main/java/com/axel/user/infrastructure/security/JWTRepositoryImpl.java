@@ -1,7 +1,10 @@
 package com.axel.user.infrastructure.security;
 
+import com.axel.user.application.exceptions.ApplicationException;
 import com.axel.user.application.repositories.IJWTRepository;
+import com.axel.user.infrastructure.exceptions.InfrastructureException;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.MacAlgorithm;
@@ -54,12 +57,18 @@ public class JWTRepositoryImpl implements IJWTRepository {
     public boolean isTokenValid(String token, String email) {
         String emailFromToken = getEmailFromToken(token);
         Boolean isExpired = isTokenExpired(token);
+
         return emailFromToken.equals(email) && !isExpired;
     }
 
     //Obtains email from token
     public String getEmailFromToken(String token) {
-        return getClaim(token, Claims::getSubject);
+        try{
+            return getClaim(token, Claims::getSubject);
+        }
+        catch(InfrastructureException e){
+            throw new ApplicationException(e.getMessage());
+        }
     }
 
     //Obtains date expire token
@@ -74,12 +83,17 @@ public class JWTRepositoryImpl implements IJWTRepository {
 
     //Obtains a specific claim from token
     private <T> T getClaim(String token, Function<Claims, T> claimsResolver) {
-        Claims payload = Jwts.parser()
-                .verifyWith(getKey())
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
-
+        Claims payload;
+        try{
+            payload = Jwts.parser()
+                    .verifyWith(getKey())
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+        }
+        catch (JwtException e) {
+            throw new InfrastructureException("El token no es valido", e);
+        }
         return claimsResolver.apply(payload);
     }
 
