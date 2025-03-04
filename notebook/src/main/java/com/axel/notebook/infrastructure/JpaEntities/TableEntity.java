@@ -2,6 +2,9 @@ package com.axel.notebook.infrastructure.JpaEntities;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name= "tableEntity")
 public class TableEntity {
@@ -11,7 +14,7 @@ public class TableEntity {
     @Column(name="idTable")
     private int idTable;
 
-    @Column(name="nameTable")
+    @Column(name="nameTable", nullable=false)
     private String nameTable;
 
     //Many to one between microservices
@@ -21,14 +24,22 @@ public class TableEntity {
     @Column(name="classCode", nullable=false, unique=true)
     private String classCode;
 
+    //Conect with GroupEntity one to one
+    @OneToOne(mappedBy = "table")
+    private GroupEntity groupEntity;
+
+    //relation with Cells
+    @OneToMany(mappedBy = "table", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CellEntity> cells = new ArrayList<>();
+
     //Constructors
     public TableEntity() {}
 
-    public TableEntity( int idTable, String nameTable, int idProfile, String classCode ) {
-        this.idTable = idTable;
+    public TableEntity(String nameTable, int idProfile, GroupEntity groupEntity) {
         this.nameTable = nameTable;
         this.idProfile = idProfile;
         this.classCode = generateUniqueClassCode();
+        this.groupEntity = groupEntity;
     }
 
     //Setters
@@ -48,6 +59,14 @@ public class TableEntity {
         return classCode;
     }
 
+    public GroupEntity getGroupEntity() {
+        return groupEntity;
+    }
+
+    public List<CellEntity> getCells() {
+        return cells;
+    }
+
     //Getters
     public void setIdTable( int idTable ) {
         this.idTable = idTable;
@@ -61,8 +80,16 @@ public class TableEntity {
         this.idProfile = idProfile;
     }
 
+    public void setGroupEntity(GroupEntity groupEntity) {
+        this.groupEntity = groupEntity;
+    }
+
     //Generate a code for class
     private String generateUniqueClassCode() {
         return "CLS-" + java.util.UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+    }
+
+    public void setCells(List<CellEntity> cells) {
+        this.cells = cells;
     }
 }
