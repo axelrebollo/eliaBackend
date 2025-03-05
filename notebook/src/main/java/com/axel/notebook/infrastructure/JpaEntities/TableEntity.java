@@ -1,7 +1,6 @@
 package com.axel.notebook.infrastructure.JpaEntities;
 
 import jakarta.persistence.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,8 +24,9 @@ public class TableEntity {
     private String classCode;
 
     //Conect with GroupEntity one to one
-    @OneToOne(mappedBy = "table")
-    private GroupEntity groupEntity;
+    @ManyToOne
+    @JoinColumn(name= "idGoup", nullable = false)
+    private GroupEntity group;
 
     //relation with Cells
     @OneToMany(mappedBy = "table", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -35,11 +35,11 @@ public class TableEntity {
     //Constructors
     public TableEntity() {}
 
-    public TableEntity(String nameTable, int idProfile, GroupEntity groupEntity) {
+    public TableEntity(String nameTable, int idProfile, GroupEntity group) {
         this.nameTable = nameTable;
         this.idProfile = idProfile;
         this.classCode = generateUniqueClassCode();
-        this.groupEntity = groupEntity;
+        this.group = group;
     }
 
     //Setters
@@ -59,8 +59,8 @@ public class TableEntity {
         return classCode;
     }
 
-    public GroupEntity getGroupEntity() {
-        return groupEntity;
+    public GroupEntity getGroup() {
+        return group;
     }
 
     public List<CellEntity> getCells() {
@@ -80,8 +80,8 @@ public class TableEntity {
         this.idProfile = idProfile;
     }
 
-    public void setGroupEntity(GroupEntity groupEntity) {
-        this.groupEntity = groupEntity;
+    public void setGroup(GroupEntity group) {
+        this.group = group;
     }
 
     //Generate a code for class

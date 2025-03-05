@@ -2,6 +2,9 @@ package com.axel.notebook.infrastructure.JpaEntities;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name= "groupEntity")
 public class GroupEntity {
@@ -25,17 +28,15 @@ public class GroupEntity {
     private SubjectEntity subject;
 
     //relation one to one with table
-    @OneToOne
-    @JoinColumn(name= "idTable", referencedColumnName = "idTable",nullable = false, unique = true)
-    private TableEntity table;
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TableEntity> tables = new ArrayList<>();
 
     //constructor
     public GroupEntity() {}
 
-    public GroupEntity(String nameGroup, CourseEntity course, TableEntity table, SubjectEntity subject) {
+    public GroupEntity(String nameGroup, CourseEntity course, SubjectEntity subject) {
         this.nameGroup = nameGroup;
         this.course = course;
-        this.table = table;
         this.subject = subject;
     }
 
@@ -52,8 +53,8 @@ public class GroupEntity {
         return course;
     }
 
-    public TableEntity getTable() {
-        return table;
+    public List<TableEntity> getTables() {
+        return tables;
     }
 
     public SubjectEntity getSubject() {
@@ -73,8 +74,13 @@ public class GroupEntity {
         this.course = course;
     }
 
-    public void setTable(TableEntity table) {
-        this.table = table;
+    public void setTables(List<TableEntity> tables) {
+        this.tables = tables;
+    }
+
+    public void addTable(TableEntity table) {
+        this.tables.add(table);
+        table.setGroup(this);
     }
 
     public void setSubject(SubjectEntity subject) {
