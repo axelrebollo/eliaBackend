@@ -4,15 +4,14 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name="cellEntity")
-public class CellEntity {
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "cellType", discriminatorType = DiscriminatorType.STRING)
+public abstract class CellEntity {
     //Attributes
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="idCell")
     private int idCell;
-
-    @Column(name="typeCell", nullable=false)
-    private String typeCell;
 
     @Column(name="positionRow", nullable=false)
     private int positionRow;
@@ -28,8 +27,7 @@ public class CellEntity {
     //Constructors
     public CellEntity() {}
 
-    public CellEntity(String typeCell, TableEntity table, int positionRow, int positionCol) {
-        this.typeCell = typeCell;
+    public CellEntity(TableEntity table, int positionRow, int positionCol) {
         this.table = table;
         this.positionRow = positionRow;
         this.positionCol = positionCol;
@@ -38,10 +36,6 @@ public class CellEntity {
     //Getters
     public int getIdCell() {
         return idCell;
-    }
-
-    public String getTypeCell() {
-        return typeCell;
     }
 
     public TableEntity getTable() {
@@ -59,10 +53,6 @@ public class CellEntity {
     //Setters
     public void setIdCell(int idCell) {
         this.idCell = idCell;
-    }
-
-    public void setTypeCell(String typeCell) {
-        this.typeCell = typeCell;
     }
 
     public void setTable(TableEntity table) {
