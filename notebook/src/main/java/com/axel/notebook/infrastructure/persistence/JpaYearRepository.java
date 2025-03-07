@@ -10,6 +10,9 @@ public interface JpaYearRepository extends JpaRepository<YearEntity, Integer> {
     //Find all years
     public List<YearEntity> findAll();
 
+    //Find a year from name
+    public List<YearEntity> findByIdProfile(int idProfile);
+
     //Create year
     public YearEntity save(YearEntity year);
 

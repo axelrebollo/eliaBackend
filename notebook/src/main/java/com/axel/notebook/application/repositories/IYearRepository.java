@@ -1,11 +1,18 @@
 package com.axel.notebook.application.repositories;
 
+import com.axel.notebook.application.DTOs.YearApplication;
+import java.util.List;
+
 public interface IYearRepository {
-    //get all years that one user are created
-    public void getAllYears(int idUser);
+
+    //find all years for user and check that this year not exists
+    public Boolean existYearForUser(String nameYear, int idProfile);
 
     //update year that user are created
-    public void updateYear(int idUser, int idYear, String nameYear);
+    public YearApplication updateYear(YearApplication year);
+
+    //get all years that one user are created
+    public List<String> getAllYearsForUser(int idProfile);
 
     //delete year that user are created
     public void deleteYear(int idUser, int idYear);

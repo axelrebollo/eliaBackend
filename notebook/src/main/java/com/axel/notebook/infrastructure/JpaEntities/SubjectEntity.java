@@ -16,6 +16,9 @@ public class SubjectEntity {
     @Column(name="nameSubject", nullable=false)
     private String nameSubject;
 
+    @Column(name="teacher")
+    private int idProfile;
+
     //relation with groups
     @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<GroupEntity> groups = new ArrayList<>();
@@ -23,8 +26,9 @@ public class SubjectEntity {
     //Constructors
     public SubjectEntity() {}
 
-    public SubjectEntity(String nameSubject) {
+    public SubjectEntity(String nameSubject, int idProfile) {
         this.nameSubject = nameSubject;
+        this.idProfile = idProfile;
     }
 
     //Getters
@@ -40,6 +44,10 @@ public class SubjectEntity {
         return groups;
     }
 
+    public int getIdProfile() {
+        return idProfile;
+    }
+
     //Setters
     public void setIdSubject(int idSubject) {
         this.idSubject = idSubject;
@@ -51,5 +59,9 @@ public class SubjectEntity {
 
     public void setGroups(List<GroupEntity> groups) {
         this.groups = groups;
+    }
+
+    public void setIdProfile(int idProfile) {
+        this.idProfile = idProfile;
     }
 }

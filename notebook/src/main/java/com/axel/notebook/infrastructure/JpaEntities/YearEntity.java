@@ -17,6 +17,9 @@ public class YearEntity {
     @Column(name="nameYear", nullable=false)
     private String nameYear;
 
+    @Column(name="teacher")
+    private int idProfile;
+
     //relation with courses
     @OneToMany(mappedBy = "year", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CourseEntity> courses = new ArrayList<>();
@@ -24,8 +27,9 @@ public class YearEntity {
     //Constructors
     public YearEntity() {}
 
-    public YearEntity(String nameYear) {
+    public YearEntity(String nameYear, int idProfile) {
         this.nameYear = nameYear;
+        this.idProfile = idProfile;
     }
 
     //getters
@@ -41,6 +45,10 @@ public class YearEntity {
         return courses;
     }
 
+    public int getIdProfile() {
+        return idProfile;
+    }
+
     //setters
     public void setIdYear(int idYear) {
         this.idYear = idYear;
@@ -52,5 +60,9 @@ public class YearEntity {
 
     public void setCourses(List<CourseEntity> courses) {
         this.courses = courses;
+    }
+
+    public void setIdProfile(int idProfile) {
+        this.idProfile = idProfile;
     }
 }

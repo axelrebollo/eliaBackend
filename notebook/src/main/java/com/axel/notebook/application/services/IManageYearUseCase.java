@@ -1,11 +1,13 @@
 package com.axel.notebook.application.services;
 
+import com.axel.notebook.application.DTOs.YearResponse;
+
 public interface IManageYearUseCase {
     //get all years
-    public void getAllYearsUseCase();
+    public YearResponse getAllYearsFromTokenUseCase(String token);
 
     //create a new year
-    public void addYearUseCase();
+    public YearResponse addYearUseCase(String token, String nameYear);
 
     //update name year
     public void updateYearUseCase();
