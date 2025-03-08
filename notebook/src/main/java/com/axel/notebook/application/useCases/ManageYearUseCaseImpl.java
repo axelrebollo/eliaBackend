@@ -5,21 +5,28 @@ import com.axel.notebook.application.DTOs.YearResponse;
 import com.axel.notebook.application.exceptions.ApplicationException;
 import com.axel.notebook.application.repositories.IYearRepository;
 import com.axel.notebook.application.services.IManageYearUseCase;
+import com.axel.notebook.application.services.IYearConsumer;
+import com.axel.notebook.application.services.IYearProducer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class ManageYearUseCaseImpl implements IManageYearUseCase {
 
     //Dependency injection
     private IYearRepository yearRepository;
+    private IYearProducer yearProducer;
+    private IYearConsumer yearConsumer;
 
     //Constructor
     @Autowired
-    public ManageYearUseCaseImpl(IYearRepository yearRepository) {
+    public ManageYearUseCaseImpl(IYearRepository yearRepository, IYearProducer yearProducer, IYearConsumer yearConsumer) {
         this.yearRepository = yearRepository;
+        this.yearProducer = yearProducer;
+        this.yearConsumer = yearConsumer;
     }
 
     //create a new year
@@ -32,10 +39,8 @@ public class ManageYearUseCaseImpl implements IManageYearUseCase {
             throw new ApplicationException("El nombre del año está vacío o no existe.");
         }
 
-        int idProfile = 0;
         //Check if token is correct and returns decoded
-            //kafka petition
-        //TODO
+        int idProfile = getProfileId(token);
 
         //Check if year exist into system for this user
         if(idProfile <= 0){
@@ -74,8 +79,7 @@ public class ManageYearUseCaseImpl implements IManageYearUseCase {
             throw new ApplicationException("Error el token está vacío.");
         }
         //decode token
-        //TODO
-        int idProfile = 0;
+        int idProfile = getProfileId(token);
 
         return new YearResponse(getAllYearsForUser(idProfile));
     }
@@ -86,6 +90,12 @@ public class ManageYearUseCaseImpl implements IManageYearUseCase {
             throw new ApplicationException("El usuario no existe, no se ha encontrado el perfil.");
         }
         return yearRepository.getAllYearsForUser(idProfile);
+    }
+
+    public int getProfileId(String token) {
+        CompletableFuture<Integer> future = yearConsumer.createFuture(token);
+        yearProducer.sendToken(token);
+        return future.join(); // Espera la respuesta
     }
 
     //update name year
