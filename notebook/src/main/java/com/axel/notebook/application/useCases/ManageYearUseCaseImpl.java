@@ -1,17 +1,15 @@
 package com.axel.notebook.application.useCases;
 
-import com.axel.notebook.application.DTOs.YearApplication;
+import com.axel.notebook.domain.entities.Year;
 import com.axel.notebook.application.DTOs.YearResponse;
 import com.axel.notebook.application.exceptions.ApplicationException;
 import com.axel.notebook.application.repositories.IYearRepository;
 import com.axel.notebook.application.services.IManageYearUseCase;
-import com.axel.notebook.application.services.IYearConsumer;
 import com.axel.notebook.application.services.IYearProducer;
+import com.axel.notebook.domain.services.YearService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 @Service
 public class ManageYearUseCaseImpl implements IManageYearUseCase {
@@ -19,14 +17,14 @@ public class ManageYearUseCaseImpl implements IManageYearUseCase {
     //Dependency injection
     private IYearRepository yearRepository;
     private IYearProducer yearProducer;
-    private IYearConsumer yearConsumer;
+    private YearService yearService;
 
     //Constructor
     @Autowired
-    public ManageYearUseCaseImpl(IYearRepository yearRepository, IYearProducer yearProducer, IYearConsumer yearConsumer) {
+    public ManageYearUseCaseImpl(IYearRepository yearRepository, IYearProducer yearProducer, YearService yearService) {
         this.yearRepository = yearRepository;
         this.yearProducer = yearProducer;
-        this.yearConsumer = yearConsumer;
+        this.yearService = yearService;
     }
 
     //create a new year
@@ -47,17 +45,17 @@ public class ManageYearUseCaseImpl implements IManageYearUseCase {
             throw new ApplicationException("No se ha encontrado el perfil del usuario, el usuario no existe");
         }
 
-        boolean existYearInDB = yearRepository.existYearForUser(nameYear, idProfile);
-
-        if(existYearInDB){
+        //Check if exist year for this user
+        if(yearRepository.existYearForUser(nameYear, idProfile)){
             throw new ApplicationException("Existe un año con ese nombre con este usuario.");
         }
 
-        //Create year into database
-        YearApplication newYearApplication = new YearApplication(nameYear,idProfile);
+        //Create year
+        Year newYear = yearService.addYear(nameYear,idProfile);
 
+        //Save year
         try{
-            newYearApplication = yearRepository.updateYear(newYearApplication);
+            newYear = yearRepository.updateYear(newYear);
         }
         catch(ApplicationException e){
             throw new ApplicationException("Error al crear el año.");
@@ -66,7 +64,7 @@ public class ManageYearUseCaseImpl implements IManageYearUseCase {
         //return the list of years for this user
         List<String> yearsToUser = null;
 
-        if(newYearApplication != null){
+        if(newYear != null){
             yearsToUser = getAllYearsForUser(idProfile);
         }
 
@@ -85,9 +83,7 @@ public class ManageYearUseCaseImpl implements IManageYearUseCase {
     }
 
     public int getProfileId(String token) {
-        //CompletableFuture<Integer> future = yearConsumer.createFuture(token);
-        int idProfile = yearProducer.sendToken(token);
-        return idProfile; //Waiting response
+        return yearProducer.sendToken(token);
     }
 
     //Get all years for one user

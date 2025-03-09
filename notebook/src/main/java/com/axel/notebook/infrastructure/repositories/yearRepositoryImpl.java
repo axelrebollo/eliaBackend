@@ -1,6 +1,6 @@
 package com.axel.notebook.infrastructure.repositories;
 
-import com.axel.notebook.application.DTOs.YearApplication;
+import com.axel.notebook.domain.entities.Year;
 import com.axel.notebook.application.repositories.IYearRepository;
 import com.axel.notebook.infrastructure.JpaEntities.YearEntity;
 import com.axel.notebook.infrastructure.adapters.YearAdapterInfrastructure;
@@ -37,11 +37,11 @@ public class yearRepositoryImpl implements IYearRepository {
     }
 
     //update year that user are created
-    public YearApplication updateYear(YearApplication yearApplication) {
-        if(yearApplication == null) {
+    public Year updateYear(Year year) {
+        if(year == null) {
             throw new InfrastructureException("El año está vacío o es inexistente.");
         }
-        YearEntity yearEntity = yearAdapter.fromApplicationWhithoutId(yearApplication);
+        YearEntity yearEntity = yearAdapter.fromApplicationWhithoutId(year);
         yearEntity = jpaYearRepository.save(yearEntity);
         return yearAdapter.toApplication(yearEntity);
     }

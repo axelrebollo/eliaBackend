@@ -1,6 +1,6 @@
 package com.axel.notebook.application.repositories;
 
-import com.axel.notebook.application.DTOs.YearApplication;
+import com.axel.notebook.domain.entities.Year;
 import java.util.List;
 
 public interface IYearRepository {
@@ -9,7 +9,7 @@ public interface IYearRepository {
     public Boolean existYearForUser(String nameYear, int idProfile);
 
     //update year that user are created
-    public YearApplication updateYear(YearApplication year);
+    public Year updateYear(Year year);
 
     //get all years that one user are created
     public List<String> getAllYearsForUser(int idProfile);

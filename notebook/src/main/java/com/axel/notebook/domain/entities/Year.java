@@ -1,20 +1,20 @@
-package com.axel.notebook.application.DTOs;
+package com.axel.notebook.domain.entities;
 
-public class YearApplication {
+public class Year {
     //Attributes
     private int idYear;
     private String nameYear;
     private int idProfile;
 
     //Constructors
-    public YearApplication() {}
+    public Year() {}
 
-    public YearApplication(String nameYear, int idProfile) {
+    public Year(String nameYear, int idProfile) {
         this.nameYear = nameYear;
         this.idProfile = idProfile;
     }
 
-    public YearApplication(int idYear, String nameYear, int idProfile) {
+    public Year(int idYear, String nameYear, int idProfile) {
         this.idYear = idYear;
         this.nameYear = nameYear;
         this.idProfile = idProfile;
