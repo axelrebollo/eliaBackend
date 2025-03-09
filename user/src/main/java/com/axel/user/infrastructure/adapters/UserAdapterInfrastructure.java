@@ -1,6 +1,7 @@
 package com.axel.user.infrastructure.adapters;
 
-import com.axel.user.application.DTOs.UserApplication;
+import com.axel.user.domain.entities.User;
+import com.axel.user.domain.valueObjects.Role;
 import com.axel.user.infrastructure.JpaEntities.UserEntity;
 import org.springframework.stereotype.Service;
 
@@ -11,26 +12,30 @@ public class UserAdapterInfrastructure {
     public UserAdapterInfrastructure(){}
 
     //Map application to infrastructure (id default)
-    public UserEntity fromApplication(UserApplication userApplication) {
-        if(userApplication == null){
+    public UserEntity fromApplication(User user) {
+        if(user == null){
             return null;
         }
-        return new UserEntity(userApplication.getEmail(), userApplication.getPassword(), userApplication.getRole());
+        return new UserEntity(user.getEmail(), user.getPassword(), user.getRole().toString());
     }
 
     //Map application to infrastructure with id
-    public UserEntity fromApplicationWithIdUser(UserApplication userApplication) {
-        if(userApplication == null){
+    public UserEntity fromApplicationWithIdUser(User user) {
+        if(user == null){
             return null;
         }
-        return new UserEntity(userApplication.getId(), userApplication.getEmail(), userApplication.getPassword(), userApplication.getRole());
+        return new UserEntity(user.getId(), user.getEmail(), user.getPassword(), user.getRole().toString());
     }
 
     //Map infrastructure to application
-    public UserApplication toApplication(UserEntity userEntity) {
+    public User toApplication(UserEntity userEntity) {
         if(userEntity == null){
             return null;
         }
-        return new UserApplication(userEntity.getId(), userEntity.getEmail(), userEntity.getPassword(), userEntity.getRole());
+        return new User(userEntity.getId(), userEntity.getEmail(), userEntity.getPassword(), stringToRole(userEntity.getRole()));
+    }
+
+    private Role stringToRole(String roleStr){
+        return Role.valueOf(roleStr);
     }
 }

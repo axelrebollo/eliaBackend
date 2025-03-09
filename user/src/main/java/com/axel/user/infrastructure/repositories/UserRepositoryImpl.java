@@ -1,7 +1,7 @@
 package com.axel.user.infrastructure.repositories;
 
-import com.axel.user.application.DTOs.UserApplication;
 import com.axel.user.application.repositories.IUserRepository;
+import com.axel.user.domain.entities.User;
 import com.axel.user.infrastructure.adapters.UserAdapterInfrastructure;
 import com.axel.user.infrastructure.exceptions.InfrastructureException;
 import com.axel.user.infrastructure.persistence.JpaUserRepository;
@@ -21,17 +21,15 @@ public class UserRepositoryImpl implements IUserRepository {
         this.userAdapterInfrastructure = userAdapterInfrastructure;
     }
 
-    //Save userApplication
     @Override
-    public UserApplication save(UserApplication user) {
+    public User save(User user) {
         UserEntity userEntity = userAdapterInfrastructure.fromApplication(user);
         userEntity = jpaUserRepository.save(userEntity);
         return userAdapterInfrastructure.toApplication(userEntity);
     }
 
-    //Find by email userApplication
     @Override
-    public UserApplication findByEmail(String email) {
+    public User findByEmail(String email) {
         UserEntity userEntity;
         try{
             userEntity = jpaUserRepository.findByEmail(email);
@@ -42,9 +40,8 @@ public class UserRepositoryImpl implements IUserRepository {
         return userAdapterInfrastructure.toApplication(userEntity);
     }
 
-    //Find by idUser UserApplication
     @Override
-    public UserApplication findByIdUser(int idUser){
+    public User findByIdUser(int idUser) {
         UserEntity userEntity = jpaUserRepository.findByIdUser(idUser);
         return userAdapterInfrastructure.toApplication(userEntity);
     }

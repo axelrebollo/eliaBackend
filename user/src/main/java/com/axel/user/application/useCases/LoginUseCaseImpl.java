@@ -1,11 +1,11 @@
 package com.axel.user.application.useCases;
 
-import com.axel.user.application.DTOs.UserApplication;
 import com.axel.user.application.DTOs.UserResponseToken;
 import com.axel.user.application.exceptions.ApplicationException;
 import com.axel.user.application.repositories.IJWTRepository;
 import com.axel.user.application.repositories.IUserRepository;
 import com.axel.user.application.services.ILoginUserCase;
+import com.axel.user.domain.entities.User;
 import com.axel.user.domain.services.interfaces.IUserService;
 import org.springframework.stereotype.Service;
 
@@ -32,23 +32,23 @@ public class LoginUseCaseImpl implements ILoginUserCase {
         }
 
         //get info user credentials
-        UserApplication userApplication = userRepository.findByEmail(email);
+        User user = userRepository.findByEmail(email);
 
-        if(userApplication == null) {
+        if(user == null) {
             throw new ApplicationException("El usuario no existe");
         }
 
         //decrypt password
-        String decryptedPassword = userService.decryptPassword(userApplication.getPassword());
-        userApplication.setPassword(decryptedPassword);
+        String decryptedPassword = userService.decryptPassword(user.getPassword());
+        user.setPassword(decryptedPassword);
 
         //check passwords
-        boolean isPasswordCorrect = userService.isIdenticalPassword(userApplication.getPassword(), password);
+        boolean isPasswordCorrect = userService.isIdenticalPassword(user.getPassword(), password);
         String token;
 
         if(isPasswordCorrect){
             //generate token
-            token = jwtRepository.generateToken(userApplication.getEmail(), userApplication.getRole());
+            token = jwtRepository.generateToken(user.getEmail(), user.getRole().toString());
         }
         else{
             throw new ApplicationException("La contraseña no es correcta");

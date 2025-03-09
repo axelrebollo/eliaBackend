@@ -1,6 +1,6 @@
 package com.axel.user.infrastructure.kafka.consumers;
 
-import com.axel.user.application.DTOs.UserApplication;
+import com.axel.user.domain.entities.User;
 import com.axel.user.infrastructure.exceptions.InfrastructureException;
 import com.axel.user.infrastructure.kafka.producers.ProfileProducer;
 import com.axel.user.infrastructure.persistence.JpaProfileRepository;
@@ -44,7 +44,7 @@ public class TokenConsumer {
         //check token and extract idUser
         Boolean isAutenticated = jwtRepository.isTokenValid(token, email);
         if (isAutenticated) {
-            UserApplication user = userRepository.findByEmail(email);
+            User user = userRepository.findByEmail(email);
             if(user == null) {
                 throw new InfrastructureException("No existe el usuario con el email " + email);
             }

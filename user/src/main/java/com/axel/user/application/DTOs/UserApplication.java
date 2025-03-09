@@ -1,5 +1,5 @@
 package com.axel.user.application.DTOs;
-
+/*
 public class UserApplication {
     //Attributes
     private int idUser;
@@ -57,4 +57,4 @@ public class UserApplication {
     public void setRole(String role) {
         this.role = role;
     }
-}
+}*/

@@ -2,12 +2,12 @@ package com.axel.user.application.useCases;
 
 import com.axel.user.application.DTOs.ProfileApplication;
 import com.axel.user.application.DTOs.ProfileResponse;
-import com.axel.user.application.DTOs.UserApplication;
 import com.axel.user.application.exceptions.ApplicationException;
 import com.axel.user.application.repositories.IJWTRepository;
 import com.axel.user.application.repositories.IProfileRepository;
 import com.axel.user.application.repositories.IUserRepository;
 import com.axel.user.application.services.IManageProfileUseCase;
+import com.axel.user.domain.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -47,7 +47,7 @@ public class ManageProfileUseCaseImpl implements IManageProfileUseCase {
         }
 
         //User
-        UserApplication user = userRepository.findByEmail(email);
+        User user = userRepository.findByEmail(email);
 
         if(user == null) {
             throw new ApplicationException("El usuario no existe");
@@ -102,7 +102,7 @@ public class ManageProfileUseCaseImpl implements IManageProfileUseCase {
         }
 
         //User
-        UserApplication user = userRepository.findByEmail(email);
+        User user = userRepository.findByEmail(email);
 
         if(user == null) {
             throw new ApplicationException("El usuario no existe");

@@ -1,7 +1,6 @@
 package com.axel.user.infrastructure.adapters;
 
 import com.axel.user.application.DTOs.ProfileApplication;
-import com.axel.user.application.DTOs.UserApplication;
 import com.axel.user.domain.entities.User;
 import com.axel.user.infrastructure.JpaEntities.ProfileEntity;
 import com.axel.user.infrastructure.JpaEntities.UserEntity;
@@ -28,7 +27,7 @@ public class ProfileAdapterInfrastructure {
         }
 
         //Find User into database and parse to UserEntity
-        UserApplication userApplication = userRepositoryImpl.findByIdUser(profileApplication.getIdUser());
+        User userApplication = userRepositoryImpl.findByIdUser(profileApplication.getIdUser());
 
         //From userApplication to UserEntity
         UserAdapterInfrastructure userAdapterInfrastructure = new UserAdapterInfrastructure();

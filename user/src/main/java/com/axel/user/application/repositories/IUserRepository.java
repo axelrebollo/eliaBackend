@@ -1,14 +1,14 @@
 package com.axel.user.application.repositories;
 
-import com.axel.user.application.DTOs.UserApplication;
+import com.axel.user.domain.entities.User;
 
 public interface IUserRepository {
     //Save userApplication
-    UserApplication save(UserApplication user);
+    User save(User user);
 
     //Find by email userApplication
-    UserApplication findByEmail(String email);
+    User findByEmail(String email);
 
     //Find by idUser UserApplication
-    UserApplication findByIdUser(int idUser);
+    User findByIdUser(int idUser);
 }
