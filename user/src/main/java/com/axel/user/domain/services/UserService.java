@@ -2,18 +2,17 @@ package com.axel.user.domain.services;
 
 import com.axel.user.domain.entities.User;
 import com.axel.user.domain.exceptions.DomainException;
-import com.axel.user.domain.services.interfaces.IUserService;
 import com.axel.user.domain.valueObjects.Role;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserServiceImpl implements IUserService {
+public class UserService{
 
     //Constructor
-    public UserServiceImpl() {}
+    public UserService() {}
 
     //Create an Entity User
-    public User createModelUser(String email, String password, String role){
+    public User createUser(String email, String password, String role){
         //Convert string role into enum from domain
         Role roleEnum;
         if(role.equals("TEACHER")){

@@ -1,6 +1,6 @@
 package com.axel.user.infrastructure.adapters;
 
-import com.axel.user.application.DTOs.ProfileApplication;
+import com.axel.user.domain.entities.Profile;
 import com.axel.user.domain.entities.User;
 import com.axel.user.infrastructure.JpaEntities.ProfileEntity;
 import com.axel.user.infrastructure.JpaEntities.UserEntity;
@@ -21,29 +21,29 @@ public class ProfileAdapterInfrastructure {
     }
 
     //Map application to infrastructure
-    public ProfileEntity fromApplication(ProfileApplication profileApplication){
-        if(profileApplication == null){
+    public ProfileEntity fromApplication(Profile profile){
+        if(profile == null){
             return null;
         }
 
         //Find User into database and parse to UserEntity
-        User userApplication = userRepositoryImpl.findByIdUser(profileApplication.getIdUser());
+        User userApplication = userRepositoryImpl.findByIdUser(profile.getIdUser());
 
         //From userApplication to UserEntity
         UserAdapterInfrastructure userAdapterInfrastructure = new UserAdapterInfrastructure();
         UserEntity userEntity = userAdapterInfrastructure.fromApplicationWithIdUser(userApplication);
 
-        return new ProfileEntity(profileApplication.getIdProfile(),
-                userEntity, profileApplication.getName(),
-                profileApplication.getSurname1(), profileApplication.getSurname2());
+        return new ProfileEntity(profile.getIdProfile(),
+                userEntity, profile.getName(),
+                profile.getSurname1(), profile.getSurname2());
     }
 
     //Map infrastructure to application
-    public ProfileApplication toApplication(ProfileEntity profileEntity){
+    public Profile toApplication(ProfileEntity profileEntity){
         if(profileEntity == null){
             return null;
         }
-        return new ProfileApplication(profileEntity.getId(), profileEntity.getUser().getId(), profileEntity.getName(),
+        return new Profile(profileEntity.getId(), profileEntity.getUser().getId(), profileEntity.getName(),
                 profileEntity.getSurname1(), profileEntity.getSurname2());
     }
 }

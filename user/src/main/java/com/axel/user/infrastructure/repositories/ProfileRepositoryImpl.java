@@ -1,10 +1,9 @@
 package com.axel.user.infrastructure.repositories;
 
-import com.axel.user.application.DTOs.ProfileApplication;
+import com.axel.user.domain.entities.Profile;
 import com.axel.user.application.repositories.IProfileRepository;
 import com.axel.user.infrastructure.JpaEntities.ProfileEntity;
 import com.axel.user.infrastructure.adapters.ProfileAdapterInfrastructure;
-import com.axel.user.infrastructure.adapters.UserAdapterInfrastructure;
 import com.axel.user.infrastructure.exceptions.InfrastructureException;
 import com.axel.user.infrastructure.persistence.JpaProfileRepository;
 import com.axel.user.infrastructure.persistence.JpaUserRepository;
@@ -25,7 +24,7 @@ public class ProfileRepositoryImpl implements IProfileRepository {
     }
 
     //Find profile by idUser
-    public ProfileApplication findProfileByIdUser(int idUser){
+    public Profile findProfileByIdUser(int idUser){
         ProfileEntity profileEntity;
         try{
             profileEntity = jpaProfileRepository.findByUser_Id(idUser);
@@ -37,7 +36,7 @@ public class ProfileRepositoryImpl implements IProfileRepository {
     }
 
     //Create/update profile from ProfileApplication
-    public ProfileApplication save(ProfileApplication profile){
+    public Profile save(Profile profile){
         ProfileEntity profileEntity = profileAdapterInfrastructure.fromApplication(profile);
         try{
             profileEntity = jpaProfileRepository.save(profileEntity);

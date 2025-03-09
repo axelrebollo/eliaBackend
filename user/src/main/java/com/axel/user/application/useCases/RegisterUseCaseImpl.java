@@ -7,7 +7,7 @@ import com.axel.user.application.services.IManageProfileUseCase;
 import com.axel.user.application.services.IRegisterUserCase;
 import com.axel.user.application.repositories.IUserRepository;
 import com.axel.user.domain.entities.User;
-import com.axel.user.domain.services.interfaces.IUserService;
+import com.axel.user.domain.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,13 +16,13 @@ public class RegisterUseCaseImpl implements IRegisterUserCase {
 
     //Dependency injection
     private final IUserRepository userRepository;
-    private final IUserService userService;
+    private final UserService userService;
     private final IManageProfileUseCase manageProfileUseCase;
 
     //Constructor
     @Autowired
     public RegisterUseCaseImpl(IUserRepository userRepository,
-                               IUserService userService,
+                               UserService userService,
                                IManageProfileUseCase manageProfileUseCase) {
         this.userRepository = userRepository;
         this.userService = userService;
@@ -32,15 +32,19 @@ public class RegisterUseCaseImpl implements IRegisterUserCase {
     //Register use case
     public UserResponse registerUser(final String email, final String password, String role) {
         //Check data
-        if(email.isEmpty() || password.isEmpty() || role.isEmpty()){
+        if(email == null || email.isEmpty() ||
+                password == null || password.isEmpty() ||
+                role == null || role.isEmpty()){
             throw new ApplicationException("El usuario tiene algún campo vacío");
         }
 
+        //check that user not exist into system
         if(this.userRepository.findByEmail(email) != null){
             throw new ApplicationException("El usuario ya existe en el sistema, por favor intentelo de nuevo.");
         }
 
-        User user = userService.createModelUser(email, password, role);
+        //create user
+        User user = userService.createUser(email, password, role);
 
         //Save user into database
         try{

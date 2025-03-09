@@ -55,20 +55,22 @@ public class JWTRepositoryImpl implements IJWTRepository {
 
     //Check if token is correct
     public boolean isTokenValid(String token, String email) {
-        String emailFromToken = getEmailFromToken(token);
-        Boolean isExpired = isTokenExpired(token);
-
-        return emailFromToken.equals(email) && !isExpired;
+        Date expirationDate = getExpirationFromToken(token);
+        return expirationDate.after(new Date());
     }
 
     //Obtains email from token
     public String getEmailFromToken(String token) {
         try{
-            return getClaim(token, Claims::getSubject);
+            String email = getClaim(token, Claims::getSubject);
+            if(isTokenValid(token, email)){
+                return email;
+            }
         }
         catch(InfrastructureException e){
             throw new ApplicationException(e.getMessage());
         }
+        return null;
     }
 
     //Obtains date expire token
@@ -95,10 +97,5 @@ public class JWTRepositoryImpl implements IJWTRepository {
             throw new InfrastructureException("El token no es valido", e);
         }
         return claimsResolver.apply(payload);
-    }
-
-    //Check if token is expired
-    private Boolean isTokenExpired(String token) {
-        return getExpirationFromToken(token).before(new Date());
     }
 }

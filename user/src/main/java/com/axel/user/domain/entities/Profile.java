@@ -1,6 +1,8 @@
-package com.axel.user.application.DTOs;
+package com.axel.user.domain.entities;
 
-public class ProfileApplication {
+import com.axel.user.domain.exceptions.DomainException;
+
+public class Profile {
     //Attributes
     private int idProfile;
     private int idUser;
@@ -9,16 +11,16 @@ public class ProfileApplication {
     private String surname2;
 
     //constructors
-    public ProfileApplication() {}
+    public Profile() {}
 
-    public ProfileApplication(int idUser, String name, String surname1, String surname2) {
+    public Profile(int idUser, String name, String surname1, String surname2) {
         this.idUser = idUser;
         this.name = name;
         this.surname1 = surname1;
         this.surname2 = surname2;
     }
 
-    public ProfileApplication(int idProfile, int idUser, String name, String surname1, String surname2) {
+    public Profile(int idProfile, int idUser, String name, String surname1, String surname2) {
         this.idProfile = idProfile;
         this.idUser = idUser;
         this.name = name;
@@ -66,5 +68,17 @@ public class ProfileApplication {
 
     public void setSurname2(String surname2) {
         this.surname2 = surname2;
+    }
+
+    public Profile initializeNotNull(String name, String surname1, String surname2){
+        if(name == null || name.isEmpty() ||
+        surname1 == null || surname1.isEmpty() ||
+        surname2 == null || surname2.isEmpty()){
+            throw new DomainException("Valores insertados nulos o vacíos");
+        }
+        this.setName(name);
+        this.setSurname1(surname1);
+        this.setSurname2(surname2);
+        return this;
     }
 }

@@ -1,11 +1,11 @@
 package com.axel.user.application.repositories;
 
-import com.axel.user.application.DTOs.ProfileApplication;
+import com.axel.user.domain.entities.Profile;
 
 public interface IProfileRepository {
     //Find profile by idUser
-    public ProfileApplication findProfileByIdUser(int idUser);
+    public Profile findProfileByIdUser(int idUser);
 
     //Create profile from ProfileApplication
-    public ProfileApplication save(ProfileApplication profile);
+    public Profile save(Profile profile);
 }

@@ -6,7 +6,7 @@ import com.axel.user.application.repositories.IJWTRepository;
 import com.axel.user.application.repositories.IUserRepository;
 import com.axel.user.application.services.ILoginUserCase;
 import com.axel.user.domain.entities.User;
-import com.axel.user.domain.services.interfaces.IUserService;
+import com.axel.user.domain.services.UserService;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,11 +14,11 @@ public class LoginUseCaseImpl implements ILoginUserCase {
 
     //Dependency injection
     private final IUserRepository userRepository;
-    private final IUserService userService;
+    private final UserService userService;
     private final IJWTRepository jwtRepository;
 
     //Constructor
-    public LoginUseCaseImpl(IUserRepository userRepository, IUserService userService, IJWTRepository jwtRepository) {
+    public LoginUseCaseImpl(IUserRepository userRepository, UserService userService, IJWTRepository jwtRepository) {
         this.userRepository = userRepository;
         this.userService = userService;
         this.jwtRepository = jwtRepository;
