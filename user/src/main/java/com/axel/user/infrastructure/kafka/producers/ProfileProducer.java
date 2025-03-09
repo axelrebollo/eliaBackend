@@ -1,5 +1,6 @@
 package com.axel.user.infrastructure.kafka.producers;
 
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +12,10 @@ public class ProfileProducer {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    public void sendProfileId(String token, int profileId) {
-        kafkaTemplate.send("profile-response-topic", token, String.valueOf(profileId));
+    public void sendProfileId(String token, int profileId){
+        String topic = "profile-response-topic";
+        ProducerRecord<String, String> responseRecord = new ProducerRecord<>(topic,
+                token, String.valueOf(profileId));
+        kafkaTemplate.send(responseRecord);
     }
 }

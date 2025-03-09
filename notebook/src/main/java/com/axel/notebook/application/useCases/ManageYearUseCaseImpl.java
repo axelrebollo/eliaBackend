@@ -84,18 +84,18 @@ public class ManageYearUseCaseImpl implements IManageYearUseCase {
         return new YearResponse(getAllYearsForUser(idProfile));
     }
 
+    public int getProfileId(String token) {
+        //CompletableFuture<Integer> future = yearConsumer.createFuture(token);
+        int idProfile = yearProducer.sendToken(token);
+        return idProfile; //Waiting response
+    }
+
     //Get all years for one user
     public List<String> getAllYearsForUser(int idProfile){
         if(idProfile <= 0){
             throw new ApplicationException("El usuario no existe, no se ha encontrado el perfil.");
         }
         return yearRepository.getAllYearsForUser(idProfile);
-    }
-
-    public int getProfileId(String token) {
-        CompletableFuture<Integer> future = yearConsumer.createFuture(token);
-        yearProducer.sendToken(token);
-        return future.join(); // Espera la respuesta
     }
 
     //update name year

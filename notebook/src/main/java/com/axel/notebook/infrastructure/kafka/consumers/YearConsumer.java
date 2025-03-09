@@ -12,6 +12,7 @@ import java.util.concurrent.ConcurrentMap;
 public class YearConsumer implements IYearConsumer {
     private static final ConcurrentMap<String, CompletableFuture<Integer>> pendingRequests = new ConcurrentHashMap<>();
 
+    //Constructor
     public CompletableFuture<Integer> createFuture(String token) {
         CompletableFuture<Integer> future = new CompletableFuture<>();
         pendingRequests.put(token, future);
