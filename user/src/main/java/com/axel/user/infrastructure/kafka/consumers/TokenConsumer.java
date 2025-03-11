@@ -6,8 +6,13 @@ import com.axel.user.infrastructure.kafka.producers.ProfileProducer;
 import com.axel.user.infrastructure.persistence.JpaProfileRepository;
 import com.axel.user.infrastructure.repositories.UserRepositoryImpl;
 import com.axel.user.infrastructure.security.JWTRepositoryImpl;
+import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.common.header.Header;
+import org.apache.kafka.common.header.Headers;
+import org.springframework.context.annotation.Bean;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaAdmin;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,6 +22,18 @@ public class TokenConsumer {
     private final UserRepositoryImpl userRepository;
     private final JWTRepositoryImpl jwtRepository;
     private final JpaProfileRepository jpaProfileRepository;
+
+    @Bean
+    public KafkaAdmin.NewTopics createUserTopics() {
+        return new KafkaAdmin.NewTopics(
+                new NewTopic("petition-idProfile-year", 1, (short) 1)
+        );
+    }
+
+    @KafkaListener(topics = "petition-idProfile-year", groupId = "dynamic-group")
+    public void listenYears(String message) {
+        System.out.println("Received in User Service: " + message);
+    }
 
     //Constructor
     public TokenConsumer(ProfileProducer profileProducer,
@@ -29,28 +46,39 @@ public class TokenConsumer {
         this.jpaProfileRepository = jpaProfileRepository;
     }
 
-    //arrives token and extract info
-    @KafkaListener(topics = "token-topic", groupId = "user-group")
+    //Listen to topic "petition-idProfile-year", only one consumer from this group processes the message
+    @KafkaListener(topics = "petition-idProfile-year", groupId = "year-group")
     public void processToken(ConsumerRecord<String, String> record) {
+        //extract data to message
         String token = record.value();
         int idProfile = 0;
 
-        //decript token and extract email
+        //extract id from message
+        Headers headers = record.headers();
+        Header correlationIdHeader = headers.lastHeader("kafka_correlationId");
+
+        if (correlationIdHeader == null) {
+            throw new InfrastructureException("No hay id de correlación en el mensaje recivido");
+        }
+        String correlationId = new String(correlationIdHeader.value());
+
+        //decrypt token and extract email
         String email = jwtRepository.getEmailFromToken(token);
         if (email == null) {
             throw new InfrastructureException("Token inválido");
         }
 
-        //check token and extract idUser
+        //validate token and extract idUser
         Boolean isAutenticated = jwtRepository.isTokenValid(token, email);
         if (isAutenticated) {
             User user = userRepository.findByEmail(email);
             if(user == null) {
                 throw new InfrastructureException("No existe el usuario con el email " + email);
             }
+            //get idUser
             int idUser = user.getId();
 
-            //save idProfile
+            //get idProfile
             idProfile = jpaProfileRepository.findByUser_Id(idUser).getId();
         }
 
@@ -58,7 +86,7 @@ public class TokenConsumer {
             throw new InfrastructureException("El perfil no existe");
         }
 
-        //return response
-        profileProducer.sendProfileId(token, idProfile);
+        //return response with idProfile
+        profileProducer.sendProfileId(token, idProfile, correlationId);
     }
 }

@@ -1,24 +1,26 @@
 package com.axel.user.infrastructure.kafka;
 
-import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.clients.admin.NewTopic;
+import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.*;
+import org.springframework.kafka.requestreply.ReplyingKafkaTemplate;
 import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
 public class KafkaConfig {
-    // Configuración del productor (para enviar idProfile de vuelta a Notebook)
+    private static final String BOOTSTRAP_SERVERS = "localhost:9092";
+
+    // Producer Config
     @Bean
     public ProducerFactory<String, String> producerFactory() {
         Map<String, Object> configProps = new HashMap<>();
-        configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         return new DefaultKafkaProducerFactory<>(configProps);
@@ -29,12 +31,12 @@ public class KafkaConfig {
         return new KafkaTemplate<>(producerFactory());
     }
 
-    // Configuración del consumidor (para recibir tokens desde Notebook)
+    // Consumer Config
     @Bean
     public ConsumerFactory<String, String> consumerFactory() {
         Map<String, Object> configProps = new HashMap<>();
-        configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-        configProps.put(ConsumerConfig.GROUP_ID_CONFIG, "user-group");
+        configProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
+        configProps.put(ConsumerConfig.GROUP_ID_CONFIG, "dynamic-group");
         configProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         configProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         return new DefaultKafkaConsumerFactory<>(configProps);
@@ -47,15 +49,13 @@ public class KafkaConfig {
         return factory;
     }
 
-    // Declaración de los topics si no existen (Opcional)
+    // Request-Reply Config
     @Bean
-    public NewTopic tokenTopic() {
-        return new NewTopic("token-topic", 1, (short) 1);
-    }
-
-    @Bean
-    public NewTopic profileResponseTopic() {
-        return new NewTopic("profile-response-topic", 1, (short) 1);
+    public ReplyingKafkaTemplate<String, String, String> replyingKafkaTemplate(
+            ProducerFactory<String, String> producerFactory,
+            ConcurrentKafkaListenerContainerFactory<String, String> factory) {
+        return new ReplyingKafkaTemplate<>(producerFactory, factory.createContainer("default-reply-topic"));
     }
 }
+
 
