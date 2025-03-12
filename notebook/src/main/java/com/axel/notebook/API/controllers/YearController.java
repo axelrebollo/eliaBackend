@@ -60,6 +60,12 @@ public class YearController {
         return null;
     }
 
+    @PatchMapping("/updateNameYear")
+    public ResponseEntity<?> updateNameYear() {
+        //TODO
+        return null;
+    }
+
     //delete year cascade
     @DeleteMapping("/deleteYear")
     public ResponseEntity<?> deleteYear() {

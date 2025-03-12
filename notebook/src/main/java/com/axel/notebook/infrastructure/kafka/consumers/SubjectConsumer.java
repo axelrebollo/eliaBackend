@@ -1,6 +1,6 @@
 package com.axel.notebook.infrastructure.kafka.consumers;
 
-import com.axel.notebook.application.services.consumers.IYearConsumer;
+import com.axel.notebook.application.services.consumers.ISubjectConsumer;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.header.Header;
@@ -14,19 +14,19 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 @Service
-public class YearConsumer implements IYearConsumer {
+public class SubjectConsumer implements ISubjectConsumer {
     //Map to save pending requests
     private static final ConcurrentMap<String, CompletableFuture<Integer>> pendingRequests = new ConcurrentHashMap<>();
 
-    @KafkaListener(topics = "years", groupId = "dynamic-group")
+    @KafkaListener(topics = "subjects", groupId = "dynamic-group")
     public void listenYears(String message) {
         System.out.println("Received in Notebook Service: " + message);
     }
 
     @Bean
-    public KafkaAdmin.NewTopics createYearTopics() {
+    public KafkaAdmin.NewTopics createSubjectTopics() {
         return new KafkaAdmin.NewTopics(
-                new NewTopic("years", 1, (short) 1)
+                new NewTopic("subjects", 1, (short) 1)
         );
     }
 
@@ -37,8 +37,8 @@ public class YearConsumer implements IYearConsumer {
         return future;
     }
 
-    //Listen to "response-idProfile-year", only one instance from group is processed
-    @KafkaListener(topics = "response-idProfile-year", groupId = "year-group-consumer")
+    //Listen to "response-idProfile-subject", only one instance from group is processed
+    @KafkaListener(topics = "response-idProfile-subject", groupId = "subject-group-consumer")
     public void receiveProfileId(ConsumerRecord<String, String> record) {
         //extract headers
         Headers headers = record.headers();

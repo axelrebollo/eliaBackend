@@ -1,36 +1,36 @@
 package com.axel.notebook.infrastructure.kafka.producers;
 
-import com.axel.notebook.application.services.producers.IYearProducer;
-import com.axel.notebook.infrastructure.kafka.consumers.YearConsumer;
+import com.axel.notebook.application.services.producers.ISubjectProducer;
+import org.springframework.stereotype.Service;
+import com.axel.notebook.infrastructure.kafka.consumers.SubjectConsumer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.header.internals.RecordHeader;
 import org.apache.kafka.common.header.internals.RecordHeaders;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.stereotype.Service;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @Service
-public class YearProducer implements IYearProducer {
+public class SubjectProducer implements ISubjectProducer {
     //Dependency injection
-    private final YearConsumer yearConsumer;    //usage to create a promise that waiting response
-    private final KafkaTemplate<String, String> kafkaTemplate;  //objet to send messages
+    private final SubjectConsumer subjectConsumer;
+    private final KafkaTemplate<String, String> kafkaTemplate;
 
     //Constructor
-    public YearProducer(YearConsumer yearConsumer, KafkaTemplate<String, String> kafkaTemplate) {
-        this.yearConsumer = yearConsumer;
+    public SubjectProducer(final SubjectConsumer subjectConsumer, final KafkaTemplate<String, String> kafkaTemplate) {
+        this.subjectConsumer = subjectConsumer;
         this.kafkaTemplate = kafkaTemplate;
     }
 
     //Petition with token about idProfile
     public int sendToken(String token) {
-        //Topic
-        String topic = "petition-idProfile-year";
+        //topic
+        String topic = "petition-idProfile-Subject";
         //Number unique id
         String correlationId = UUID.randomUUID().toString();
-        //Create a promise to wait response
-        CompletableFuture<Integer> future = yearConsumer.createFuture(correlationId);
+        //Create a promise to wawit response
+        CompletableFuture<Integer> future = subjectConsumer.createFuture(correlationId);
         //create headers
         Headers headers = new RecordHeaders();
         headers.add(new RecordHeader("kafka_correlationId", correlationId.getBytes()));

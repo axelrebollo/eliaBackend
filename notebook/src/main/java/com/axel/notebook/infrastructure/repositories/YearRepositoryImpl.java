@@ -7,19 +7,18 @@ import com.axel.notebook.infrastructure.adapters.YearAdapterInfrastructure;
 import com.axel.notebook.infrastructure.exceptions.InfrastructureException;
 import com.axel.notebook.infrastructure.persistence.JpaYearRepository;
 import org.springframework.stereotype.Repository;
-
 import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class yearRepositoryImpl implements IYearRepository {
+public class YearRepositoryImpl implements IYearRepository {
 
     //Dependency injection
     private final JpaYearRepository jpaYearRepository;
     private final YearAdapterInfrastructure yearAdapter;
 
     //Constructor
-    public yearRepositoryImpl(JpaYearRepository jpaYearRepository, YearAdapterInfrastructure yearAdapter) {
+    public YearRepositoryImpl(JpaYearRepository jpaYearRepository, YearAdapterInfrastructure yearAdapter) {
         this.jpaYearRepository = jpaYearRepository;
         this.yearAdapter = yearAdapter;
     }

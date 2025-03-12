@@ -8,18 +8,18 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ProfileProducer {
+public class SubjectProfileProducer {
     //injection dependencies
     private final KafkaTemplate<String, String> kafkaTemplate;  //used to send messages
 
     //Constructor
-    public ProfileProducer(KafkaTemplate<String, String> kafkaTemplate) {
+    public SubjectProfileProducer(KafkaTemplate<String, String> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
 
     public void sendProfileId(String token, int profileId, String correlationId){
         //topic
-        String topic = "response-idProfile-year";
+        String topic = "response-idProfile-subject";
 
         //headers
         Headers headers = new RecordHeaders();

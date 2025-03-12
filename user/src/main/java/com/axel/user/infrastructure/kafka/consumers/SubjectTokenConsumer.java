@@ -2,7 +2,7 @@ package com.axel.user.infrastructure.kafka.consumers;
 
 import com.axel.user.domain.entities.User;
 import com.axel.user.infrastructure.exceptions.InfrastructureException;
-import com.axel.user.infrastructure.kafka.producers.ProfileProducer;
+import com.axel.user.infrastructure.kafka.producers.SubjectProfileProducer;
 import com.axel.user.infrastructure.persistence.JpaProfileRepository;
 import com.axel.user.infrastructure.repositories.UserRepositoryImpl;
 import com.axel.user.infrastructure.security.JWTRepositoryImpl;
@@ -16,38 +16,38 @@ import org.springframework.kafka.core.KafkaAdmin;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TokenConsumer {
+public class SubjectTokenConsumer {
     //Dependency injection
-    private final ProfileProducer profileProducer;
+    private final SubjectProfileProducer subjectProfileProducer;
     private final UserRepositoryImpl userRepository;
     private final JWTRepositoryImpl jwtRepository;
     private final JpaProfileRepository jpaProfileRepository;
 
     @Bean
-    public KafkaAdmin.NewTopics createUserTopics() {
+    public KafkaAdmin.NewTopics createSubjectTopics() {
         return new KafkaAdmin.NewTopics(
-                new NewTopic("petition-idProfile-year", 1, (short) 1)
+                new NewTopic("petition-idProfile-subject", 1, (short) 1)
         );
     }
 
-    @KafkaListener(topics = "petition-idProfile-year", groupId = "dynamic-group")
-    public void listenYears(String message) {
+    @KafkaListener(topics = "petition-idProfile-subject", groupId = "dynamic2-group")
+    public void listenSubjects(String message) {
         System.out.println("Received in User Service: " + message);
     }
 
     //Constructor
-    public TokenConsumer(ProfileProducer profileProducer,
-                         UserRepositoryImpl userRepository,
-                         JWTRepositoryImpl jwtRepository,
-                         JpaProfileRepository jpaProfileRepository) {
-        this.profileProducer = profileProducer;
+    public SubjectTokenConsumer(SubjectProfileProducer subjectProfileProducer,
+                             UserRepositoryImpl userRepository,
+                             JWTRepositoryImpl jwtRepository,
+                             JpaProfileRepository jpaProfileRepository) {
+        this.subjectProfileProducer = subjectProfileProducer;
         this.userRepository = userRepository;
         this.jwtRepository = jwtRepository;
         this.jpaProfileRepository = jpaProfileRepository;
     }
 
-    //Listen to topic "petition-idProfile-year", only one consumer from this group processes the message
-    @KafkaListener(topics = "petition-idProfile-year", groupId = "year-group")
+    //Listen to topic "petition-idProfile-subject", only one consumer from this group processes the message
+    @KafkaListener(topics = "petition-idProfile-subject", groupId = "subject-group")
     public void processToken(ConsumerRecord<String, String> record) {
         //extract data to message
         String token = record.value();
@@ -58,7 +58,7 @@ public class TokenConsumer {
         Header correlationIdHeader = headers.lastHeader("kafka_correlationId");
 
         if (correlationIdHeader == null) {
-            throw new InfrastructureException("No hay id de correlación en el mensaje recivido");
+            throw new InfrastructureException("No hay id de correlación en el mensaje recibido");
         }
         String correlationId = new String(correlationIdHeader.value());
 
@@ -87,6 +87,6 @@ public class TokenConsumer {
         }
 
         //return response with idProfile
-        profileProducer.sendProfileId(token, idProfile, correlationId);
+        subjectProfileProducer.sendProfileId(token, idProfile, correlationId);
     }
 }

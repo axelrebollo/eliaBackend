@@ -5,7 +5,7 @@ import com.axel.notebook.application.DTOs.YearResponse;
 import com.axel.notebook.application.exceptions.ApplicationException;
 import com.axel.notebook.application.repositories.IYearRepository;
 import com.axel.notebook.application.services.IManageYearUseCase;
-import com.axel.notebook.application.services.IYearProducer;
+import com.axel.notebook.application.services.producers.IYearProducer;
 import com.axel.notebook.domain.services.YearService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +13,6 @@ import java.util.List;
 
 @Service
 public class ManageYearUseCaseImpl implements IManageYearUseCase {
-
     //Dependency injection
     private IYearRepository yearRepository;
     private IYearProducer yearProducer;
@@ -21,7 +20,9 @@ public class ManageYearUseCaseImpl implements IManageYearUseCase {
 
     //Constructor
     @Autowired
-    public ManageYearUseCaseImpl(IYearRepository yearRepository, IYearProducer yearProducer, YearService yearService) {
+    public ManageYearUseCaseImpl(IYearRepository yearRepository,
+                                 IYearProducer yearProducer,
+                                 YearService yearService) {
         this.yearRepository = yearRepository;
         this.yearProducer = yearProducer;
         this.yearService = yearService;

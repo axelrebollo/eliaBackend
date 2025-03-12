@@ -1,0 +1,19 @@
+package com.axel.notebook.application.repositories;
+
+import com.axel.notebook.domain.entities.Subject;
+
+import java.util.List;
+
+public interface ISubjectRepository {
+    //find all Subjects for user and check that this Subject not exists
+    public Boolean existSubjectForUser(String nameSubject, int idProfile);
+
+    //update Subject that user are created
+    public Subject updateSubject(Subject subject);
+
+    //get all Subjects that one user are created
+    public List<String> getAllSubjectsForUser(int idProfile);
+
+    //delete Subjects that user are created
+    public void deleteSubject(int idUser, int idSubject);
+}
