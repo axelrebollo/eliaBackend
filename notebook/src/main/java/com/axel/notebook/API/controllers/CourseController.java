@@ -1,5 +1,9 @@
 package com.axel.notebook.API.controllers;
 
+import com.axel.notebook.application.DTOs.CourseResponse;
+import com.axel.notebook.application.services.IManageCourseUseCase;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -8,17 +12,27 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "http://localhost:3000")
 public class CourseController {
 
-    //endpoints
-    @PostMapping("/addCourse")
-    public ResponseEntity<?> addCourse() {
-        //TODO
-        return null;
+    private final IManageCourseUseCase manageCourseUseCase;
+
+    @Autowired
+    public CourseController(final IManageCourseUseCase manageCourseUseCase) {
+        this.manageCourseUseCase = manageCourseUseCase;
     }
 
-    @GetMapping("/getCourse")
-    public ResponseEntity<?> getCourse() {
-        //TODO
-        return null;
+    //endpoints
+
+    //add course into year for one teacher
+    @PostMapping("/addCourse")
+    public ResponseEntity<?> addCourse(@RequestParam String token, @RequestParam String nameCourse, @RequestParam String nameYear) {
+        CourseResponse courseResponse = manageCourseUseCase.addCourseUseCase(token, nameCourse, nameYear);
+        return new ResponseEntity<>(courseResponse, HttpStatus.OK);
+    }
+
+    //get all courses for one teacher
+    @GetMapping("/getCourses")
+    public ResponseEntity<?> getCourse(@RequestParam String token, @RequestParam String nameCourse) {
+        CourseResponse courseResponse = manageCourseUseCase.getAllCoursesUseCase(token, nameCourse);
+        return new ResponseEntity<>(courseResponse, HttpStatus.OK);
     }
 
     @PutMapping("/updateCourse")
@@ -33,7 +47,7 @@ public class CourseController {
         return null;
     }
 
-    @DeleteMapping("/deleteYear")
+    @DeleteMapping("/deleteCourse")
     public ResponseEntity<?> deleteCourse() {
         //TODO
         return null;
