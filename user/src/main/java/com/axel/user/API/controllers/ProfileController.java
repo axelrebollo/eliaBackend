@@ -26,26 +26,14 @@ public class ProfileController {
     //Endpoints
     @GetMapping("/getProfile")
     public ResponseEntity<?> getProfile(@RequestParam String token) {
-        try{
-            ProfileResponse profileResponse = manageProfileUserCase.getProfile(token);
-            return new ResponseEntity<>(profileResponse, HttpStatus.OK);
-        }
-        catch(ApplicationException e){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of("Error", e.getMessage(), "status", HttpStatus.UNAUTHORIZED.value()));
-        }
+        ProfileResponse profileResponse = manageProfileUserCase.getProfile(token);
+        return new ResponseEntity<>(profileResponse, HttpStatus.OK);
     }
 
     @PostMapping("updateProfile")
     public ResponseEntity<?> updateProfile(@RequestParam String token, @RequestParam String name,
                                            @RequestParam String surname1, @RequestParam String surname2) {
-        try{
-            ProfileResponse profileResponse = manageProfileUserCase.updateProfile(token, name, surname1,surname2);
-            return new ResponseEntity<>(profileResponse, HttpStatus.OK);
-        }
-        catch(ApplicationException e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("Error", e.getMessage(), "status", HttpStatus.INTERNAL_SERVER_ERROR.value()));
-        }
+        ProfileResponse profileResponse = manageProfileUserCase.updateProfile(token, name, surname1,surname2);
+        return new ResponseEntity<>(profileResponse, HttpStatus.OK);
     }
 }

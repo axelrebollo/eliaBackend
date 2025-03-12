@@ -1,13 +1,11 @@
 package com.axel.notebook.API.controllers;
 
 import com.axel.notebook.application.DTOs.SubjectResponse;
-import com.axel.notebook.application.exceptions.ApplicationException;
 import com.axel.notebook.application.services.IManageSubjectUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/subjects")
@@ -27,27 +25,15 @@ public class SubjectController {
     //create subject
     @PostMapping("/addSubject")
     public ResponseEntity<?> addSubject(@RequestParam String token, @RequestParam String nameSubject) {
-        try{
-            SubjectResponse subjectResponse = manageSubjectUseCase.addSubjectUseCase(token, nameSubject);
-            return new ResponseEntity<>(subjectResponse, HttpStatus.OK);
-        }
-        catch(ApplicationException e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("Error", e.getMessage(), "status", HttpStatus.INTERNAL_SERVER_ERROR.value()));
-        }
+        SubjectResponse subjectResponse = manageSubjectUseCase.addSubjectUseCase(token, nameSubject);
+        return new ResponseEntity<>(subjectResponse, HttpStatus.OK);
     }
 
     //get all subjects
     @GetMapping("/getSubjects")
     public ResponseEntity<?> getSubject(@RequestParam String token) {
-        try{
-            SubjectResponse subjectResponse = manageSubjectUseCase.getAllSubjectsFromTokenUseCase(token);
-            return new ResponseEntity<>(subjectResponse, HttpStatus.OK);
-        }
-        catch(ApplicationException e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("Error", e.getMessage(), "status", HttpStatus.INTERNAL_SERVER_ERROR.value()));
-        }
+        SubjectResponse subjectResponse = manageSubjectUseCase.getAllSubjectsFromTokenUseCase(token);
+        return new ResponseEntity<>(subjectResponse, HttpStatus.OK);
     }
 
     @PutMapping("/updateSubject")

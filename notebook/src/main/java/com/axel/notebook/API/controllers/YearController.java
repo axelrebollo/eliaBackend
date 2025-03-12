@@ -1,13 +1,11 @@
 package com.axel.notebook.API.controllers;
 
 import com.axel.notebook.application.DTOs.YearResponse;
-import com.axel.notebook.application.exceptions.ApplicationException;
 import com.axel.notebook.application.services.IManageYearUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/years")
@@ -28,28 +26,16 @@ public class YearController {
     //create year
     @PostMapping("/addYear")
     public ResponseEntity<?> addYear(@RequestParam String token, @RequestParam String nameYear) {
-        try{
-            YearResponse yearResponse = manageYearUseCase.addYearUseCase(token, nameYear);
-            return new ResponseEntity<>(yearResponse, HttpStatus.OK);
-        }
-        catch(ApplicationException e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("Error", e.getMessage(), "status", HttpStatus.INTERNAL_SERVER_ERROR.value()));
-        }
+        YearResponse yearResponse = manageYearUseCase.addYearUseCase(token, nameYear);
+        return new ResponseEntity<>(yearResponse, HttpStatus.OK);
     }
 
     //get all years
     @GetMapping("/getYears")
     public ResponseEntity<?> getYears(@RequestParam String token) {
         //get all years
-        try{
-            YearResponse yearResponse = manageYearUseCase.getAllYearsFromTokenUseCase(token);
-            return new ResponseEntity<>(yearResponse, HttpStatus.OK);
-        }
-        catch(ApplicationException e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("Error", e.getMessage(), "status", HttpStatus.INTERNAL_SERVER_ERROR.value()));
-        }
+        YearResponse yearResponse = manageYearUseCase.getAllYearsFromTokenUseCase(token);
+        return new ResponseEntity<>(yearResponse, HttpStatus.OK);
     }
 
     //update year
