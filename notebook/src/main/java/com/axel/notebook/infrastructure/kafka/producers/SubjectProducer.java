@@ -26,7 +26,7 @@ public class SubjectProducer implements ISubjectProducer {
     //Petition with token about idProfile
     public int sendToken(String token) {
         //topic
-        String topic = "petition-idProfile-Subject";
+        String topic = "petition-idProfile-subject";
         //Number unique id
         String correlationId = UUID.randomUUID().toString();
         //Create a promise to wawit response

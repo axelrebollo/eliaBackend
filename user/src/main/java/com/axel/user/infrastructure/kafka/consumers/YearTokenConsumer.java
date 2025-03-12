@@ -24,15 +24,10 @@ public class YearTokenConsumer {
     private final JpaProfileRepository jpaProfileRepository;
 
     @Bean
-    public KafkaAdmin.NewTopics createYearTopics() {    //antiguo nombre createUserTopics
+    public KafkaAdmin.NewTopics createYearTopics() {
         return new KafkaAdmin.NewTopics(
                 new NewTopic("petition-idProfile-year", 1, (short) 1)
         );
-    }
-
-    @KafkaListener(topics = "petition-idProfile-year", groupId = "dynamic-group")
-    public void listenYears(String message) {
-        System.out.println("Received in User Service: " + message);
     }
 
     //Constructor

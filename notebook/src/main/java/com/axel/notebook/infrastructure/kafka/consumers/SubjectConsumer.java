@@ -18,11 +18,6 @@ public class SubjectConsumer implements ISubjectConsumer {
     //Map to save pending requests
     private static final ConcurrentMap<String, CompletableFuture<Integer>> pendingRequests = new ConcurrentHashMap<>();
 
-    @KafkaListener(topics = "subjects", groupId = "dynamic-group")
-    public void listenYears(String message) {
-        System.out.println("Received in Notebook Service: " + message);
-    }
-
     @Bean
     public KafkaAdmin.NewTopics createSubjectTopics() {
         return new KafkaAdmin.NewTopics(

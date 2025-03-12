@@ -30,11 +30,6 @@ public class SubjectTokenConsumer {
         );
     }
 
-    @KafkaListener(topics = "petition-idProfile-subject", groupId = "dynamic2-group")
-    public void listenSubjects(String message) {
-        System.out.println("Received in User Service: " + message);
-    }
-
     //Constructor
     public SubjectTokenConsumer(SubjectProfileProducer subjectProfileProducer,
                              UserRepositoryImpl userRepository,
