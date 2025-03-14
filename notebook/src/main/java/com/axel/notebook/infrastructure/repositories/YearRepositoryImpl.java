@@ -1,5 +1,6 @@
 package com.axel.notebook.infrastructure.repositories;
 
+import com.axel.notebook.application.exceptions.ApplicationException;
 import com.axel.notebook.domain.entities.Year;
 import com.axel.notebook.application.repositories.IYearRepository;
 import com.axel.notebook.infrastructure.JpaEntities.YearEntity;
@@ -58,6 +59,21 @@ public class YearRepositoryImpl implements IYearRepository {
         }
 
         return years;
+    }
+
+    public int getYearForUser(String nameYear, int idProfile) {
+        List<YearEntity> years = jpaYearRepository.findByIdProfile(idProfile);
+
+        if(years == null) {
+            throw new ApplicationException("no hay años para este usuario");
+        }
+
+        for (YearEntity yearEntity : years) {
+            if(yearEntity.getNameYear().equals(nameYear)) {
+                return yearEntity.getIdYear();
+            }
+        }
+        return 0;
     }
 
     //delete year that user are created

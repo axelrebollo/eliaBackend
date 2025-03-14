@@ -26,7 +26,7 @@ public class YearTokenConsumer {
     @Bean
     public KafkaAdmin.NewTopics createYearTopics() {
         return new KafkaAdmin.NewTopics(
-                new NewTopic("petition-idProfile-year", 1, (short) 1)
+            new NewTopic("petition-idProfile-year", 1, (short) 1)
         );
     }
 

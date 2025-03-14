@@ -30,8 +30,8 @@ public class CourseController {
 
     //get all courses for one teacher
     @GetMapping("/getCourses")
-    public ResponseEntity<?> getCourse(@RequestParam String token, @RequestParam String nameCourse) {
-        CourseResponse courseResponse = manageCourseUseCase.getAllCoursesUseCase(token, nameCourse);
+    public ResponseEntity<?> getCourse(@RequestParam String token, @RequestParam String nameYear) {
+        CourseResponse courseResponse = manageCourseUseCase.getAllCoursesUseCase(token, nameYear);
         return new ResponseEntity<>(courseResponse, HttpStatus.OK);
     }
 
