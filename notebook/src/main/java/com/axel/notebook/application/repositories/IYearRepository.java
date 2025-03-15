@@ -12,10 +12,10 @@ public interface IYearRepository {
     public Year updateYear(Year year);
 
     //get all years that one user are created
-    public List<String> getAllYearsForUser(int idProfile);
+    public List<String> getAllYearsNameForUser(int idProfile);
 
     //get id year for one user and one name year
-    public int getIdYear(int idProfile, String nameYear);
+    public int getIdYearForUser(int idProfile, String nameYear);
 
     //delete year that user are created
     public void deleteYear(int idUser, int idYear);

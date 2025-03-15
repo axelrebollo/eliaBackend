@@ -1,5 +1,9 @@
 package com.axel.notebook.API.controllers;
 
+import com.axel.notebook.application.DTOs.GroupResponse;
+import com.axel.notebook.application.services.IManageGroupUseCase;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -7,6 +11,13 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/groups")
 @CrossOrigin(origins = "http://localhost:3000")
 public class GroupController {
+
+    private final IManageGroupUseCase manageGroupUseCase;
+
+    @Autowired
+    public GroupController(final IManageGroupUseCase manageGroupUseCase) {
+        this.manageGroupUseCase = manageGroupUseCase;
+    }
 
     //endpoints
     @PostMapping("/addGroup")
@@ -16,9 +27,12 @@ public class GroupController {
     }
 
     @GetMapping("/getGroup")
-    public ResponseEntity<?> getGroup() {
-        //TODO
-        return null;
+    public ResponseEntity<?> getGroups(@RequestParam String token,
+                                       @RequestParam String nameCourse,
+                                       @RequestParam String nameSubject,
+                                       @RequestParam String nameYear) {
+        GroupResponse groupResponse = manageGroupUseCase.getAllGroupsUseCase(token, nameCourse, nameSubject, nameYear);
+        return new ResponseEntity<>(groupResponse, HttpStatus.OK);
     }
 
     @PutMapping("/updateGroup")

@@ -93,7 +93,7 @@ public class ManageYearUseCaseImpl implements IManageYearUseCase {
         if(idProfile <= 0){
             throw new ApplicationException("El usuario no existe, no se ha encontrado el perfil.");
         }
-        return yearRepository.getAllYearsForUser(idProfile);
+        return yearRepository.getAllYearsNameForUser(idProfile);
     }
 
     //update name year

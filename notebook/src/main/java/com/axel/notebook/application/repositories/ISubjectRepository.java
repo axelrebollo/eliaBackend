@@ -11,8 +11,14 @@ public interface ISubjectRepository {
     //update Subject that user are created
     public Subject updateSubject(Subject subject);
 
-    //get all Subjects that one user are created
-    public List<String> getAllSubjectsForUser(int idProfile);
+    //get all names Subjects that one user are created
+    public List<String> getAllSubjectsNameForUser(int idProfile);
+
+    //get all subjects that onw user are created
+    public List<Subject> getAllSubjectsForUser(int idProfile);
+
+    //find idSubject for idProfile and nameSubject
+    public int getIdSubjectForUser(int idProfile, String nameSubject);
 
     //delete Subjects that user are created
     public void deleteSubject(int idUser, int idSubject);

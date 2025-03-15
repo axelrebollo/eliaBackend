@@ -44,8 +44,8 @@ public class SubjectRepositoryImpl implements ISubjectRepository {
         return subjectAdapter.toApplication(subjectEntity);
     }
 
-    //get all Subjects for user
-    public List<String> getAllSubjectsForUser(int idProfile) {
+    //get all names Subjects for user
+    public List<String> getAllSubjectsNameForUser(int idProfile) {
         List<SubjectEntity> subjectEntities = jpaSubjectRepository.findByIdProfile(idProfile);
         if(subjectEntities == null) {
             throw new InfrastructureException("No se han encontrado asignaturas.");
@@ -57,6 +57,39 @@ public class SubjectRepositoryImpl implements ISubjectRepository {
         }
 
         return subjects;
+    }
+
+    //get all Subjects for user
+    public List<Subject> getAllSubjectsForUser(int idProfile){
+        List<SubjectEntity> subjectEntities = jpaSubjectRepository.findByIdProfile(idProfile);
+        if(subjectEntities == null) {
+            throw new InfrastructureException("No se han encontrado asignaturas.");
+        }
+        List<Subject> subjects = new ArrayList<>();
+
+        for (SubjectEntity subjectEntity : subjectEntities) {
+            Subject subject = subjectAdapter.toApplication(subjectEntity);
+            subjects.add(subject);
+        }
+        return subjects;
+    }
+
+    //find idSubject for idProfile and nameSubject
+    public int getIdSubjectForUser(int idProfile, String nameSubject) {
+        if(existSubjectForUser(nameSubject, idProfile)){
+            List<Subject> subjects = getAllSubjectsForUser(idProfile);
+            if(subjects.isEmpty()){
+                return 0;
+            }
+            else{
+                for(Subject subject : subjects){
+                    if(subject.getNameSubject().equals(nameSubject)){
+                        return subject.getIdSubject();
+                    }
+                }
+            }
+        }
+        return 0;
     }
 
     //delete Subject that user are created

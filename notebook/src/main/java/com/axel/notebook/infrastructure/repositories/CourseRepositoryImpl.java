@@ -35,7 +35,7 @@ public class CourseRepositoryImpl implements ICourseRepository {
         List<String> courses = new ArrayList<>();
 
         //get idYear
-        int idYear = yearRepository.getYearForUser(nameYear, idProfile);
+        int idYear = yearRepository.getIdYearForUser(idProfile, nameYear);
 
         //if user not created years, not contains courses
         if(idYear <= 0){
@@ -53,6 +53,33 @@ public class CourseRepositoryImpl implements ICourseRepository {
             }
         }
         return courses;
+    }
+
+    public boolean existCourseForUser(int idYear, String nameCourse){
+        List<CourseEntity> coursesEntities = jpaCourseRepository.findAllCoursesByIdYear(idYear);
+        for(CourseEntity course : coursesEntities){
+            if(course.getNameCourse().equals(nameCourse)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public int getIdCourseForUserYear(int idYear, String nameCourse){
+        if(existCourseForUser(idYear, nameCourse)){
+            List<CourseEntity> courses = jpaCourseRepository.findAllCoursesByIdYear(idYear);
+            if(courses.isEmpty()){
+                return 0;
+            }
+            else{
+                for(CourseEntity course : courses){
+                    if(course.getNameCourse().equals(nameCourse)){
+                        return course.getIdCourse();
+                    }
+                }
+            }
+        }
+        return 0;
     }
 
     public Course updateCourse(Course course){

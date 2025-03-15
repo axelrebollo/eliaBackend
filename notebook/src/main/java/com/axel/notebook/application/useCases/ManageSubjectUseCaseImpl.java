@@ -93,7 +93,7 @@ public class ManageSubjectUseCaseImpl implements IManageSubjectUseCase {
         if(idProfile <= 0){
             throw new ApplicationException("El usuario no existe, no se ha encontrado el perfil.");
         }
-        return subjectRepository.getAllSubjectsForUser(idProfile);
+        return subjectRepository.getAllSubjectsNameForUser(idProfile);
     }
 
     //update name subject

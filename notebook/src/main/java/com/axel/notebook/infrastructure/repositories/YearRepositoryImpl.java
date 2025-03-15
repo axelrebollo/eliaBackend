@@ -46,7 +46,7 @@ public class YearRepositoryImpl implements IYearRepository {
     }
 
     //get all years for user
-    public List<String> getAllYearsForUser(int idProfile) {
+    public List<String> getAllYearsNameForUser(int idProfile) {
         List<YearEntity> yearEntities = jpaYearRepository.findByIdProfile(idProfile);
         if(yearEntities == null) {
             throw new InfrastructureException("No se han encontrado años.");
@@ -60,30 +60,33 @@ public class YearRepositoryImpl implements IYearRepository {
         return years;
     }
 
-    public int getYearForUser(String nameYear, int idProfile) {
-        List<YearEntity> years = jpaYearRepository.findByIdProfile(idProfile);
-
-        if(years == null) {
-            throw new ApplicationException("no hay años para este usuario");
+    //get all Years for user
+    public List<Year> getAllYearsForUser(int idProfile) {
+        List<YearEntity> yearEntities = jpaYearRepository.findByIdProfile(idProfile);
+        if(yearEntities == null) {
+            throw new InfrastructureException("No se han encontrado años.");
         }
+        List<Year> years = new ArrayList<>();
 
-        for (YearEntity yearEntity : years) {
-            if(yearEntity.getNameYear().equals(nameYear)) {
-                return yearEntity.getIdYear();
-            }
+        for (YearEntity yearEntity : yearEntities) {
+            Year year = yearAdapter.toApplication(yearEntity);
+            years.add(year);
         }
-        return 0;
+        return years;
     }
 
-    public int getIdYear(int idProfile, String nameYear){
-        List<YearEntity> years = jpaYearRepository.findByIdProfile(idProfile);
-
-        if(years == null) {
-            return 0;
-        }
-        for (YearEntity yearEntity : years) {
-            if(yearEntity.getNameYear().equals(nameYear)) {
-                return yearEntity.getIdYear();
+    public int getIdYearForUser(int idProfile,String nameYear) {
+        if(existYearForUser(nameYear,idProfile)) {
+            List<Year> years = getAllYearsForUser(idProfile);
+            if(years.isEmpty()) {
+                return 0;
+            }
+            else {
+                for (Year year : years) {
+                    if (year.getNameYear().equals(nameYear)) {
+                        return year.getIdYear();
+                    }
+                }
             }
         }
         return 0;

@@ -71,6 +71,9 @@ public class ManageCourseUseCase implements IManageCourseUseCase {
             throw new ApplicationException("El nombre del año es nulo");
         }
 
+        //FIND ID YEAR in this place(to change)
+        //TODO
+
         return courseRepository.getAllCoursesForUser(idProfile, nameYear);
     }
 
@@ -103,7 +106,7 @@ public class ManageCourseUseCase implements IManageCourseUseCase {
         }
 
         //find for name year to id year
-        int idYear = yearRepository.getIdYear(idProfile, nameYear);
+        int idYear = yearRepository.getIdYearForUser(idProfile, nameYear);
 
         if(idYear <= 0){
             throw new ApplicationException("Problema en la base de datos con el id del año. No se han encontrado años.");
@@ -114,6 +117,9 @@ public class ManageCourseUseCase implements IManageCourseUseCase {
 
         //add course
         try{
+            if(courseRepository.existCourseForUser(idYear, nameCourse)){
+                throw new ApplicationException("El curso existe en el sistema.");
+            }
             newCourse = courseRepository.updateCourse(newCourse);
         }
         catch(ApplicationException e){

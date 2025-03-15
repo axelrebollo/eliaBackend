@@ -23,14 +23,16 @@ public class CourseController {
 
     //add course into year for one teacher
     @PostMapping("/addCourse")
-    public ResponseEntity<?> addCourse(@RequestParam String token, @RequestParam String nameCourse, @RequestParam String nameYear) {
+    public ResponseEntity<?> addCourse(@RequestParam String token,
+                                       @RequestParam String nameCourse,
+                                       @RequestParam String nameYear) {
         CourseResponse courseResponse = manageCourseUseCase.addCourseUseCase(token, nameCourse, nameYear);
         return new ResponseEntity<>(courseResponse, HttpStatus.OK);
     }
 
     //get all courses for one teacher
     @GetMapping("/getCourses")
-    public ResponseEntity<?> getCourse(@RequestParam String token, @RequestParam String nameYear) {
+    public ResponseEntity<?> getCourses(@RequestParam String token, @RequestParam String nameYear) {
         CourseResponse courseResponse = manageCourseUseCase.getAllCoursesUseCase(token, nameYear);
         return new ResponseEntity<>(courseResponse, HttpStatus.OK);
     }
