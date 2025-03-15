@@ -25,15 +25,14 @@ public class YearRepositoryImpl implements IYearRepository {
     }
 
     //find all years for user and check that this year not exists
-    public Boolean existYearForUser(String name, int idProfile) {
+    public boolean existYearForUser(String name, int idProfile) {
         List<YearEntity> yearEntities = jpaYearRepository.findByIdProfile(idProfile);
-        Boolean exist = false;
         for (YearEntity yearEntity : yearEntities) {
             if(yearEntity.getNameYear().equals(name)) {
-                exist = true;
+                return true;
             }
         }
-        return exist;
+        return false;
     }
 
     //update year that user are created
@@ -68,6 +67,20 @@ public class YearRepositoryImpl implements IYearRepository {
             throw new ApplicationException("no hay años para este usuario");
         }
 
+        for (YearEntity yearEntity : years) {
+            if(yearEntity.getNameYear().equals(nameYear)) {
+                return yearEntity.getIdYear();
+            }
+        }
+        return 0;
+    }
+
+    public int getIdYear(int idProfile, String nameYear){
+        List<YearEntity> years = jpaYearRepository.findByIdProfile(idProfile);
+
+        if(years == null) {
+            return 0;
+        }
         for (YearEntity yearEntity : years) {
             if(yearEntity.getNameYear().equals(nameYear)) {
                 return yearEntity.getIdYear();

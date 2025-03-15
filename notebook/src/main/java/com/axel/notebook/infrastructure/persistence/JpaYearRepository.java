@@ -18,4 +18,7 @@ public interface JpaYearRepository extends JpaRepository<YearEntity, Integer> {
 
     //Delete year
     public void deleteById(Integer idYear);
+
+    //find by id
+    public YearEntity findByIdYear(int idYear);
 }

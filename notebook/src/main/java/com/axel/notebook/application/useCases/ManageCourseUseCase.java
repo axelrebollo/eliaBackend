@@ -3,8 +3,10 @@ package com.axel.notebook.application.useCases;
 import com.axel.notebook.application.DTOs.CourseResponse;
 import com.axel.notebook.application.exceptions.ApplicationException;
 import com.axel.notebook.application.repositories.ICourseRepository;
+import com.axel.notebook.application.repositories.IYearRepository;
 import com.axel.notebook.application.services.IManageCourseUseCase;
 import com.axel.notebook.application.services.producers.ICourseProducer;
+import com.axel.notebook.domain.entities.Course;
 import com.axel.notebook.domain.services.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,15 +19,18 @@ public class ManageCourseUseCase implements IManageCourseUseCase {
     ICourseProducer courseProducer;
     ICourseRepository courseRepository;
     CourseService courseService;
+    IYearRepository yearRepository;
 
     //Constructor
     @Autowired
     public ManageCourseUseCase(ICourseProducer courseProducer,
                                ICourseRepository courseRepository,
-                               CourseService courseService) {
+                               CourseService courseService,
+                               IYearRepository yearRepository) {
         this.courseProducer = courseProducer;
         this.courseRepository = courseRepository;
         this.courseService = courseService;
+        this.yearRepository = yearRepository;
     }
 
     //get all courses with token from one year
@@ -71,7 +76,57 @@ public class ManageCourseUseCase implements IManageCourseUseCase {
 
     //create a new course into year selected
     public CourseResponse addCourseUseCase(String token, String nameCourse, String nameYear){
-        //TODO
-        return null;
+        //check data
+        if(token == null || token.isEmpty()){
+            throw new ApplicationException("El token está vacío o es nulo");
+        }
+
+        if(nameCourse == null || nameCourse.isEmpty()){
+            throw new ApplicationException("El nombre del curso está vacío.");
+        }
+
+        if(nameYear == null || nameYear.isEmpty()){
+            throw new ApplicationException("Se debe seleccionar un año.");
+        }
+
+        //check token and extract idProfile
+        int idProfile = getProfileId(token);
+
+        //Check if user exist into system
+        if(idProfile <= 0){
+            throw new ApplicationException("No se ha encontrado el perfil del usuario, el usuario no existe");
+        }
+
+        //Find all years for user and check if exists year into system for this user
+        if(!yearRepository.existYearForUser(nameYear, idProfile)){
+            throw new ApplicationException("El año seleccionado no existe para este usuario.");
+        }
+
+        //find for name year to id year
+        int idYear = yearRepository.getIdYear(idProfile, nameYear);
+
+        if(idYear <= 0){
+            throw new ApplicationException("Problema en la base de datos con el id del año. No se han encontrado años.");
+        }
+
+        //create new course
+        Course newCourse = courseService.addCourse(nameCourse, idProfile, idYear);
+
+        //add course
+        try{
+            newCourse = courseRepository.updateCourse(newCourse);
+        }
+        catch(ApplicationException e){
+            throw new ApplicationException("Error al crear el curso.");
+        }
+
+        List<String> courseToYear = null;
+
+        //retornar la lista de cursos
+        if(newCourse != null){
+            courseToYear = getAllCoursesForUser(idProfile, nameYear);
+        }
+
+        return new CourseResponse(courseToYear);
     }
 }

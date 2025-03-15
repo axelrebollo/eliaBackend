@@ -30,6 +30,7 @@ public class ManageYearUseCaseImpl implements IManageYearUseCase {
 
     //create a new year
     public YearResponse addYearUseCase(String token, String nameYear) {
+        //check data
         if(token == null || token.isEmpty()){
             throw new ApplicationException("Ha habido un problema con el registro de usuario.");
         }
@@ -41,7 +42,7 @@ public class ManageYearUseCaseImpl implements IManageYearUseCase {
         //Check if token is correct and returns decoded
         int idProfile = getProfileId(token);
 
-        //Check if year exist into system for this user
+        //Check if user exist into system
         if(idProfile <= 0){
             throw new ApplicationException("No se ha encontrado el perfil del usuario, el usuario no existe");
         }
