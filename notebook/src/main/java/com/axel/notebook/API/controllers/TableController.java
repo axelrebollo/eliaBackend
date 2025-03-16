@@ -22,13 +22,17 @@ public class TableController {
 
     //endpoints
     @PostMapping("/addTable")
-    public ResponseEntity<?> addTable(@RequestParam String token, @RequestParam String nameTable, @RequestParam String nameGroup, @RequestParam String nameCourse, @RequestParam String nameSubject, @RequestParam String nameYear) {
+    public ResponseEntity<?> addTable(@RequestParam String token, @RequestParam String nameTable,
+                                      @RequestParam String nameGroup, @RequestParam String nameCourse,
+                                      @RequestParam String nameSubject, @RequestParam String nameYear) {
         TableResponse tableResponse = manageTableUseCase.addTableUseCase(token, nameTable, nameGroup, nameCourse, nameSubject, nameYear);
         return new ResponseEntity<>(tableResponse, HttpStatus.OK);
     }
 
     @GetMapping("/getTables")
-    public ResponseEntity<?> getTables(@RequestParam String token, @RequestParam String nameGroup, @RequestParam String nameCourse, @RequestParam String nameSubject, @RequestParam String nameYear) {
+    public ResponseEntity<?> getTables(@RequestParam String token, @RequestParam String nameGroup,
+                                       @RequestParam String nameCourse, @RequestParam String nameSubject,
+                                       @RequestParam String nameYear) {
         TableResponse tableResponse = manageTableUseCase.getAllTablesFromTokenUseCase(token, nameGroup, nameCourse, nameSubject, nameYear);
         return new ResponseEntity<>(tableResponse, HttpStatus.OK);
     }

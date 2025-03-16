@@ -1,7 +1,9 @@
 package com.axel.notebook.infrastructure.repositories;
 
 import com.axel.notebook.application.repositories.ITableRepository;
+import com.axel.notebook.domain.entities.Table;
 import com.axel.notebook.infrastructure.JpaEntities.TableEntity;
+import com.axel.notebook.infrastructure.adapters.TableAdapterInfrastructure;
 import com.axel.notebook.infrastructure.exceptions.InfrastructureException;
 import com.axel.notebook.infrastructure.persistence.JpaTableRepository;
 import org.springframework.stereotype.Repository;
@@ -13,10 +15,12 @@ import java.util.List;
 public class TableRepositoryImpl implements ITableRepository {
     //Dependency injection
     private final JpaTableRepository jpaTableRepository;
+    private final TableAdapterInfrastructure tableAdapter;
 
     //Constructor
-    public TableRepositoryImpl(JpaTableRepository jpaTableRepository) {
+    public TableRepositoryImpl(JpaTableRepository jpaTableRepository, TableAdapterInfrastructure tableAdapter) {
         this.jpaTableRepository = jpaTableRepository;
+        this.tableAdapter = tableAdapter;
     }
 
     public List<String> getAllTablesForNameSubject(int idProfile, int idGroup){
@@ -34,5 +38,14 @@ public class TableRepositoryImpl implements ITableRepository {
             }
         }
         return tables;
+    }
+
+    public Table updateTable(Table table){
+        if(table == null){
+            throw new InfrastructureException("La  tabla para guardar es nula o vacía.");
+        }
+        TableEntity tableEntity = tableAdapter.fromApplicationWithoutId(table);
+        tableEntity = jpaTableRepository.save(tableEntity);
+        return tableAdapter.toApplication(tableEntity);
     }
 }

@@ -10,4 +10,8 @@ import java.util.List;
 public interface JpaTableRepository extends JpaRepository<TableEntity, Integer> {
     @Query(value = "SELECT * FROM table_entity WHERE table_entity.id_group = :idGroup", nativeQuery = true)
     public List<TableEntity> findAllTablesByIdGroup(int idGroup);
+
+    public TableEntity findById(int idTable);
+
+    public TableEntity save(TableEntity table);
 }

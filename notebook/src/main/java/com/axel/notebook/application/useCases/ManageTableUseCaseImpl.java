@@ -5,6 +5,8 @@ import com.axel.notebook.application.exceptions.ApplicationException;
 import com.axel.notebook.application.repositories.*;
 import com.axel.notebook.application.services.IManageTableUseCase;
 import com.axel.notebook.application.services.producers.ITableProducer;
+import com.axel.notebook.domain.entities.Table;
+import com.axel.notebook.domain.services.TableService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,6 +21,7 @@ public class ManageTableUseCaseImpl implements IManageTableUseCase {
     private final ISubjectRepository subjectRepository;
     private final ITableProducer tableProducer;
     private final ITableRepository tableRepository;
+    private final TableService tableService;
 
     //Constructor
     public ManageTableUseCaseImpl(IGroupRepository groupRepository,
@@ -26,13 +29,15 @@ public class ManageTableUseCaseImpl implements IManageTableUseCase {
                                   IYearRepository yearRepository,
                                   ISubjectRepository subjectRepository,
                                   ITableProducer tableProducer,
-                                  ITableRepository tableRepository) {
+                                  ITableRepository tableRepository,
+                                  TableService tableService) {
         this.groupRepository = groupRepository;
         this.courseRepository = courseRepository;
         this.yearRepository = yearRepository;
         this.subjectRepository = subjectRepository;
         this.tableProducer = tableProducer;
         this.tableRepository = tableRepository;
+        this.tableService = tableService;
     }
 
     public TableResponse getAllTablesFromTokenUseCase(String token, String nameGroup, String nameCourse, String nameSubject, String nameYear){
@@ -86,8 +91,6 @@ public class ManageTableUseCaseImpl implements IManageTableUseCase {
     }
 
     public TableResponse addTableUseCase(String token, String nameTable, String nameGroup, String nameCourse, String nameSubject, String nameYear){
-        //TODO
-        /*
         List<String> tables = new ArrayList<>();
 
         //check data
@@ -116,14 +119,21 @@ public class ManageTableUseCaseImpl implements IManageTableUseCase {
         }
 
         //create table
-
-
+        Table newTable = tableService.addTable(nameTable, idProfile, idGroup);
 
         //save table
+        try{
+            newTable = tableRepository.updateTable(newTable);
+        }
+        catch(ApplicationException e){
+            throw new ApplicationException("Error al crear la tabla.");
+        }
 
         //return response with all tables for this group and user
-        */
-        return null;
+        if(newTable != null){
+            tables = getAllTablesForUser(idProfile, nameGroup, nameCourse, nameSubject, nameYear);
+        }
+        return new TableResponse(tables);
     }
 
     public int getIdGroup(int idProfile, String nameGroup, String nameCourse, String nameSubject, String nameYear){
