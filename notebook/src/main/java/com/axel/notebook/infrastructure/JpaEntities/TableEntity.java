@@ -25,7 +25,7 @@ public class TableEntity {
 
     //Conect with GroupEntity one to one
     @ManyToOne
-    @JoinColumn(name= "idGoup", nullable = false)
+    @JoinColumn(name= "idGroup", nullable = false)
     private GroupEntity group;
 
     //relation with Cells

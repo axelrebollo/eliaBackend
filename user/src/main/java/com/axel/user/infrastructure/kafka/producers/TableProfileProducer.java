@@ -8,18 +8,18 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SubjectProfileProducer {
+public class TableProfileProducer {
     //Dependency injection
     private final KafkaTemplate<String, String> kafkaTemplate;  //used to send messages
 
     //Constructor
-    public SubjectProfileProducer(KafkaTemplate<String, String> kafkaTemplate) {
+    public TableProfileProducer(KafkaTemplate<String, String> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
 
     public void sendProfileId(String token, int profileId, String correlationId){
         //topic
-        String topic = "response-idProfile-subject";
+        String topic = "response-idProfile-table";
 
         //headers
         Headers headers = new RecordHeaders();
@@ -38,4 +38,5 @@ public class SubjectProfileProducer {
         //send to kafka this message
         kafkaTemplate.send(responseRecord);
     }
+
 }
