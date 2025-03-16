@@ -11,4 +11,6 @@ public interface IGroupRepository {
     public boolean existGroup(int idCourse, int idSubject, String nameGroup);
 
     public Group updateGroup(Group newGroup);
+
+    public Group getGroup(int idCourse, int idSubject, String nameGroup);
 }

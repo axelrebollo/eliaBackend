@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "http://localhost:3000")
 public class YearController {
 
-    //Dependency inyection
+    //Dependency injection
     private final IManageYearUseCase manageYearUseCase;
 
     //Constructor

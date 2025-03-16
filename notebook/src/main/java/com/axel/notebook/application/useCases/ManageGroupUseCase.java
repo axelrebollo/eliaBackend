@@ -18,12 +18,12 @@ import java.util.List;
 @Service
 public class ManageGroupUseCase implements IManageGroupUseCase {
     //Dependency injection
-    IGroupProducer groupProducer;
-    ISubjectRepository subjectRepository;
-    IYearRepository yearRepository;
-    ICourseRepository courseRepository;
-    IGroupRepository groupRepository;
-    GroupService groupService;
+    private final IGroupProducer groupProducer; //infrastructure layer
+    private final ISubjectRepository subjectRepository; //infrastructure layer
+    private final IYearRepository yearRepository;   //infrastructure layer
+    private final ICourseRepository courseRepository;   //infrastructure layer
+    private final IGroupRepository groupRepository; //infrastructure layer
+    private final GroupService groupService;    //domain layer
 
     //Constructor
     @Autowired

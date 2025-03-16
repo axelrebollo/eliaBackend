@@ -13,11 +13,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class RegisterUseCaseImpl implements IRegisterUserCase {
-
     //Dependency injection
-    private final IUserRepository userRepository;
-    private final UserService userService;
-    private final IManageProfileUseCase manageProfileUseCase;
+    private final IUserRepository userRepository;   //infrastructure layer
+    private final UserService userService;  //domain layer
+    private final IManageProfileUseCase manageProfileUseCase;   //this layer
 
     //Constructor
     @Autowired

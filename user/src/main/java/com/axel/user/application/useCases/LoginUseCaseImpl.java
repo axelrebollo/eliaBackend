@@ -11,11 +11,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class LoginUseCaseImpl implements ILoginUserCase {
-
     //Dependency injection
-    private final IUserRepository userRepository;
-    private final UserService userService;
-    private final IJWTRepository jwtRepository;
+    private final IUserRepository userRepository;   //infrastructure layer
+    private final UserService userService;  //domain layer
+    private final IJWTRepository jwtRepository; //infrastructure layer
 
     //Constructor
     public LoginUseCaseImpl(IUserRepository userRepository, UserService userService, IJWTRepository jwtRepository) {

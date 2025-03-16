@@ -11,9 +11,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/groups")
 @CrossOrigin(origins = "http://localhost:3000")
 public class GroupController {
-
+    //dependency injection
     private final IManageGroupUseCase manageGroupUseCase;
 
+    //Constructor
     @Autowired
     public GroupController(final IManageGroupUseCase manageGroupUseCase) {
         this.manageGroupUseCase = manageGroupUseCase;

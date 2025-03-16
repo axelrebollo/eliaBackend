@@ -16,8 +16,8 @@ import java.util.List;
 @Repository
 public class CourseRepositoryImpl implements ICourseRepository {
     //Dependency injection
-    YearRepositoryImpl yearRepository;
-    JpaCourseRepository jpaCourseRepository;
+    private final YearRepositoryImpl yearRepository;
+    private final JpaCourseRepository jpaCourseRepository;
     private final CourseAdapterInfrastructure courseAdapter;
 
     @Autowired

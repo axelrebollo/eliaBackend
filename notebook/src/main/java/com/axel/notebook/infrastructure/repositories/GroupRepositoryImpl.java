@@ -14,8 +14,8 @@ import java.util.List;
 @Repository
 public class GroupRepositoryImpl implements IGroupRepository {
     //Dependency injection
-    private JpaGroupRepository jpaGroupRepository;
-    private GroupAdapterInfrastructure groupAdapter;
+    private final JpaGroupRepository jpaGroupRepository;
+    private final GroupAdapterInfrastructure groupAdapter;
 
     //Constructor
     public GroupRepositoryImpl(JpaGroupRepository jpaGroupRepository, GroupAdapterInfrastructure groupAdapter) {
@@ -70,5 +70,22 @@ public class GroupRepositoryImpl implements IGroupRepository {
         GroupEntity groupEntity = groupAdapter.fromApplicationWithoutId(group);
         groupEntity = jpaGroupRepository.save(groupEntity);
         return groupAdapter.toApplication(groupEntity);
+    }
+
+    public Group getGroup(int idCourse, int idSubject, String nameGroup){
+        if(idCourse <= 0 || idSubject <= 0 || nameGroup == null || nameGroup.isEmpty()){
+            throw new InfrastructureException("Algun dato es incompleto o nulo para retornar el grupo");
+        }
+
+        List<GroupEntity> groups;
+        groups = jpaGroupRepository.findAllGroupsBySubjectAndCourse(idSubject, idCourse);
+        if(!groups.isEmpty()){
+            for(GroupEntity group : groups){
+                if(group.getNameGroup().equals(nameGroup)){
+                    return groupAdapter.toApplication(group);
+                }
+            }
+        }
+        return null;
     }
 }

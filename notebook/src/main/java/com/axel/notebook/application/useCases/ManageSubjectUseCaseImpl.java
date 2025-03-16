@@ -14,9 +14,9 @@ import java.util.List;
 @Service
 public class ManageSubjectUseCaseImpl implements IManageSubjectUseCase {
     //Dependency injection
-    private ISubjectRepository subjectRepository;
-    private SubjectService subjectService;
-    private ISubjectProducer subjectProducer;
+    private final ISubjectRepository subjectRepository;   //infrastructure layer
+    private final SubjectService subjectService;  //domain layer
+    private final ISubjectProducer subjectProducer;   //infrastructure layer
 
 
     //Constructor

@@ -14,9 +14,9 @@ import java.util.List;
 @Service
 public class ManageYearUseCaseImpl implements IManageYearUseCase {
     //Dependency injection
-    private IYearRepository yearRepository;
-    private IYearProducer yearProducer;
-    private YearService yearService;
+    private final IYearRepository yearRepository; //infrastructure layer
+    private final IYearProducer yearProducer; //infrastructure layer
+    private final YearService yearService;    //domain layer
 
     //Constructor
     @Autowired

@@ -16,10 +16,10 @@ import java.util.List;
 @Service
 public class ManageCourseUseCase implements IManageCourseUseCase {
     //Dependency injection
-    ICourseProducer courseProducer;
-    ICourseRepository courseRepository;
-    CourseService courseService;
-    IYearRepository yearRepository;
+    private final ICourseProducer courseProducer;   //infrastructure layer
+    private final ICourseRepository courseRepository;   //infrastructure layer
+    private final CourseService courseService;  //domain layer
+    private final IYearRepository yearRepository;   //infrastructure layer
 
     //Constructor
     @Autowired
@@ -70,9 +70,6 @@ public class ManageCourseUseCase implements IManageCourseUseCase {
         if(nameYear.isEmpty()){
             throw new ApplicationException("El nombre del año es nulo");
         }
-
-        //FIND ID YEAR in this place(to change)
-        //TODO
 
         return courseRepository.getAllCoursesForUser(idProfile, nameYear);
     }

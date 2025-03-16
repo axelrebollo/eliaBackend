@@ -11,9 +11,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/courses")
 @CrossOrigin(origins = "http://localhost:3000")
 public class CourseController {
-
+    //dependency injection
     private final IManageCourseUseCase manageCourseUseCase;
 
+    //constructor
     @Autowired
     public CourseController(final IManageCourseUseCase manageCourseUseCase) {
         this.manageCourseUseCase = manageCourseUseCase;

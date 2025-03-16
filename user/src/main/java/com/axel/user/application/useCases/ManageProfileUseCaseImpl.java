@@ -14,12 +14,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ManageProfileUseCaseImpl implements IManageProfileUseCase {
-
     //Dependency injection
-    private IJWTRepository jwtRepository;
-    private IUserRepository userRepository;
-    private IProfileRepository profileRepository;
-    private ProfileService profileService;
+    private final IJWTRepository jwtRepository;   //infrastructure layer
+    private final IUserRepository userRepository; //infrastructure layer
+    private final IProfileRepository profileRepository;   //infrastructure layer
+    private final ProfileService profileService;  //domain layer
 
     //Constructor
     @Autowired
