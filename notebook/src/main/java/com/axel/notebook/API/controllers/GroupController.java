@@ -21,9 +21,13 @@ public class GroupController {
 
     //endpoints
     @PostMapping("/addGroup")
-    public ResponseEntity<?> addGroup() {
-        //TODO
-        return null;
+    public ResponseEntity<?> addGroup(@RequestParam String token,
+                                      @RequestParam String nameCourse,
+                                      @RequestParam String nameSubject,
+                                      @RequestParam String nameYear,
+                                      @RequestParam String nameGroup) {
+        GroupResponse groupResponse = manageGroupUseCase.addGroupUseCase(token, nameCourse, nameSubject, nameYear, nameGroup);
+        return new ResponseEntity<>(groupResponse, HttpStatus.OK);
     }
 
     @GetMapping("/getGroup")

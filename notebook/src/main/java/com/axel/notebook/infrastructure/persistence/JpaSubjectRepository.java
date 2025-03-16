@@ -16,6 +16,8 @@ public interface JpaSubjectRepository extends JpaRepository<SubjectEntity, Integ
     //Create Subject
     public SubjectEntity save(SubjectEntity subject);
 
+    public SubjectEntity findById(int idSubject);
+
     //Delete Subject
     public void deleteById(Integer idSubject);
 }

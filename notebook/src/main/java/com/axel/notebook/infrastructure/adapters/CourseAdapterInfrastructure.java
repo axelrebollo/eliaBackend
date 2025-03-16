@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class CourseAdapterInfrastructure {
+    //Dependency injection
     private final JpaYearRepository jpaYearRepository;
 
     //constructor

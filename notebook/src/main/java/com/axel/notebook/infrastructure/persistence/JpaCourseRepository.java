@@ -12,4 +12,6 @@ public interface JpaCourseRepository extends JpaRepository<CourseEntity, Integer
     //find all courses that exist into one year
     @Query(value = "SELECT * FROM course_entity WHERE course_entity.id_year = :idYear", nativeQuery = true)
     public List<CourseEntity> findAllCoursesByIdYear(int idYear);
+
+    public CourseEntity findByIdCourse(int idCourse);
 }

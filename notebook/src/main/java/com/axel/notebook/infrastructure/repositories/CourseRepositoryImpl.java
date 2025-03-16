@@ -15,7 +15,6 @@ import java.util.List;
 
 @Repository
 public class CourseRepositoryImpl implements ICourseRepository {
-    private final YearAdapterInfrastructure yearAdapterInfrastructure;
     //Dependency injection
     YearRepositoryImpl yearRepository;
     JpaCourseRepository jpaCourseRepository;
@@ -24,11 +23,10 @@ public class CourseRepositoryImpl implements ICourseRepository {
     @Autowired
     public CourseRepositoryImpl(YearRepositoryImpl yearRepository,
                                 JpaCourseRepository jpaCourseRepository,
-                                CourseAdapterInfrastructure courseAdapter, YearAdapterInfrastructure yearAdapterInfrastructure) {
+                                CourseAdapterInfrastructure courseAdapter) {
         this.yearRepository = yearRepository;
         this.jpaCourseRepository = jpaCourseRepository;
         this.courseAdapter = courseAdapter;
-        this.yearAdapterInfrastructure = yearAdapterInfrastructure;
     }
 
     public List<String> getAllCoursesForUser(int idProfile, String nameYear){

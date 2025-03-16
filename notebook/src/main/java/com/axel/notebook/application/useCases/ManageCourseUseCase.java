@@ -112,14 +112,15 @@ public class ManageCourseUseCase implements IManageCourseUseCase {
             throw new ApplicationException("Problema en la base de datos con el id del año. No se han encontrado años.");
         }
 
+        if(courseRepository.existCourseForUser(idYear, nameCourse)){
+            throw new ApplicationException("El curso existe en el sistema.");
+        }
+
         //create new course
         Course newCourse = courseService.addCourse(nameCourse, idProfile, idYear);
 
         //add course
         try{
-            if(courseRepository.existCourseForUser(idYear, nameCourse)){
-                throw new ApplicationException("El curso existe en el sistema.");
-            }
             newCourse = courseRepository.updateCourse(newCourse);
         }
         catch(ApplicationException e){
