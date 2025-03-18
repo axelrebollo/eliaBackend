@@ -14,4 +14,7 @@ public interface JpaTableRepository extends JpaRepository<TableEntity, Integer> 
     public TableEntity findById(int idTable);
 
     public TableEntity save(TableEntity table);
+
+    @Query(value = "SELECT * FROM table_entity WHERE table_entity.teacher = :idTeacher", nativeQuery = true)
+    public List<TableEntity> findByIdTeacher(int idTeacher);
 }

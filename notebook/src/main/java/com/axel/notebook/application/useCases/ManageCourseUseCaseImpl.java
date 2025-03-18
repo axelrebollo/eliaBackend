@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class ManageCourseUseCase implements IManageCourseUseCase {
+public class ManageCourseUseCaseImpl implements IManageCourseUseCase {
     //Dependency injection
     private final ICourseProducer courseProducer;   //infrastructure layer
     private final ICourseRepository courseRepository;   //infrastructure layer
@@ -23,10 +23,10 @@ public class ManageCourseUseCase implements IManageCourseUseCase {
 
     //Constructor
     @Autowired
-    public ManageCourseUseCase(ICourseProducer courseProducer,
-                               ICourseRepository courseRepository,
-                               CourseService courseService,
-                               IYearRepository yearRepository) {
+    public ManageCourseUseCaseImpl(ICourseProducer courseProducer,
+                                   ICourseRepository courseRepository,
+                                   CourseService courseService,
+                                   IYearRepository yearRepository) {
         this.courseProducer = courseProducer;
         this.courseRepository = courseRepository;
         this.courseService = courseService;

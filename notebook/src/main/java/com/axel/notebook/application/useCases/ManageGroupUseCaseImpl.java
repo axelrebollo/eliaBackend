@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class ManageGroupUseCase implements IManageGroupUseCase {
+public class ManageGroupUseCaseImpl implements IManageGroupUseCase {
     //Dependency injection
     private final IGroupProducer groupProducer; //infrastructure layer
     private final ISubjectRepository subjectRepository; //infrastructure layer
@@ -27,12 +27,12 @@ public class ManageGroupUseCase implements IManageGroupUseCase {
 
     //Constructor
     @Autowired
-    public ManageGroupUseCase(IGroupProducer groupProducer,
-                              ISubjectRepository subjectRepository,
-                              IYearRepository yearRepository,
-                              ICourseRepository courseRepository,
-                              IGroupRepository groupRepository,
-                              GroupService groupService) {
+    public ManageGroupUseCaseImpl(IGroupProducer groupProducer,
+                                  ISubjectRepository subjectRepository,
+                                  IYearRepository yearRepository,
+                                  ICourseRepository courseRepository,
+                                  IGroupRepository groupRepository,
+                                  GroupService groupService) {
         this.groupProducer = groupProducer;
         this.subjectRepository = subjectRepository;
         this.yearRepository = yearRepository;
