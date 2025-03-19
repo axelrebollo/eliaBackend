@@ -21,11 +21,10 @@ public class ManageYearUseCaseImpl implements IManageYearUseCase {
     //Constructor
     @Autowired
     public ManageYearUseCaseImpl(IYearRepository yearRepository,
-                                 IYearProducer yearProducer,
-                                 YearService yearService) {
+                                 IYearProducer yearProducer) {
         this.yearRepository = yearRepository;
         this.yearProducer = yearProducer;
-        this.yearService = yearService;
+        this.yearService = new YearService();
     }
 
     //create a new year

@@ -25,11 +25,10 @@ public class ManageCourseUseCaseImpl implements IManageCourseUseCase {
     @Autowired
     public ManageCourseUseCaseImpl(ICourseProducer courseProducer,
                                    ICourseRepository courseRepository,
-                                   CourseService courseService,
                                    IYearRepository yearRepository) {
         this.courseProducer = courseProducer;
         this.courseRepository = courseRepository;
-        this.courseService = courseService;
+        this.courseService = new CourseService();
         this.yearRepository = yearRepository;
     }
 

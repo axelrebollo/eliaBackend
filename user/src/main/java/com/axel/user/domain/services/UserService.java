@@ -3,9 +3,7 @@ package com.axel.user.domain.services;
 import com.axel.user.domain.entities.User;
 import com.axel.user.domain.exceptions.DomainException;
 import com.axel.user.domain.valueObjects.Role;
-import org.springframework.stereotype.Service;
 
-@Service
 public class UserService{
 
     //Constructor

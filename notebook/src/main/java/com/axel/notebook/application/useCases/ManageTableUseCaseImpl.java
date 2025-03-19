@@ -29,15 +29,14 @@ public class ManageTableUseCaseImpl implements IManageTableUseCase {
                                   IYearRepository yearRepository,
                                   ISubjectRepository subjectRepository,
                                   ITableProducer tableProducer,
-                                  ITableRepository tableRepository,
-                                  TableService tableService) {
+                                  ITableRepository tableRepository) {
         this.groupRepository = groupRepository;
         this.courseRepository = courseRepository;
         this.yearRepository = yearRepository;
         this.subjectRepository = subjectRepository;
         this.tableProducer = tableProducer;
         this.tableRepository = tableRepository;
-        this.tableService = tableService;
+        this.tableService = new TableService();
     }
 
     public TableResponse getAllTablesFromTokenUseCase(String token, String nameGroup, String nameCourse, String nameSubject, String nameYear){

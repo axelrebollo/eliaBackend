@@ -2,9 +2,7 @@ package com.axel.user.domain.services;
 
 import com.axel.user.domain.entities.Profile;
 import com.axel.user.domain.exceptions.DomainException;
-import org.springframework.stereotype.Service;
 
-@Service
 public class ProfileService {
     //Constructor
     public ProfileService() {}

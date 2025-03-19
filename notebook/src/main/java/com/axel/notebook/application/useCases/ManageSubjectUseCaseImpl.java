@@ -22,10 +22,9 @@ public class ManageSubjectUseCaseImpl implements IManageSubjectUseCase {
     //Constructor
     @Autowired
     public ManageSubjectUseCaseImpl(ISubjectRepository subjectRepository,
-                                    SubjectService subjectService,
                                     ISubjectProducer subjectProducer) {
         this.subjectRepository = subjectRepository;
-        this.subjectService = subjectService;
+        this.subjectService = new SubjectService();
         this.subjectProducer = subjectProducer;
     }
 

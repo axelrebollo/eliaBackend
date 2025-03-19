@@ -24,12 +24,11 @@ public class ManageProfileUseCaseImpl implements IManageProfileUseCase {
     @Autowired
     public ManageProfileUseCaseImpl(IJWTRepository jwtRepository,
                                     IUserRepository userRepository,
-                                    IProfileRepository profileRepository,
-                                    ProfileService profileService) {
+                                    IProfileRepository profileRepository) {
         this.jwtRepository = jwtRepository;
         this.userRepository = userRepository;
         this.profileRepository = profileRepository;
-        this.profileService = profileService;
+        this.profileService = new ProfileService();
     }
 
     //Get information about user with email

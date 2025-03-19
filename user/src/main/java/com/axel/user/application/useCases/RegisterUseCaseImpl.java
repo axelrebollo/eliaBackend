@@ -21,10 +21,9 @@ public class RegisterUseCaseImpl implements IRegisterUserCase {
     //Constructor
     @Autowired
     public RegisterUseCaseImpl(IUserRepository userRepository,
-                               UserService userService,
                                IManageProfileUseCase manageProfileUseCase) {
         this.userRepository = userRepository;
-        this.userService = userService;
+        this.userService = new UserService();
         this.manageProfileUseCase = manageProfileUseCase;
     }
 

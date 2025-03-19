@@ -4,13 +4,11 @@ import com.axel.notebook.application.repositories.IClassroomProfileRepository;
 import com.axel.notebook.domain.services.ClassroomProfileService;
 import com.axel.notebook.domain.valueObjects.ClassroomProfile;
 import com.axel.notebook.infrastructure.JpaEntities.CellEntity;
-import com.axel.notebook.infrastructure.JpaEntities.StudentCellEntity;
 import com.axel.notebook.infrastructure.JpaEntities.TableEntity;
 import com.axel.notebook.infrastructure.exceptions.InfrastructureException;
 import com.axel.notebook.infrastructure.persistence.JpaCellRepository;
 import com.axel.notebook.infrastructure.persistence.JpaStudentCellRepository;
 import com.axel.notebook.infrastructure.persistence.JpaTableRepository;
-import org.glassfish.jersey.internal.guava.Table;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;

@@ -31,14 +31,13 @@ public class ManageGroupUseCaseImpl implements IManageGroupUseCase {
                                   ISubjectRepository subjectRepository,
                                   IYearRepository yearRepository,
                                   ICourseRepository courseRepository,
-                                  IGroupRepository groupRepository,
-                                  GroupService groupService) {
+                                  IGroupRepository groupRepository) {
         this.groupProducer = groupProducer;
         this.subjectRepository = subjectRepository;
         this.yearRepository = yearRepository;
         this.courseRepository = courseRepository;
         this.groupRepository = groupRepository;
-        this.groupService = groupService;
+        this.groupService = new GroupService();
     }
 
     //get all groups into course for one subject

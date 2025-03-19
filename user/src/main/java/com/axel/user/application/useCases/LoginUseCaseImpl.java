@@ -17,9 +17,9 @@ public class LoginUseCaseImpl implements ILoginUserCase {
     private final IJWTRepository jwtRepository; //infrastructure layer
 
     //Constructor
-    public LoginUseCaseImpl(IUserRepository userRepository, UserService userService, IJWTRepository jwtRepository) {
+    public LoginUseCaseImpl(IUserRepository userRepository, IJWTRepository jwtRepository) {
         this.userRepository = userRepository;
-        this.userService = userService;
+        this.userService = new UserService();
         this.jwtRepository = jwtRepository;
     }
 
