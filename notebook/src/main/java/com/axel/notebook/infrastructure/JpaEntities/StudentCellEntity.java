@@ -2,6 +2,8 @@ package com.axel.notebook.infrastructure.JpaEntities;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @DiscriminatorValue("STUDENT")
 public class StudentCellEntity extends CellEntity {
@@ -12,8 +14,8 @@ public class StudentCellEntity extends CellEntity {
     private int idProfile;
 
     //Relation with note one to one
-    @OneToOne(mappedBy = "studentCell", cascade = CascadeType.ALL)
-    private NoteCellEntity note;
+    @OneToMany(mappedBy = "studentCell", cascade = CascadeType.ALL)
+    private List<NoteCellEntity> note;
 
     //Constructors
     public StudentCellEntity() {}
@@ -24,7 +26,7 @@ public class StudentCellEntity extends CellEntity {
     }
 
     //Getters
-    public NoteCellEntity getNoteCell() {
+    public List<NoteCellEntity> getNoteCell() {
         return note;
     }
 
@@ -33,7 +35,7 @@ public class StudentCellEntity extends CellEntity {
     }
 
     //Setters
-    public void setNoteCell(NoteCellEntity note) {
+    public void setNoteCell(List<NoteCellEntity> note) {
         this.note = note;
     }
 

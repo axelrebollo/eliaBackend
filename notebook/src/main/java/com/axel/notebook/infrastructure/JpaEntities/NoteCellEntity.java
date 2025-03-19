@@ -10,14 +10,14 @@ public class NoteCellEntity extends CellEntity{
     @Column(name = "note", nullable = false)
     private Double note;
 
-    //Relation with student one to one
-    @OneToOne
-    @JoinColumn(name = "student_cell_id", unique = true)
+    //Relation with student many to one
+    @ManyToOne
+    @JoinColumn(name = "student_cell_id", nullable = false)
     private StudentCellEntity studentCell;
 
     //Relation with task one to one
-    @OneToOne
-    @JoinColumn(name = "task_cell_id", unique = true)
+    @ManyToOne
+    @JoinColumn(name = "task_cell_id", nullable = false)
     private TaskCellEntity taskCell;
 
     //Constructors

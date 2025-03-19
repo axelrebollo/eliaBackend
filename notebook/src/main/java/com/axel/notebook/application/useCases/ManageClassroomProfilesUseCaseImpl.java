@@ -59,7 +59,7 @@ public class ManageClassroomProfilesUseCaseImpl implements IManageClassroomProfi
         }
     }
 
-    //get classrooms that one teacher are created for profile
+    //get classrooms that one user are created for profile
     public ClassroomProfileResponse getClassroomsDataForProfile(int idProfile, String role){
         if(idProfile <= 0){
             throw new ApplicationException("Error con el perfil, no existe.");
