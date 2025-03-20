@@ -1,9 +1,12 @@
 package com.axel.notebook.infrastructure.repositories;
 
 import com.axel.notebook.application.repositories.IClassroomProfileRepository;
+import com.axel.notebook.domain.entities.Student;
+import com.axel.notebook.domain.entities.Table;
 import com.axel.notebook.domain.services.ClassroomProfileService;
 import com.axel.notebook.domain.valueObjects.ClassroomProfile;
 import com.axel.notebook.infrastructure.JpaEntities.CellEntity;
+import com.axel.notebook.infrastructure.JpaEntities.StudentCellEntity;
 import com.axel.notebook.infrastructure.JpaEntities.TableEntity;
 import com.axel.notebook.infrastructure.exceptions.InfrastructureException;
 import com.axel.notebook.infrastructure.persistence.JpaCellRepository;
@@ -110,5 +113,41 @@ public class ClassroomProfileRepositoryImpl implements IClassroomProfileReposito
             rows.add(newClassroom);
         }
         return rows;
+    }
+
+    public boolean enrollStudentToTable(Student student, String classCode){
+        //check data
+        if(student == null){
+            throw new InfrastructureException("El estudiante está vacío.");
+        }
+
+        if(classCode == null || classCode.isEmpty()){
+            throw new InfrastructureException("El código de la clase está vacío o es nulo.");
+        }
+
+        //find table with classCode
+        TableEntity table = jpaTableRepository.findByClassCode(classCode);
+
+        if(table == null){
+            throw new InfrastructureException("El aula/tabla no existe.");
+        }
+
+        try{
+            //find the last row and col
+            int lastPositionRow = jpaCellRepository.countStudentsIntoTable(table.getIdTable());
+            int lastPositionCol = jpaCellRepository.countTasksIntoTable(table.getIdTable()) ;
+
+            CellEntity newCellStudent = new StudentCellEntity(table, lastPositionRow, lastPositionCol, student.getIdProfile());
+            //save into cellEntity and StudentCellEntity
+            CellEntity savedCellStudent = jpaCellRepository.save(newCellStudent);
+
+            if(savedCellStudent != null){
+                return true;
+            }
+        }
+        catch(InfrastructureException e){
+            throw new InfrastructureException("Ha ocurrido un error al insertar el estudiante en la clase.");
+        }
+        return false;
     }
 }

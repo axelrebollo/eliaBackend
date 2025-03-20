@@ -21,9 +21,22 @@ public class ClassroomProfileController {
     }
 
     //Endpoints
+
+    //get data for table profile
     @GetMapping("/getClassroomsData")
     public ResponseEntity<?> getClassroomsCreated(@RequestParam String token) {
         ClassroomProfileResponse classroomProfileResponse = manageClassroomProfileUseCase.getClassroomsForProfile(token);
         return new ResponseEntity<>(classroomProfileResponse, HttpStatus.OK);
+    }
+
+    //enroll student into table/class
+    @PutMapping("/enrollClassroom")
+    public ResponseEntity<?> enrollClassroomStudent(@RequestParam String token, @RequestParam String classCode){
+        boolean operationCorrect = manageClassroomProfileUseCase.enrollClassroomStudentUseCase(token, classCode);
+        if(operationCorrect){
+            ClassroomProfileResponse classroomProfileResponse = manageClassroomProfileUseCase.getClassroomsForProfile(token);
+            return new ResponseEntity<>(classroomProfileResponse, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }

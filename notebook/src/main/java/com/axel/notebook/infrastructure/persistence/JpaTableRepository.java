@@ -17,4 +17,6 @@ public interface JpaTableRepository extends JpaRepository<TableEntity, Integer> 
 
     @Query(value = "SELECT * FROM table_entity WHERE table_entity.teacher = :idTeacher", nativeQuery = true)
     public List<TableEntity> findByIdTeacher(int idTeacher);
+
+    public TableEntity findByClassCode(String classCode);
 }

@@ -1,6 +1,7 @@
 package com.axel.user.infrastructure.kafka.consumers;
 
 import com.axel.user.domain.entities.User;
+import com.axel.user.infrastructure.JpaEntities.ProfileEntity;
 import com.axel.user.infrastructure.exceptions.InfrastructureException;
 import com.axel.user.infrastructure.kafka.producers.ClassroomProfileProducer;
 import com.axel.user.infrastructure.persistence.JpaProfileRepository;
@@ -67,20 +68,20 @@ public class ClassroomProfileTokenConsumer {
             int idUser = user.getId();
 
             //get idProfile
-            idProfile = jpaProfileRepository.findByUser_Id(idUser).getId();
+            ProfileEntity profile = jpaProfileRepository.findByUser_Id(idUser);
+
+            if(profile == null) {
+                throw new InfrastructureException("El perfil no existe");
+            }
+
+            //get role
+            String role = jpaUserRepository.findByEmail(email).getRole();
+
+            if(role == null) {
+                throw new InfrastructureException("Error con el rol, el usuario no tiene.");
+            }
+
+            classroomProfileProducer.sendData(token, profile, role, correlationId);
         }
-
-        if(idProfile <= 0) {
-            throw new InfrastructureException("El perfil no existe");
-        }
-
-        //get role
-        String role = jpaUserRepository.findByEmail(email).getRole();
-
-        if(role == null) {
-            throw new InfrastructureException("Error con el rol, el usuario no tiene.");
-        }
-
-        classroomProfileProducer.sendData(token, idProfile, role, correlationId);
     }
 }

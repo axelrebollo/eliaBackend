@@ -1,5 +1,6 @@
 package com.axel.user.infrastructure.kafka.producers;
 
+import com.axel.user.infrastructure.JpaEntities.ProfileEntity;
 import com.axel.user.infrastructure.exceptions.InfrastructureException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -23,7 +24,7 @@ public class ClassroomProfileProducer {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    public void sendData(String token, int idProfile, String role, String correlationId){
+    public void sendData(String token, ProfileEntity profile, String role, String correlationId){
         //topic
         String topic = "response-data-classroomProfile";
 
@@ -33,8 +34,11 @@ public class ClassroomProfileProducer {
 
         //creates JSON data to send
         Map<String, String> data = new HashMap<>();
-        data.put("idProfile", String.valueOf(idProfile));
+        data.put("idProfile", String.valueOf(profile.getId()));
         data.put("role", role);
+        data.put("name", profile.getName());
+        data.put("surname1", profile.getSurname1());
+        data.put("surname2", profile.getSurname2());
 
         String jsonMessage;
         try {
