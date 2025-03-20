@@ -37,22 +37,4 @@ public class CourseController {
         CourseResponse courseResponse = manageCourseUseCase.getAllCoursesUseCase(token, nameYear);
         return new ResponseEntity<>(courseResponse, HttpStatus.OK);
     }
-
-    @PutMapping("/updateCourse")
-    public ResponseEntity<?> updateCourse() {
-        //TODO
-        return null;
-    }
-
-    @PatchMapping("/updateNameCourse")
-    public ResponseEntity<?> updateNameCourse() {
-        //TODO
-        return null;
-    }
-
-    @DeleteMapping("/deleteCourse")
-    public ResponseEntity<?> deleteCourse() {
-        //TODO
-        return null;
-    }
 }

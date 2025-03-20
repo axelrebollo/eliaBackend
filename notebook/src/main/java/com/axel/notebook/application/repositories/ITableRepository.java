@@ -7,5 +7,5 @@ import java.util.List;
 public interface ITableRepository {
     public List<String> getAllTablesForNameSubject(int idProfile, int idGroup);
 
-    public Table updateTable(Table table);
+    public Table createTable(Table table);
 }

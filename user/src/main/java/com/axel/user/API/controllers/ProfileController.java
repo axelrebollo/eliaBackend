@@ -24,6 +24,7 @@ public class ProfileController {
     }
 
     //Endpoints
+
     @GetMapping("/getProfile")
     public ResponseEntity<?> getProfile(@RequestParam String token) {
         ProfileResponse profileResponse = manageProfileUserCase.getProfile(token);

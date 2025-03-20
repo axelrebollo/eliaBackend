@@ -36,22 +36,4 @@ public class TableController {
         TableResponse tableResponse = manageTableUseCase.getAllTablesFromTokenUseCase(token, nameGroup, nameCourse, nameSubject, nameYear);
         return new ResponseEntity<>(tableResponse, HttpStatus.OK);
     }
-
-    @PutMapping("/updateTable")
-    public ResponseEntity<?> updateTable() {
-        //TODO
-        return null;
-    }
-
-    @PatchMapping("/updateNameTable")
-    public ResponseEntity<?> updateNameTable() {
-        //TODO
-        return null;
-    }
-
-    @DeleteMapping("/deleteTable")
-    public ResponseEntity<?> deleteTable() {
-        //TODO
-        return null;
-    }
 }

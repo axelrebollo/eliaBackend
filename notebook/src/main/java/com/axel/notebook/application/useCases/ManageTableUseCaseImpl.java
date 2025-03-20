@@ -122,7 +122,7 @@ public class ManageTableUseCaseImpl implements IManageTableUseCase {
 
         //save table
         try{
-            newTable = tableRepository.updateTable(newTable);
+            newTable = tableRepository.createTable(newTable);
         }
         catch(ApplicationException e){
             throw new ApplicationException("Error al crear la tabla.");

@@ -40,11 +40,16 @@ public class TableRepositoryImpl implements ITableRepository {
         return tables;
     }
 
-    public Table updateTable(Table table){
+    public Table createTable(Table table){
         if(table == null){
-            throw new InfrastructureException("La  tabla para guardar es nula o vacía.");
+            throw new InfrastructureException("La tabla para guardar es nula o vacía.");
         }
         TableEntity tableEntity = tableAdapter.fromApplicationWithoutId(table);
+
+        if(jpaTableRepository.exists(table.getIdTeacher(), table.getNameTable(), table.getIdGroup())){
+           throw new InfrastructureException("La tabla ya existe en el sistema.");
+        }
+
         tableEntity = jpaTableRepository.save(tableEntity);
         return tableAdapter.toApplication(tableEntity);
     }

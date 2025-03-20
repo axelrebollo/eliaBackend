@@ -19,4 +19,12 @@ public interface JpaTableRepository extends JpaRepository<TableEntity, Integer> 
     public List<TableEntity> findByIdTeacher(int idTeacher);
 
     public TableEntity findByClassCode(String classCode);
+
+    @Query(value = "SELECT COUNT(*) > 0 " +
+            "FROM table_entity " +
+            "WHERE table_entity.teacher = :teacher " +
+            "AND table_entity.name_table = :nameTable " +
+            "AND table_entity.id_group = :idGroup",
+            nativeQuery = true)
+    public boolean exists(int teacher, String nameTable, int idGroup);
 }

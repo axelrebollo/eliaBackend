@@ -37,26 +37,4 @@ public class YearController {
         YearResponse yearResponse = manageYearUseCase.getAllYearsFromTokenUseCase(token);
         return new ResponseEntity<>(yearResponse, HttpStatus.OK);
     }
-
-    //update year
-    @PutMapping("/updateYear")
-    public ResponseEntity<?> updateYear() {
-        //update name year
-        //TODO
-        return null;
-    }
-
-    @PatchMapping("/updateNameYear")
-    public ResponseEntity<?> updateNameYear() {
-        //TODO
-        return null;
-    }
-
-    //delete year cascade
-    @DeleteMapping("/deleteYear")
-    public ResponseEntity<?> deleteYear() {
-        //delete year + course + group + table + cells
-        //TODO
-        return null;
-    }
 }

@@ -48,7 +48,7 @@ public class ManageSubjectUseCaseImpl implements IManageSubjectUseCase {
 
         //Check if exist year for this user
         if(subjectRepository.existSubjectForUser(nameSubject, idProfile)){
-            throw new ApplicationException("Existe un año con ese nombre con este usuario.");
+            throw new ApplicationException("Existe una asignatura con ese nombre con este usuario.");
         }
 
         //Create year

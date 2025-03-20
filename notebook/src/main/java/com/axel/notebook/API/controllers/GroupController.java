@@ -39,22 +39,4 @@ public class GroupController {
         GroupResponse groupResponse = manageGroupUseCase.getAllGroupsUseCase(token, nameCourse, nameSubject, nameYear);
         return new ResponseEntity<>(groupResponse, HttpStatus.OK);
     }
-
-    @PutMapping("/updateGroup")
-    public ResponseEntity<?> updateGroup() {
-        //TODO
-        return null;
-    }
-
-    @PatchMapping("/updateNameGroup")
-    public ResponseEntity<?> updateNameGroup() {
-        //TODO
-        return null;
-    }
-
-    @DeleteMapping("/deleteGroup")
-    public ResponseEntity<?> deleteGroup() {
-        //TODO
-        return null;
-    }
 }

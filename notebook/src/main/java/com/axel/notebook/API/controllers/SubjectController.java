@@ -35,22 +35,4 @@ public class SubjectController {
         SubjectResponse subjectResponse = manageSubjectUseCase.getAllSubjectsFromTokenUseCase(token);
         return new ResponseEntity<>(subjectResponse, HttpStatus.OK);
     }
-
-    @PutMapping("/updateSubject")
-    public ResponseEntity<?> updateSubject() {
-        //TODO
-        return null;
-    }
-
-    @PatchMapping("/updateNameSubject")
-    public ResponseEntity<?> updateNameSubject() {
-        //TODO
-        return null;
-    }
-
-    @DeleteMapping("/deleteSubject")
-    public ResponseEntity<?> deleteSubject() {
-        //TODO
-        return null;
-    }
 }
