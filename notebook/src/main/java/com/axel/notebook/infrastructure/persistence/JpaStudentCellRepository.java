@@ -11,4 +11,7 @@ import java.util.List;
 public interface JpaStudentCellRepository extends JpaRepository<StudentCellEntity, Integer> {
     @Query(value = "SELECT student_cell_entity.id_cell FROM student_cell_entity WHERE student_cell_entity.student = :idProfile", nativeQuery = true)
     public List<Integer> findAllCellsForStudent(int idProfile);
+
+    @Query(value = "SELECT student_cell_entity.student FROM student_cell_entity WHERE student_cell_entity.id_cell = :idCell", nativeQuery = true)
+    public List<Integer> findProfileForIdCell(int idCell);
 }

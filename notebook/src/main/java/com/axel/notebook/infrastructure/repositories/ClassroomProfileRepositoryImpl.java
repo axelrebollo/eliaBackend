@@ -85,9 +85,9 @@ public class ClassroomProfileRepositoryImpl implements IClassroomProfileReposito
         //find cells that appear this student
         for(int idCell : listIdCell){
             //convert optional in CellEntity
-            Optional<CellEntity> cellsForStudent = jpaCellRepository.findById(idCell);
-            if(!cellsForStudent.isEmpty()){
-                CellEntity cell = cellsForStudent.get();
+            Optional<CellEntity> cellForStudent = jpaCellRepository.findById(idCell);
+            if(!cellForStudent.isEmpty()){
+                CellEntity cell = cellForStudent.get();
                 cellEntityes.add(cell);
             }
         }
@@ -133,6 +133,35 @@ public class ClassroomProfileRepositoryImpl implements IClassroomProfileReposito
         }
 
         try{
+            //find all cells for this table/classroom (idCell)
+            List<Integer> cellForClass = jpaCellRepository.findByTableIdAndStudentType(table.getIdTable());
+
+            if(cellForClass.isEmpty()){
+                throw new InfrastructureException("La clase no tiene alumnos.");
+            }
+
+            boolean existIntoClass = false;
+
+            for(Integer studentIntoClass : cellForClass){
+                //find all profiles that exist into classroom
+                List<Integer> profiles = jpaStudentCellRepository.findProfileForIdCell(studentIntoClass);
+
+                //if exists student into classroom change existsIntoClass
+                if(!profiles.isEmpty()){
+                    for(int profile : profiles){
+                        if (student.getIdProfile() == profile) {
+                            existIntoClass = true;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            //if student not exist into class
+            if(existIntoClass){
+               throw new InfrastructureException("El estudiante ya existe en la clase.");
+            }
+
             //find the last row and col
             int lastPositionRow = jpaCellRepository.countStudentsIntoTable(table.getIdTable());
             int lastPositionCol = jpaCellRepository.countTasksIntoTable(table.getIdTable()) ;
@@ -146,7 +175,7 @@ public class ClassroomProfileRepositoryImpl implements IClassroomProfileReposito
             }
         }
         catch(InfrastructureException e){
-            throw new InfrastructureException("Ha ocurrido un error al insertar el estudiante en la clase.");
+            throw new InfrastructureException(e.getMessage(), e);
         }
         return false;
     }
