@@ -1,6 +1,6 @@
 package com.axel.notebook.domain.services;
 
-import com.axel.notebook.domain.entities.Student;
+import com.axel.notebook.domain.valueObjects.Student;
 import com.axel.notebook.domain.valueObjects.ClassroomProfile;
 
 public class ClassroomProfileService {

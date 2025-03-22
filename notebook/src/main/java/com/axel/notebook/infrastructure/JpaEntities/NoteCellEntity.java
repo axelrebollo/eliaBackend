@@ -8,7 +8,7 @@ public class NoteCellEntity extends CellEntity{
 
     //Attributes
     @Column(name = "note", nullable = false)
-    private Double note;
+    private double note;
 
     //Relation with student many to one
     @ManyToOne
@@ -23,13 +23,13 @@ public class NoteCellEntity extends CellEntity{
     //Constructors
     public NoteCellEntity() {}
 
-    public NoteCellEntity(TableEntity table, int positionRow, int positionCol, Double note) {
+    public NoteCellEntity(TableEntity table, int positionRow, int positionCol, double note) {
         super(table, positionRow, positionCol);
         this.note = note;
     }
 
     //Getters
-    public Double getNote() {
+    public double getNote() {
         return note;
     }
 
@@ -42,7 +42,7 @@ public class NoteCellEntity extends CellEntity{
     }
 
     //Setters
-    public void setNote(Double note) {
+    public void setNote(double note) {
         this.note = note;
     }
 

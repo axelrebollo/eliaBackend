@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface JpaNoteCellRepository extends JpaRepository<NoteCellEntity, Integer> {
+    public NoteCellEntity findByIdCell(int idCell);
 }

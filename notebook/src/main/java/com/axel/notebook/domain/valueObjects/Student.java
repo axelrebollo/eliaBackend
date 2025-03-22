@@ -1,8 +1,9 @@
-package com.axel.notebook.domain.entities;
+package com.axel.notebook.domain.valueObjects;
 
 public class Student {
     //Attributes
     private int idProfile;
+    private int idCellStudent;
     private String name;
     private String surname1;
     private String surname2;
@@ -23,6 +24,14 @@ public class Student {
         this.surname2 = surname2;
     }
 
+    public Student(int id, String name, String surname1, String surname2, int idCellStudent) {
+        this.idProfile = id;
+        this.name = name;
+        this.surname1 = surname1;
+        this.surname2 = surname2;
+        this.idCellStudent = idCellStudent;
+    }
+
     //getters
     public int getIdProfile() {
         return idProfile;
@@ -40,6 +49,8 @@ public class Student {
         return surname2;
     }
 
+    public int getIdCellStudent() { return idCellStudent; }
+
     //setters
     public void setIdProfile(int idProfile) {
         this.idProfile = idProfile;
@@ -56,4 +67,6 @@ public class Student {
     public void setSurname2(String surname2) {
         this.surname2 = surname2;
     }
+
+    public void setIdCellStudent(int idCellStudent) { this.idCellStudent = idCellStudent; }
 }

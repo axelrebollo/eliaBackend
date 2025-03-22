@@ -4,7 +4,6 @@ import com.axel.notebook.infrastructure.JpaEntities.StudentCellEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-
 import java.util.List;
 
 @Repository
@@ -14,4 +13,8 @@ public interface JpaStudentCellRepository extends JpaRepository<StudentCellEntit
 
     @Query(value = "SELECT student_cell_entity.student FROM student_cell_entity WHERE student_cell_entity.id_cell = :idCell", nativeQuery = true)
     public List<Integer> findProfileForIdCell(int idCell);
+
+    //use JPQL
+    @Query("SELECT s FROM StudentCellEntity s WHERE s.idCell = :idCell")
+    public StudentCellEntity findStudentCellEntityById(int idCell);
 }

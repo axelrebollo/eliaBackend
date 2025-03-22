@@ -5,7 +5,7 @@ import com.axel.notebook.application.exceptions.ApplicationException;
 import com.axel.notebook.application.repositories.IClassroomProfileRepository;
 import com.axel.notebook.application.services.IManageClassroomProfileUseCase;
 import com.axel.notebook.application.services.producers.IClassroomProfileProducer;
-import com.axel.notebook.domain.entities.Student;
+import com.axel.notebook.domain.valueObjects.Student;
 import com.axel.notebook.domain.services.ClassroomProfileService;
 import com.axel.notebook.domain.valueObjects.ClassroomProfile;
 import org.springframework.stereotype.Service;

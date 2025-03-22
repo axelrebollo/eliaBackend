@@ -1,6 +1,6 @@
 package com.axel.notebook.application.repositories;
 
-import com.axel.notebook.domain.entities.Student;
+import com.axel.notebook.domain.valueObjects.Student;
 import com.axel.notebook.domain.valueObjects.ClassroomProfile;
 import java.util.List;
 

@@ -11,4 +11,7 @@ public interface JpaProfileRepository extends JpaRepository<ProfileEntity, Integ
 
     //Create profile
     public ProfileEntity save(ProfileEntity profile);
+
+    //find by idProfile
+    public ProfileEntity findByIdProfile(int idProfile);
 }

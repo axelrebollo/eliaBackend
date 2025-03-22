@@ -16,11 +16,13 @@ public class TableRepositoryImpl implements ITableRepository {
     //Dependency injection
     private final JpaTableRepository jpaTableRepository;
     private final TableAdapterInfrastructure tableAdapter;
+    private final TableAdapterInfrastructure tableAdapterInfrastructure;
 
     //Constructor
-    public TableRepositoryImpl(JpaTableRepository jpaTableRepository, TableAdapterInfrastructure tableAdapter) {
+    public TableRepositoryImpl(JpaTableRepository jpaTableRepository, TableAdapterInfrastructure tableAdapter, TableAdapterInfrastructure tableAdapterInfrastructure) {
         this.jpaTableRepository = jpaTableRepository;
         this.tableAdapter = tableAdapter;
+        this.tableAdapterInfrastructure = tableAdapterInfrastructure;
     }
 
     public List<String> getAllTablesForNameSubject(int idProfile, int idGroup){
@@ -52,5 +54,14 @@ public class TableRepositoryImpl implements ITableRepository {
 
         tableEntity = jpaTableRepository.save(tableEntity);
         return tableAdapter.toApplication(tableEntity);
+    }
+
+    public Table findTable(int idProfile, int idGroup, String nameTable){
+        if(idProfile <= 0 || idGroup <= 0 || nameTable == null){
+            throw new InfrastructureException("Error al intentar buscar la tabla, algún parametro no es correcto.");
+        }
+
+        TableEntity table = jpaTableRepository.findByProfileGroupName(idProfile, idGroup, nameTable);
+        return tableAdapterInfrastructure.toApplication(table);
     }
 }

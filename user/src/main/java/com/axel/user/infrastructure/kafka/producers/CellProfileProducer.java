@@ -13,19 +13,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-public class ClassroomProfileProducer {
+public class CellProfileProducer {
     //injection dependencies
     private final KafkaTemplate<String, String> kafkaTemplate;  //used to send messages
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     //Constructor
-    public ClassroomProfileProducer(KafkaTemplate<String, String> kafkaTemplate) {
+    public CellProfileProducer(KafkaTemplate<String, String> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
 
     public void sendData(String token, ProfileEntity profile, String role, String correlationId){
         //topic
-        String topic = "response-data-classroomProfile";
+        String topic = "response-data-cell";
 
         //headers
         Headers headers = new RecordHeaders();
@@ -53,6 +53,43 @@ public class ClassroomProfileProducer {
                 null,                           //partition
                 null,                           //timestamp
                 token,                          //key
+                jsonMessage,                    //value data en Json
+                headers                         //headers
+        );
+
+        //send to kafka this message
+        kafkaTemplate.send(responseRecord);
+    }
+
+    public void sendProfile(ProfileEntity profile, String correlationId){
+        //topic
+        String topic = "response-profile-cell";
+
+        //headers
+        Headers headers = new RecordHeaders();
+        headers.add(new RecordHeader("kafka_correlationId", correlationId.getBytes()));
+
+        //creates JSON data to send
+        Map<String, String> data = new HashMap<>();
+        data.put("idProfile", String.valueOf(profile.getId()));
+        data.put("name", profile.getName());
+        data.put("surname1", profile.getSurname1());
+        data.put("surname2", profile.getSurname2());
+
+        String jsonMessage;
+        try {
+            //convert data (Map<String, String>) to Json (Jackson library)
+            jsonMessage = objectMapper.writeValueAsString(data);
+        } catch (Exception e) {
+            throw new InfrastructureException("Error al serializar el mensaje JSON", e);
+        }
+
+        //creates message
+        ProducerRecord<String, String> responseRecord = new ProducerRecord<>(
+                topic,                          //topic
+                null,                           //partition
+                null,                           //timestamp
+                null,                           //key
                 jsonMessage,                    //value data en Json
                 headers                         //headers
         );

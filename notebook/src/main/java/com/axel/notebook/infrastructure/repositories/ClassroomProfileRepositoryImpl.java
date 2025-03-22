@@ -1,8 +1,7 @@
 package com.axel.notebook.infrastructure.repositories;
 
 import com.axel.notebook.application.repositories.IClassroomProfileRepository;
-import com.axel.notebook.domain.entities.Student;
-import com.axel.notebook.domain.entities.Table;
+import com.axel.notebook.domain.valueObjects.Student;
 import com.axel.notebook.domain.services.ClassroomProfileService;
 import com.axel.notebook.domain.valueObjects.ClassroomProfile;
 import com.axel.notebook.infrastructure.JpaEntities.CellEntity;
@@ -136,28 +135,26 @@ public class ClassroomProfileRepositoryImpl implements IClassroomProfileReposito
             //find all cells for this table/classroom (idCell)
             List<Integer> cellForClass = jpaCellRepository.findByTableIdAndStudentType(table.getIdTable());
 
-            if(cellForClass.isEmpty()){
-                throw new InfrastructureException("La clase no tiene alumnos.");
-            }
-
             boolean existIntoClass = false;
 
-            for(Integer studentIntoClass : cellForClass){
-                //find all profiles that exist into classroom
-                List<Integer> profiles = jpaStudentCellRepository.findProfileForIdCell(studentIntoClass);
+            if(!cellForClass.isEmpty()){
+                for(Integer studentIntoClass : cellForClass){
+                    //find all profiles that exist into classroom
+                    List<Integer> profiles = jpaStudentCellRepository.findProfileForIdCell(studentIntoClass);
 
-                //if exists student into classroom change existsIntoClass
-                if(!profiles.isEmpty()){
-                    for(int profile : profiles){
-                        if (student.getIdProfile() == profile) {
-                            existIntoClass = true;
-                            break;
+                    //if exists student into classroom change existsIntoClass
+                    if(!profiles.isEmpty()){
+                        for(int profile : profiles){
+                            if (student.getIdProfile() == profile) {
+                                existIntoClass = true;
+                                break;
+                            }
                         }
                     }
                 }
             }
 
-            //if student not exist into class
+            //if student exist into class
             if(existIntoClass){
                throw new InfrastructureException("El estudiante ya existe en la clase.");
             }

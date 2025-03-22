@@ -8,4 +8,6 @@ public interface ITableRepository {
     public List<String> getAllTablesForNameSubject(int idProfile, int idGroup);
 
     public Table createTable(Table table);
+
+    public Table findTable(int idProfile, int idGroup, String nameTable);
 }

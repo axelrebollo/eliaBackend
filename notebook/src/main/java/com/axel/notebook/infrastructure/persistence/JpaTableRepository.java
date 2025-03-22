@@ -27,4 +27,8 @@ public interface JpaTableRepository extends JpaRepository<TableEntity, Integer> 
             "AND table_entity.id_group = :idGroup",
             nativeQuery = true)
     public boolean exists(int teacher, String nameTable, int idGroup);
+
+    @Query(value="SELECT * FROM table_entity WHERE table_entity.teacher = :idProfile AND table_entity.id_group = :idGroup " +
+            "AND table_entity.name_table = :nameTable", nativeQuery = true)
+    public TableEntity findByProfileGroupName(int idProfile, int idGroup, String nameTable);
 }

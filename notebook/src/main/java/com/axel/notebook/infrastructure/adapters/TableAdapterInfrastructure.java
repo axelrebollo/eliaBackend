@@ -5,7 +5,6 @@ import com.axel.notebook.infrastructure.JpaEntities.GroupEntity;
 import com.axel.notebook.infrastructure.JpaEntities.TableEntity;
 import com.axel.notebook.infrastructure.exceptions.InfrastructureException;
 import com.axel.notebook.infrastructure.persistence.JpaGroupRepository;
-import com.axel.notebook.infrastructure.persistence.JpaTableRepository;
 import org.springframework.stereotype.Service;
 
 @Service
