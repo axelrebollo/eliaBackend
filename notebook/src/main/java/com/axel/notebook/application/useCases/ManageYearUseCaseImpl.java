@@ -83,12 +83,12 @@ public class ManageYearUseCaseImpl implements IManageYearUseCase {
         return new YearResponse(getAllYearsForUser(idProfile));
     }
 
-    public int getProfileId(String token) {
+    private int getProfileId(String token) {
         return yearProducer.sendToken(token);
     }
 
     //Get all years for one user
-    public List<String> getAllYearsForUser(int idProfile){
+    private List<String> getAllYearsForUser(int idProfile){
         if(idProfile <= 0){
             throw new ApplicationException("El usuario no existe, no se ha encontrado el perfil.");
         }

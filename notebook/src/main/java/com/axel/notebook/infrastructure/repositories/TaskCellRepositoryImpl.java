@@ -10,9 +10,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class TaskCellRepositoryImpl implements ITaskCellRepository {
+    //Dependency injection
     private final JpaTaskCellRepository jpaTaskCellRepository;
     private final TaskCellAdapterInfrastructure taskCellAdapter;
-    //Dependency injection
 
     //Constructor
     public TaskCellRepositoryImpl(JpaTaskCellRepository jpaTaskCellRepository,

@@ -163,6 +163,11 @@ public class ClassroomProfileRepositoryImpl implements IClassroomProfileReposito
             int lastPositionRow = jpaCellRepository.countStudentsIntoTable(table.getIdTable());
             int lastPositionCol = jpaCellRepository.countTasksIntoTable(table.getIdTable()) ;
 
+            //space for cell 0,0 contains "Alumnos" header
+            if(lastPositionRow == 0){
+                lastPositionRow = 1;
+            }
+
             CellEntity newCellStudent = new StudentCellEntity(table, lastPositionRow, lastPositionCol, student.getIdProfile());
             //save into cellEntity and StudentCellEntity
             CellEntity savedCellStudent = jpaCellRepository.save(newCellStudent);

@@ -56,12 +56,12 @@ public class ManageCourseUseCaseImpl implements IManageCourseUseCase {
         return new CourseResponse(getAllCoursesForUser(idProfile, nameYear));
     }
 
-    public int getProfileId(String token) {
+    private int getProfileId(String token) {
         return courseProducer.sendToken(token);
     }
 
     //Get all subjects for one user
-    public List<String> getAllCoursesForUser(int idProfile, String nameYear) {
+    private List<String> getAllCoursesForUser(int idProfile, String nameYear) {
         if(idProfile <= 0){
             throw new ApplicationException("El usuario no existe, no se ha encontrado el perfil.");
         }

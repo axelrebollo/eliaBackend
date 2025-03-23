@@ -67,11 +67,11 @@ public class ManageGroupUseCaseImpl implements IManageGroupUseCase {
         return new GroupResponse(getAllGroupsForSelection(idProfile, nameCourse, nameSubject, nameYear));
     }
 
-    public int getProfileId(String token) {
+    private int getProfileId(String token) {
         return groupProducer.sendToken(token);
     }
 
-    public List<String> getAllGroupsForSelection(int idProfile, String nameCourse, String nameSubject, String nameYear){
+    private List<String> getAllGroupsForSelection(int idProfile, String nameCourse, String nameSubject, String nameYear){
         if(idProfile <= 0){
             throw new ApplicationException("El usuario no existe, no se ha encontrado el perfil.");
         }

@@ -1,6 +1,5 @@
 package com.axel.notebook.infrastructure.repositories;
 
-import com.axel.notebook.application.exceptions.ApplicationException;
 import com.axel.notebook.domain.entities.Year;
 import com.axel.notebook.application.repositories.IYearRepository;
 import com.axel.notebook.infrastructure.JpaEntities.YearEntity;

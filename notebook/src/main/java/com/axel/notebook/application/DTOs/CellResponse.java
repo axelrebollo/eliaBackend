@@ -1,7 +1,7 @@
 package com.axel.notebook.application.DTOs;
 
 import com.axel.notebook.domain.valueObjects.Row;
-import com.axel.notebook.domain.valueObjects.RowNotebook;
+
 import java.util.List;
 
 public class CellResponse {

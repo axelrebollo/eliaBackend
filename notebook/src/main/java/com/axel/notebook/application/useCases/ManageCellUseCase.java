@@ -95,7 +95,7 @@ public class ManageCellUseCase implements IManageCellUseCase {
             Row rowTasks = getTasksFromTable(table);
 
             //if exists tasks created, then create headers task
-            if(rowTasks != null){
+            if(rowTasks.getRowNotebook() != null){
                 //add headers task into response table
                 rows.add(rowTasks);
             }

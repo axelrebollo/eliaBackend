@@ -68,7 +68,7 @@ public class ManageTableUseCaseImpl implements IManageTableUseCase {
         return tableProducer.sendToken(token);
     }
 
-    public List<String> getAllTablesForUser(int idProfile, String nameGroup, String nameCourse, String nameSubject, String nameYear){
+    private List<String> getAllTablesForUser(int idProfile, String nameGroup, String nameCourse, String nameSubject, String nameYear){
         List<String> tables = new ArrayList<>();
 
         if(idProfile <= 0){

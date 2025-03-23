@@ -62,7 +62,7 @@ public class ManageClassroomProfilesUseCaseImpl implements IManageClassroomProfi
     }
 
     //get classrooms that one user are created for profile
-    public ClassroomProfileResponse getClassroomsDataForProfile(int idProfile, String role){
+    private ClassroomProfileResponse getClassroomsDataForProfile(int idProfile, String role){
         if(idProfile <= 0){
             throw new ApplicationException("Error con el perfil, no existe.");
         }
@@ -86,7 +86,7 @@ public class ManageClassroomProfilesUseCaseImpl implements IManageClassroomProfi
         return new ClassroomProfileResponse(data);
     }
 
-    public Map<String,String> getProfileData(String token) {
+    private Map<String,String> getProfileData(String token) {
         return classroomProfileProducer.sendToken(token);
     }
 

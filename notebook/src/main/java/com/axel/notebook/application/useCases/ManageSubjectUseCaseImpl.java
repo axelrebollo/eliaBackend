@@ -83,12 +83,12 @@ public class ManageSubjectUseCaseImpl implements IManageSubjectUseCase {
         return new SubjectResponse(getAllSubjectsForUser(idProfile));
     }
 
-    public int getProfileId(String token) {
+    private int getProfileId(String token) {
         return subjectProducer.sendToken(token);
     }
 
     //Get all subjects for one user
-    public List<String> getAllSubjectsForUser(int idProfile){
+    private List<String> getAllSubjectsForUser(int idProfile){
         if(idProfile <= 0){
             throw new ApplicationException("El usuario no existe, no se ha encontrado el perfil.");
         }
