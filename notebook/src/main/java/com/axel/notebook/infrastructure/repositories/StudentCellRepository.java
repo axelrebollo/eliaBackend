@@ -6,8 +6,6 @@ import com.axel.notebook.infrastructure.exceptions.InfrastructureException;
 import com.axel.notebook.infrastructure.persistence.JpaStudentCellRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
-
 @Repository
 public class StudentCellRepository implements IStudentCellRepository {
     //Dependency injection

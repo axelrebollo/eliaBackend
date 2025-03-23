@@ -1,24 +1,25 @@
 package com.axel.notebook.application.DTOs;
 
+import com.axel.notebook.domain.valueObjects.Row;
 import com.axel.notebook.domain.valueObjects.RowNotebook;
 import java.util.List;
 
 public class CellResponse {
     //Attributes
-    private List<RowNotebook> tableCells;
+    private List<Row> tableCells;
 
     //Constructor
-    public CellResponse(List<RowNotebook> tableCells) {
+    public CellResponse(List<Row> tableCells) {
         this.tableCells = tableCells;
     }
 
     //Getters
-    public List<RowNotebook> getTableCells() {
+    public List<Row> getTableCells() {
         return tableCells;
     }
 
     //Setters
-    public void setTableCells(List<RowNotebook> tableCells) {
+    public void setTableCells(List<Row> tableCells) {
         this.tableCells = tableCells;
     }
 }

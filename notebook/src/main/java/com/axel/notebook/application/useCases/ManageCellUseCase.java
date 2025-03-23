@@ -2,25 +2,15 @@ package com.axel.notebook.application.useCases;
 
 import com.axel.notebook.application.DTOs.CellResponse;
 import com.axel.notebook.application.exceptions.ApplicationException;
-import com.axel.notebook.application.repositories.ICellRepository;
-import com.axel.notebook.application.repositories.IStudentCellRepository;
-import com.axel.notebook.application.repositories.ITableRepository;
-import com.axel.notebook.application.repositories.ITaskCellRepository;
+import com.axel.notebook.application.repositories.*;
 import com.axel.notebook.application.services.IManageCellUseCase;
 import com.axel.notebook.application.services.IManageTableUseCase;
 import com.axel.notebook.application.services.producers.ICellProducer;
 import com.axel.notebook.domain.entities.Table;
 import com.axel.notebook.domain.services.CellService;
-import com.axel.notebook.domain.valueObjects.Note;
-import com.axel.notebook.domain.valueObjects.RowNotebook;
-import com.axel.notebook.domain.valueObjects.Student;
-import com.axel.notebook.domain.valueObjects.Task;
-import com.axel.notebook.infrastructure.JpaEntities.CellEntity;
-import com.axel.notebook.infrastructure.JpaEntities.NoteCellEntity;
-import com.axel.notebook.infrastructure.persistence.JpaNoteCellRepository;
+import com.axel.notebook.domain.valueObjects.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +24,7 @@ public class ManageCellUseCase implements IManageCellUseCase {
     private final ICellRepository cellRepository;
     private final ITaskCellRepository taskCellRepository;
     private final IStudentCellRepository studentCellRepository;
-    private final JpaNoteCellRepository jpaNoteCellRepository;
+    private final INoteCellRepository noteCellRepository;
     private final CellService cellService;
 
     //Constructor
@@ -44,15 +34,16 @@ public class ManageCellUseCase implements IManageCellUseCase {
                              final ITableRepository tableRepository,
                              final ICellRepository cellRepository,
                              final ITaskCellRepository taskCellRepository,
-                             final IStudentCellRepository studentCellRepository, JpaNoteCellRepository jpaNoteCellRepository) {
+                             final IStudentCellRepository studentCellRepository,
+                             final INoteCellRepository noteCellRepository) {
         this.manageTableUseCase = manageTableUseCase;
         this.cellProducer = cellProducer;
         this.tableRepository = tableRepository;
         this.cellRepository = cellRepository;
         this.taskCellRepository = taskCellRepository;
         this.studentCellRepository = studentCellRepository;
-        this.jpaNoteCellRepository = jpaNoteCellRepository;
         this.cellService = new CellService();
+        this.noteCellRepository = noteCellRepository;
     }
 
     //get all cells from table
@@ -68,21 +59,20 @@ public class ManageCellUseCase implements IManageCellUseCase {
         //decode token and get data
         Map<String,String> dataToken = getProfileData(token);
         String idTeacherString = dataToken.get("idProfile");
-        int idTeacher = 0;
 
-        if(idTeacherString == null || idTeacherString.isEmpty() ||
-                dataToken.get("role") == null || dataToken.get("role").isEmpty()){
+        if(idTeacherString == null || idTeacherString.isEmpty()){
             throw new ApplicationException("No existe información para este usuario.");
         }
 
-        idTeacher = Integer.parseInt(idTeacherString);
+        //convert string to int
+        int idTeacher = Integer.parseInt(idTeacherString);
 
         if(idTeacher <= 0){
             throw new ApplicationException("Error al recuperar los usuarios, el perfil no existe");
         }
 
         //Table in list rows format
-        List<RowNotebook> rows = new ArrayList<>();
+        List<Row> rows = new ArrayList<>();
 
         //initialize response with empty results
         CellResponse responseTable = new CellResponse(rows);
@@ -102,7 +92,7 @@ public class ManageCellUseCase implements IManageCellUseCase {
             }
 
             //get headers task
-            RowNotebook rowTasks = getTasksFromTable(table);
+            Row rowTasks = getTasksFromTable(table);
 
             //if exists tasks created, then create headers task
             if(rowTasks != null){
@@ -111,19 +101,19 @@ public class ManageCellUseCase implements IManageCellUseCase {
             }
 
             //create rows for students, set students
-            List<RowNotebook> rowStudents = getStudentsTable(table);
+            List<Row> rowStudents = getStudentsTable(table);
 
             //if table not contains students return table empty or with header tasks
-            if(rowStudents == null || rowStudents.isEmpty()){
+            if(rowStudents.isEmpty()){
                 responseTable.setTableCells(rows);
                 return responseTable;
             }
 
             //insert notes into rows for students
-            List<RowNotebook> rowsWithNotes = getNotesFromTableForStudents(table, rowStudents, rowTasks);
+            List<Row> allRows = getNotesFromTableForStudents(table, rowStudents, rowTasks);
 
             //insert rows with students and notes into table response
-            rows.addAll(rowsWithNotes);
+            rows.addAll(allRows);
         }
         catch(ApplicationException e){
             throw new ApplicationException(e.getMessage());
@@ -140,8 +130,8 @@ public class ManageCellUseCase implements IManageCellUseCase {
     }
 
     //get all tasks from table to construct header row for tasks
-    private RowNotebook getTasksFromTable(Table table){
-        List<Task> tasks = new ArrayList<>();
+    private Row getTasksFromTable(Table table){
+        List<Cell> tasks = new ArrayList<>();
 
         if(table == null){
             throw new ApplicationException("No existe la tabla en el sistema.");
@@ -153,7 +143,7 @@ public class ManageCellUseCase implements IManageCellUseCase {
 
         //if class not contains tasks
         if(cells == null || cells.isEmpty()){
-            return new RowNotebook(null,null,null);
+            return new Row(null);
         }
 
         //iteration for cells
@@ -163,20 +153,22 @@ public class ManageCellUseCase implements IManageCellUseCase {
             if(idCell <= 0){
                 throw new ApplicationException("No existe la celda en el sistema.");
             }
-
-            Task task = taskCellRepository.getNameByIdCell(idCell);
-            if(task == null){
+            //get task from DB
+            Task task = taskCellRepository.getTaskByIdCell(idCell);
+            //construct cell for table
+            Cell cellTask = cellService.addCellTaskOrStudent(task.getNameTask(), task.getPositionRow(), task.getPositionCol(), task.getIdTask());
+            if(cellTask == null){
                 throw new ApplicationException("Ha habido un problema recuperando la tarea.");
             }
-            tasks.add(task);
+            tasks.add(cellTask);
         }
         //add list to tasks into row
-        return new RowNotebook(null,null, tasks);
+        return new Row(tasks);
     }
 
-    private List<RowNotebook> getStudentsTable(Table table){
+    private List<Row> getStudentsTable(Table table){
         //row with students
-        List<RowNotebook> rows = new ArrayList<>();
+        List<Row> rows = new ArrayList<>();
 
         if(table == null){
             throw new ApplicationException("No existe la tabla en el sistema.");
@@ -217,14 +209,21 @@ public class ManageCellUseCase implements IManageCellUseCase {
             String name = profileStudent.get("name");
             String surname1 = profileStudent.get("surname1");
             String surname2 = profileStudent.get("surname2");
+            String completeName = name + " " + surname1 + " " + surname2;
 
-            //creates row
-            Student student = cellService.addStudent(idProfileStudent, name, surname1, surname2, idCellStudent);
-            RowNotebook rowStudent = new RowNotebook(student, null, null);
+            //get positions with an array
+            int [] positions = new int[2];
+            //row position
+            positions = cellRepository.getPositionsByIdCell(idCellStudent);
+            //creates cell student
+            Cell cellStudent = cellService.addCellTaskOrStudent(completeName, positions[0], positions[1], idCellStudent);
 
-            if(student == null){
-                throw new ApplicationException("Problema al crear el estudiante con el perfil.");
+            if(cellStudent == null){
+                throw new ApplicationException("Problema al crear la celda del estudiante.");
             }
+
+            //creates row student without notes
+            Row rowStudent = cellService.addRowStudent(cellStudent);
 
             //insert row into list
             rows.add(rowStudent);
@@ -233,8 +232,8 @@ public class ManageCellUseCase implements IManageCellUseCase {
         return rows;
     }
 
-    private List<RowNotebook> getNotesFromTableForStudents(Table table, List<RowNotebook> students, RowNotebook rowTasks){
-        List<RowNotebook> studentsWithNotes = new ArrayList<>();
+    private List<Row> getNotesFromTableForStudents(Table table, List<Row> students, Row rowTasks){
+        List<Row> rows = new ArrayList<>();
 
         //check data
         if(students == null || students.isEmpty()){
@@ -249,21 +248,24 @@ public class ManageCellUseCase implements IManageCellUseCase {
         int idTable = table.getIdTable();
         List<Object[]> cells = cellRepository.getCellsForIdTableAndType(idTable, "NOTE");
 
-        //if table not contains columns and notes return empty notes
-        if(cells == null || cells.isEmpty()){
+
+        //if into task headers not exist tasks, return students
+        if(rowTasks == null || rowTasks.getRowNotebook() == null || rowTasks.getRowNotebook().isEmpty()){
             return students;
         }
 
-        //if not exist tasks, not exist notes and return empty list
-        if(rowTasks == null || rowTasks.getTasks() == null || rowTasks.getTasks().isEmpty()){
-            return null;
+        //if into table not contains notes return empty notes table
+        if(cells == null || cells.isEmpty()){
+            rows.add(rowTasks);
+            rows.addAll(students);
+            return rows;
         }
 
-        List<NoteCellEntity> notes = new ArrayList<>();
+        List<Note> notes = new ArrayList<>();
 
         //extract for one cellEntity, get NoteCellEntity
         for(Object[] studentCell : cells){
-            NoteCellEntity noteCell = jpaNoteCellRepository.findByIdCell((int)studentCell[0]);
+            Note noteCell = noteCellRepository.getNoteForId((int)studentCell[0]);
 
             if(noteCell == null){
                 throw new ApplicationException("No existe la nota asociada a la celda.");
@@ -272,24 +274,27 @@ public class ManageCellUseCase implements IManageCellUseCase {
         }
 
         //iteration for all students into table
-        for(RowNotebook studentRow : students){
-            List<Note> notesStudent = new ArrayList<>();
+        for(Row studentRow : students){
+            List<Cell> notesStudent = new ArrayList<>();
+            //insert student into row
+            notesStudent.add(studentRow.getRowNotebook().get(0));
             //iteration for task for one student
-            for(Task task : rowTasks.getTasks()){
+            for(Cell task : rowTasks.getRowNotebook()){
                 //iteration for one note for one task for one student
-                for(NoteCellEntity note : notes){
-                    if(note.getTaskCell().getIdCell() == task.getIdTask() &&
-                            note.getStudentCell().getIdCell() == studentRow.getStudent().getIdCellStudent()){
-                        Note newNote = new Note(note.getIdCell(), note.getNote());
-                        notesStudent.add(newNote);
+                for(Note note : notes){
+                    if(note.getIdTask() == task.getIdCell() && note.getIdStudent() == studentRow.getRowNotebook().get(0).getIdCell()){
+                        //create cell note
+                        Cell cellNote = cellService.addCellNote(note.getNote(), note.getPositionRow(),note.getPositionCol(), note.getIdNote());
+                        //insert note into row student
+                        notesStudent.add(cellNote);
                     }
                 }
             }
             //insert notes into row student
-            studentRow.setNotes(notesStudent);
+            studentRow.setRowNotebook(notesStudent);
             //insert row into table
-            studentsWithNotes.add(studentRow);
+            rows.add(studentRow);
         }
-        return studentsWithNotes;
+        return rows;
     }
 }

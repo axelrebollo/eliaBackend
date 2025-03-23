@@ -7,6 +7,8 @@ public class Student {
     private String name;
     private String surname1;
     private String surname2;
+    private int positionRow;
+    private int positionCol;
 
     //constructor
     public Student() {}
@@ -32,6 +34,15 @@ public class Student {
         this.idCellStudent = idCellStudent;
     }
 
+    public Student(String name, String surname1, String surname2, int positionRow, int positionCol, int idCellStudent) {
+        this.name = name;
+        this.surname1 = surname1;
+        this.surname2 = surname2;
+        this.positionRow = positionRow;
+        this.positionCol = positionCol;
+        this.idCellStudent = idCellStudent;
+    }
+
     //getters
     public int getIdProfile() {
         return idProfile;
@@ -49,7 +60,16 @@ public class Student {
         return surname2;
     }
 
-    public int getIdCellStudent() { return idCellStudent; }
+    public int getIdCellStudent() {
+        return idCellStudent; }
+
+    public int getPositionRow() {
+        return positionRow;
+    }
+
+    public int getPositionCol() {
+        return positionCol;
+    }
 
     //setters
     public void setIdProfile(int idProfile) {
@@ -68,5 +88,15 @@ public class Student {
         this.surname2 = surname2;
     }
 
-    public void setIdCellStudent(int idCellStudent) { this.idCellStudent = idCellStudent; }
+    public void setIdCellStudent(int idCellStudent) {
+        this.idCellStudent = idCellStudent;
+    }
+
+    public void setPositionRow(int positionRow) {
+        this.positionRow = positionRow;
+    }
+
+    public void setPositionCol(int positionCol) {
+        this.positionCol = positionCol;
+    }
 }

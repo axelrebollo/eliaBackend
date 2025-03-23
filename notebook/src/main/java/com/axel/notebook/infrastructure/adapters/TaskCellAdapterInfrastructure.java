@@ -20,7 +20,8 @@ public class TaskCellAdapterInfrastructure {
         if(taskCellEntity == null){
             throw new InfrastructureException("La entidad de infrastructura está vacía.");
         }
-        return new Task(taskCellEntity.getIdCell(), taskCellEntity.getNameTask());
+        return new Task(taskCellEntity.getIdCell(), taskCellEntity.getNameTask(),
+                taskCellEntity.getPositionRow(), taskCellEntity.getPositionCol());
     }
 
     public TaskCellEntity fromApplication(Task task){

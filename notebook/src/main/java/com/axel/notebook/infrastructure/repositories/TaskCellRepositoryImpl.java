@@ -21,7 +21,7 @@ public class TaskCellRepositoryImpl implements ITaskCellRepository {
         this.taskCellAdapter = taskCellAdapter;
     }
 
-    public Task getNameByIdCell(int idCell){
+    public Task getTaskByIdCell(int idCell){
         if(idCell <= 0){
             throw new InfrastructureException("El identificador de la celda está vacío o es erróneo.");
         }

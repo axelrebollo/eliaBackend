@@ -4,28 +4,19 @@ import com.axel.notebook.application.repositories.ICellRepository;
 import com.axel.notebook.infrastructure.JpaEntities.CellEntity;
 import com.axel.notebook.infrastructure.exceptions.InfrastructureException;
 import com.axel.notebook.infrastructure.persistence.JpaCellRepository;
-import com.axel.notebook.infrastructure.persistence.JpaNoteCellRepository;
-import com.axel.notebook.infrastructure.persistence.JpaStudentCellRepository;
-import com.axel.notebook.infrastructure.persistence.JpaTaskCellRepository;
 import org.springframework.stereotype.Repository;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class CellRepositoryImpl implements ICellRepository {
     //Dependency injection
     private final JpaCellRepository jpaCellRepository;
-    private final JpaStudentCellRepository jpaStudentCellRepository;
-    private final JpaTaskCellRepository jpaTaskCellRepository;
-    private final JpaNoteCellRepository jpaNoteCellRepository;
 
     //Constructor
-    public CellRepositoryImpl(JpaCellRepository jpaCellRepository, JpaStudentCellRepository jpaStudentCellRepository, JpaTaskCellRepository jpaTaskCellRepository, JpaNoteCellRepository jpaNoteCellRepository) {
+    public CellRepositoryImpl(JpaCellRepository jpaCellRepository) {
         this.jpaCellRepository = jpaCellRepository;
-        this.jpaStudentCellRepository = jpaStudentCellRepository;
-        this.jpaTaskCellRepository = jpaTaskCellRepository;
-        this.jpaNoteCellRepository = jpaNoteCellRepository;
     }
 
     public List<Object[]> getCellsForIdTableAndType(int idTable, String type){
@@ -54,5 +45,25 @@ public class CellRepositoryImpl implements ICellRepository {
         }
 
         return listColumns;
+    }
+
+    //get position row and column from idCell
+    public int[] getPositionsByIdCell(int idCell){
+        if(idCell <= 0){
+            throw new InfrastructureException("El identificador de la celda es erróneo o no existe.");
+        }
+
+        int[] listPositions = new int[2];
+
+        Optional<CellEntity> cell = jpaCellRepository.findById(idCell);
+
+        if(cell.isEmpty()){
+            throw new InfrastructureException("La celda no existe en la base de datos.");
+        }
+
+        listPositions[0] = cell.get().getPositionRow();
+        listPositions[1] = cell.get().getPositionCol();
+
+        return listPositions;
     }
 }
