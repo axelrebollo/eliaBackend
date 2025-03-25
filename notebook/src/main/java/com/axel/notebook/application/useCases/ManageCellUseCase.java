@@ -382,7 +382,7 @@ public class ManageCellUseCase implements IManageCellUseCase {
         //if is the last col into table
         if(taskCells.size()+1 != positionCol){
             //if is another column is necessary move left cols 1 position to allocate new column
-            allocateColumn(positionCol, table, nameReferenceTask, List<Object[]> taskCells);
+            allocateColumn(positionCol, table, nameReferenceTask, taskCells);
         }
 
         //create new task with positions reference + 1
@@ -444,6 +444,6 @@ public class ManageCellUseCase implements IManageCellUseCase {
 
     public void allocateColumn(int positionCol, Table table, String nameReferenceTask, List<Object[]> taskCells){
         //TODO
-        //allocate column to include new table (change positionCol into table CellEntity) 
+        //allocate column to include new table (change positionCol into table CellEntity)
     }
 }
