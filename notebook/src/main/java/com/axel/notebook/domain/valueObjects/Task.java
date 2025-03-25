@@ -15,6 +15,12 @@ public class Task {
         this.positionCol = positionCol;
     }
 
+    public Task(String nameTask, int positionRow, int positionCol) {
+        this.nameTask = nameTask;
+        this.positionRow = positionRow;
+        this.positionCol = positionCol;
+    }
+
     //getters
     public int getIdTask() {
         return idTask;

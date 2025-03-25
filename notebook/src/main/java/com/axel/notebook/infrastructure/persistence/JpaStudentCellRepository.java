@@ -1,5 +1,6 @@
 package com.axel.notebook.infrastructure.persistence;
 
+import com.axel.notebook.domain.valueObjects.Student;
 import com.axel.notebook.infrastructure.JpaEntities.StudentCellEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -17,4 +18,7 @@ public interface JpaStudentCellRepository extends JpaRepository<StudentCellEntit
     //use JPQL
     @Query("SELECT s FROM StudentCellEntity s WHERE s.idCell = :idCell")
     public StudentCellEntity findStudentCellEntityById(int idCell);
+
+    @Query("SELECT s FROM StudentCellEntity s WHERE s.idProfile = :idProfile")
+    public List<StudentCellEntity> findStudentCellEntityByIdProfile(int idProfile);
 }

@@ -167,6 +167,9 @@ public class ClassroomProfileRepositoryImpl implements IClassroomProfileReposito
             if(lastPositionRow == 0){
                 lastPositionRow = 1;
             }
+            else{
+                lastPositionRow = lastPositionRow + 1;
+            }
 
             CellEntity newCellStudent = new StudentCellEntity(table, lastPositionRow, lastPositionCol, student.getIdProfile());
             //save into cellEntity and StudentCellEntity

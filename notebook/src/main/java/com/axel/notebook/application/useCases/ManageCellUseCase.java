@@ -6,7 +6,7 @@ import com.axel.notebook.application.repositories.*;
 import com.axel.notebook.application.services.IManageCellUseCase;
 import com.axel.notebook.application.services.IManageTableUseCase;
 import com.axel.notebook.application.services.producers.ICellProducer;
-import com.axel.notebook.domain.entities.Table;
+import com.axel.notebook.domain.entities.*;
 import com.axel.notebook.domain.services.CellService;
 import com.axel.notebook.domain.valueObjects.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -296,5 +296,154 @@ public class ManageCellUseCase implements IManageCellUseCase {
             rows.add(studentRow);
         }
         return rows;
+    }
+
+    public CellResponse addTaskUseCase(String token, String classCode, String nameNewTask, String nameReferenceTask,
+                                       String nameSubject, String nameYear, String nameCourse, String nameGroup){
+        if(token == null || token.isEmpty() ||
+                classCode == null || classCode.isEmpty() ||
+                nameNewTask == null || nameNewTask.isEmpty() ||
+                nameReferenceTask == null || nameReferenceTask.isEmpty()){
+            throw new ApplicationException("Hay algún dato vacío para crear la tarea.");
+        }
+
+        //decode token and get data
+        Map<String,String> dataToken = getProfileData(token);
+        String idTeacherString = dataToken.get("idProfile");
+
+        if(idTeacherString == null || idTeacherString.isEmpty()){
+            throw new ApplicationException("No existe información para este usuario.");
+        }
+
+        //convert string to int
+        int idTeacher = Integer.parseInt(idTeacherString);
+        if(idTeacher <= 0){
+            throw new ApplicationException("Error al recuperar los usuarios, el perfil no existe");
+        }
+
+        //check if exist and get class
+        Table table = null;
+        if(tableRepository.existTableWithClassCode(classCode)){
+            table = tableRepository.findTableByClassCode(classCode);
+        }
+        if(table == null){
+            throw new ApplicationException("No existe la tabla en el sistema.");
+        }
+
+        //add new task into system
+        Task newTask = addNewTask(table, nameNewTask, nameReferenceTask);
+        if(newTask == null){
+            throw new ApplicationException("Error, la tarea no se ha creado correctamente.");
+        }
+
+        //add notes for users into table
+        createEmptyNotesIntoTask(table, newTask);
+
+        //update table
+        return getCellsFromTableUseCase(token, nameSubject, nameYear, nameCourse, nameGroup, table.getNameTable());
+    }
+
+    private Task addNewTask(Table table, String nameNewTask, String nameReferenceTask){
+        List<Object[]> taskCells = cellRepository.getCellsForIdTableAndType(table.getIdTable(), "TASK");
+
+        //initialize variables to column task
+        int positionCol = taskCells.size()+1;
+        int positionRow = 0;    //row 0 beacuse is header tasks
+
+        //if not exist task into table
+        if(taskCells.isEmpty()){
+            positionCol = 1;    //add task into position column 1
+        }
+        else{
+            //get position column about reference name task
+            for(Object[] taskCell : taskCells){
+                int idCell = (int)taskCell[0];
+
+                if(idCell <= 0){
+                    throw new ApplicationException("Error, el identifiacdor de la celda es incorrecto.");
+                }
+
+                Task taskColumn = cellRepository.getTaskByIdCell(idCell);
+                if(taskColumn == null){
+                    throw new ApplicationException("No existe la tarea en el sistema.");
+                }
+
+                //get position with name reference task
+                if(taskColumn.getNameTask() == null || taskColumn.getNameTask().isEmpty()){
+                    throw new ApplicationException("Error, no existe la tarea en el sistema.");
+                }
+
+                if(taskColumn.getNameTask().equals(nameReferenceTask)){
+                    positionCol = taskColumn.getPositionCol()+1;
+                }
+            }
+        }
+
+        //if is the last col into table
+        if(taskCells.size()+1 != positionCol){
+            //if is another column is necessary move left cols 1 position to allocate new column
+            allocateColumn(positionCol, table, nameReferenceTask, List<Object[]> taskCells);
+        }
+
+        //create new task with positions reference + 1
+        Task newTask = cellService.addTask(nameNewTask, positionRow, positionCol);
+        if(newTask == null){
+            throw new ApplicationException("La nueva tarea no se creó correctamente.");
+        }
+
+        //addTask
+        Task taskSaved = taskCellRepository.addTask(newTask,table);
+        if(taskSaved == null){
+            throw new ApplicationException("Error al agregar la tabla en el sistema.");
+        }
+
+        return taskSaved;
+    }
+
+    private void createEmptyNotesIntoTask(Table table, Task task){
+        if(table == null || task == null){
+            throw new ApplicationException("Error al insertar las notas vacías en la tarea.");
+        }
+
+        //get position column from new task
+        int positionCol = task.getPositionCol();
+        if(positionCol <= 0){
+            throw new ApplicationException("Error, la posición de la columa no es correcta.");
+        }
+
+        //get students into table
+        List<Object[]> studentCells = cellRepository.getCellsForIdTableAndType(table.getIdTable(), "STUDENT");
+        //if not exist students into table
+        if(studentCells.isEmpty()){
+            return;
+        }
+
+        //get positions rows into table
+        for(Object[] studentCell : studentCells){
+            //3rd parameter is positionRow
+            int positionRow = (int)studentCell[2];
+            int idCell = (int)studentCell[0];
+            int idCellStudent = studentCellRepository.getIdStudentByIdCell(idCell);
+            if(idCellStudent <= 0){
+                throw new ApplicationException("Error al agregar la nota en el sistema. El estudiante para esa nota no existe.");
+            }
+
+            //create note in domain
+            Note newNote = cellService.addNote(positionRow, positionCol, idCellStudent, task.getIdTask());
+            if(newNote == null){
+                throw new ApplicationException("Error al agregar la nota en el sistema, la nota tiene algún problema.");
+            }
+
+            //save note into DB
+            Note savedNote = noteCellRepository.addNote(newNote, table, task);
+            if(savedNote == null){
+                throw new ApplicationException("Problema al guardar las notas de los estudiantes.");
+            }
+        }
+    }
+
+    public void allocateColumn(int positionCol, Table table, String nameReferenceTask, List<Object[]> taskCells){
+        //TODO
+        //allocate column to include new table (change positionCol into table CellEntity) 
     }
 }

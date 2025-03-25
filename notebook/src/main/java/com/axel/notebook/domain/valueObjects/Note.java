@@ -19,6 +19,14 @@ public class Note {
         this.idTask = idTask;
     }
 
+    public Note(double note, int positionRow, int positionCol, int idStudent, int idTask) {
+        this.note = note;
+        this.positionRow = positionRow;
+        this.positionCol = positionCol;
+        this.idStudent = idStudent;
+        this.idTask = idTask;
+    }
+
     //getters
     public int getIdNote() {
         return idNote;

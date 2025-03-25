@@ -10,4 +10,8 @@ public interface ITableRepository {
     public Table createTable(Table table);
 
     public Table findTable(int idProfile, int idGroup, String nameTable);
+
+    public boolean existTableWithClassCode(String classCode);
+
+    public Table findTableByClassCode(String classCode);
 }

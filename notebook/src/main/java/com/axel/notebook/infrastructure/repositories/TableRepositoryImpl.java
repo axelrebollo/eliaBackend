@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Repository
 public class TableRepositoryImpl implements ITableRepository {
@@ -62,6 +63,33 @@ public class TableRepositoryImpl implements ITableRepository {
         }
 
         TableEntity table = jpaTableRepository.findByProfileGroupName(idProfile, idGroup, nameTable);
+        return tableAdapterInfrastructure.toApplication(table);
+    }
+
+    public boolean existTableWithClassCode(String classCode){
+        if(classCode == null){
+            throw new InfrastructureException("El codigo de la clase es nulo.");
+        }
+
+        TableEntity table = jpaTableRepository.findByClassCode(classCode);
+
+        if(table == null || !Objects.equals(table.getClassCode(), classCode)){
+            return false;
+        }
+        return true;
+    }
+
+    public Table findTableByClassCode(String classCode){
+        if(classCode == null){
+            throw new InfrastructureException("El codigo de la clase es nulo.");
+        }
+
+        TableEntity table = jpaTableRepository.findByClassCode(classCode);
+
+        if(table == null || !Objects.equals(table.getClassCode(), classCode)){
+            throw new InfrastructureException("Error al recuperar la tabla con el codigo de la clase.");
+        }
+
         return tableAdapterInfrastructure.toApplication(table);
     }
 }

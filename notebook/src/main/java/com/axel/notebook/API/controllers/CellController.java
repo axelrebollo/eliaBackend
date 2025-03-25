@@ -33,4 +33,18 @@ public class CellController {
                 nameCourse, nameGroup, nameTable);
         return new ResponseEntity<>(cellsResponse, HttpStatus.OK);
     }
+
+    @PutMapping("/addTaskRight")
+    public ResponseEntity<?> addTaskRight(@RequestParam String token,
+                                          @RequestParam String classCode,
+                                          @RequestParam String nameNewTask,
+                                          @RequestParam String nameReferenceTask,
+                                          @RequestParam String nameSubject,
+                                          @RequestParam String nameYear,
+                                          @RequestParam String nameCourse,
+                                          @RequestParam String nameGroup){
+        CellResponse cellResponse = manageCellUseCase.addTaskUseCase(token, classCode, nameNewTask, nameReferenceTask,
+                nameSubject, nameYear, nameCourse, nameGroup);
+        return new ResponseEntity<>(cellResponse, HttpStatus.OK);
+    }
 }

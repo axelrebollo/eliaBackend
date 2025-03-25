@@ -122,7 +122,6 @@ public class ManageClassroomProfilesUseCaseImpl implements IManageClassroomProfi
 
         //calls to prepare information
         try{
-
             Student student = classroomProfileService.addStudent(idProfile, name, surname1, surname2);
 
             if(student == null){
