@@ -34,8 +34,8 @@ public class CellController {
         return new ResponseEntity<>(cellsResponse, HttpStatus.OK);
     }
 
-    @PutMapping("/addTaskRight")
-    public ResponseEntity<?> addTaskRight(@RequestParam String token,
+    @PutMapping("/addTaskLeft")
+    public ResponseEntity<?> addTaskLeft(@RequestParam String token,
                                           @RequestParam String classCode,
                                           @RequestParam String nameNewTask,
                                           @RequestParam String nameReferenceTask,

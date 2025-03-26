@@ -348,7 +348,7 @@ public class ManageCellUseCase implements IManageCellUseCase {
 
         //initialize variables to column task
         int positionCol = taskCells.size()+1;
-        int positionRow = 0;    //row 0 beacuse is header tasks
+        int positionRow = 0;    //row 0 because is header tasks
 
         //if not exist task into table
         if(taskCells.isEmpty()){
@@ -479,7 +479,6 @@ public class ManageCellUseCase implements IManageCellUseCase {
                             throw new ApplicationException("Los indices/identificadoes del movimiento de la nota no son correctos.");
                         }
 
-                        //POR VERIFICAR SI TENGO taskPositionCol bien
                         if (notePositionCol == taskPositionCol) {
                             //move 1 position to right all notes for this column task
                             cellRepository.movePositionColCell(idNoteCell, notePositionCol + 1);
