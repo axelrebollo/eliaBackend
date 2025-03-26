@@ -302,8 +302,7 @@ public class ManageCellUseCase implements IManageCellUseCase {
                                        String nameSubject, String nameYear, String nameCourse, String nameGroup){
         if(token == null || token.isEmpty() ||
                 classCode == null || classCode.isEmpty() ||
-                nameNewTask == null || nameNewTask.isEmpty() ||
-                nameReferenceTask == null || nameReferenceTask.isEmpty()){
+                nameNewTask == null || nameNewTask.isEmpty()){
             throw new ApplicationException("Hay algún dato vacío para crear la tarea.");
         }
 
@@ -374,7 +373,7 @@ public class ManageCellUseCase implements IManageCellUseCase {
                 }
 
                 if(taskColumn.getNameTask().equals(nameReferenceTask)){
-                    positionCol = taskColumn.getPositionCol();
+                    positionCol = taskColumn.getPositionCol()+1;
                 }
             }
         }
@@ -396,7 +395,6 @@ public class ManageCellUseCase implements IManageCellUseCase {
         if(taskSaved == null){
             throw new ApplicationException("Error al agregar la tabla en el sistema.");
         }
-
         return taskSaved;
     }
 

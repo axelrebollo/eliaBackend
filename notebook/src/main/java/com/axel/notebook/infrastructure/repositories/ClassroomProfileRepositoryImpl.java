@@ -161,7 +161,7 @@ public class ClassroomProfileRepositoryImpl implements IClassroomProfileReposito
 
             //find the last row and col
             int lastPositionRow = jpaCellRepository.countStudentsIntoTable(table.getIdTable());
-            int lastPositionCol = jpaCellRepository.countTasksIntoTable(table.getIdTable()) ;
+            int lastPositionCol = jpaCellRepository.countTasksIntoTable(table.getIdTable());
 
             //space for cell 0,0 contains "Alumnos" header
             if(lastPositionRow == 0){
@@ -178,6 +178,12 @@ public class ClassroomProfileRepositoryImpl implements IClassroomProfileReposito
             if(savedCellStudent != null){
                 return true;
             }
+
+            //INSERTAR NOTAS con -1 PARA TODAS LAS TAREAS DE ESE ESTUDIANTE
+                //buscar las tareas de esa tabla
+                    //recorrer las tareas
+                        //por cada tarea (del estudiante) crear una nota (dominio)
+                        //guardar la nota en la DB
         }
         catch(InfrastructureException e){
             throw new InfrastructureException(e.getMessage(), e);
