@@ -1,12 +1,18 @@
 package com.axel.notebook.infrastructure.repositories;
 
+import com.axel.notebook.application.exceptions.ApplicationException;
 import com.axel.notebook.application.repositories.IClassroomProfileRepository;
+import com.axel.notebook.domain.entities.Table;
+import com.axel.notebook.domain.services.CellService;
+import com.axel.notebook.domain.valueObjects.Note;
 import com.axel.notebook.domain.valueObjects.Student;
 import com.axel.notebook.domain.services.ClassroomProfileService;
 import com.axel.notebook.domain.valueObjects.ClassroomProfile;
+import com.axel.notebook.domain.valueObjects.Task;
 import com.axel.notebook.infrastructure.JpaEntities.CellEntity;
 import com.axel.notebook.infrastructure.JpaEntities.StudentCellEntity;
 import com.axel.notebook.infrastructure.JpaEntities.TableEntity;
+import com.axel.notebook.infrastructure.adapters.TableAdapterInfrastructure;
 import com.axel.notebook.infrastructure.exceptions.InfrastructureException;
 import com.axel.notebook.infrastructure.persistence.JpaCellRepository;
 import com.axel.notebook.infrastructure.persistence.JpaStudentCellRepository;
@@ -22,14 +28,27 @@ public class ClassroomProfileRepositoryImpl implements IClassroomProfileReposito
     private final JpaStudentCellRepository jpaStudentCellRepository;
     private final ClassroomProfileService classroomProfileService;  //domain service
     private final JpaCellRepository jpaCellRepository;
+    private final CellRepositoryImpl cellRepository;
+    private final CellService cellService;
+    private final NoteCellRepositoryImpl noteCellRepository;
+    private final TaskCellRepositoryImpl taskCellRepositoryImpl;
+    private final TableAdapterInfrastructure tableAdapterInfrastructure;
 
     //Constructor
     public ClassroomProfileRepositoryImpl(JpaTableRepository jpaTableRepository,
-                                          JpaStudentCellRepository jpaStudentCellRepository, JpaCellRepository jpaCellRepository) {
+                                          JpaStudentCellRepository jpaStudentCellRepository,
+                                          JpaCellRepository jpaCellRepository,
+                                          CellRepositoryImpl cellRepository,
+                                          NoteCellRepositoryImpl noteCellRepository, TaskCellRepositoryImpl taskCellRepositoryImpl, TableAdapterInfrastructure tableAdapterInfrastructure) {
         this.jpaTableRepository = jpaTableRepository;
         this.jpaStudentCellRepository = jpaStudentCellRepository;
         this.classroomProfileService = new ClassroomProfileService();
         this.jpaCellRepository = jpaCellRepository;
+        this.cellRepository = cellRepository;
+        this.cellService = new CellService();
+        this.noteCellRepository = noteCellRepository;
+        this.taskCellRepositoryImpl = taskCellRepositoryImpl;
+        this.tableAdapterInfrastructure = tableAdapterInfrastructure;
     }
 
     //get data with teacher id
@@ -161,7 +180,7 @@ public class ClassroomProfileRepositoryImpl implements IClassroomProfileReposito
 
             //find the last row and col
             int lastPositionRow = jpaCellRepository.countStudentsIntoTable(table.getIdTable());
-            int lastPositionCol = jpaCellRepository.countTasksIntoTable(table.getIdTable());
+            int lastPositionCol = 0;
 
             //space for cell 0,0 contains "Alumnos" header
             if(lastPositionRow == 0){
@@ -175,15 +194,43 @@ public class ClassroomProfileRepositoryImpl implements IClassroomProfileReposito
             //save into cellEntity and StudentCellEntity
             CellEntity savedCellStudent = jpaCellRepository.save(newCellStudent);
 
-            if(savedCellStudent != null){
-                return true;
-            }
+            if(savedCellStudent != null) {
+                //insert notes for tasks for student into table
 
-            //INSERTAR NOTAS con -1 PARA TODAS LAS TAREAS DE ESE ESTUDIANTE
-                //buscar las tareas de esa tabla
-                    //recorrer las tareas
-                        //por cada tarea (del estudiante) crear una nota (dominio)
-                        //guardar la nota en la DB
+                //get all notes for this table
+                List<Object[]> taskCells = cellRepository.getCellsForIdTableAndType(table.getIdTable(), "TASK");
+
+                if (!taskCells.isEmpty()) {
+                    for (Object[] taskCell : taskCells) {
+                        int idTaskCell = (Integer) taskCell[0];
+                        int positionColumn = (Integer) taskCell[1];
+
+                        //create note in domain
+                        Note newNote = cellService.addNote(lastPositionRow, positionColumn, student.getIdProfile(), idTaskCell);
+                        if (newNote == null) {
+                            throw new ApplicationException("Error al agregar la nota en el sistema, la nota tiene algún problema.");
+                        }
+
+                        Task taskFounded = taskCellRepositoryImpl.getTaskByIdCell(idTaskCell);
+
+                        if (taskFounded == null) {
+                            throw new InfrastructureException("Error no se ha encontrado la tarea en la base de datos.");
+                        }
+
+                        Table tableDomain = tableAdapterInfrastructure.toApplication(table);
+
+                        if (tableDomain == null) {
+                            throw new InfrastructureException("Problema al transfomar la entidad tabla en entidad de dominio");
+                        }
+
+                        //save note into DB
+                        Note savedNote = noteCellRepository.addNote(newNote, tableDomain, taskFounded);
+                        if (savedNote == null) {
+                            throw new ApplicationException("Problema al guardar las notas de los estudiantes.");
+                        }
+                    }
+                }
+            }
         }
         catch(InfrastructureException e){
             throw new InfrastructureException(e.getMessage(), e);
