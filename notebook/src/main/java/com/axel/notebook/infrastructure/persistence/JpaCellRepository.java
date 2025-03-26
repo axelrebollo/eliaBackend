@@ -1,7 +1,9 @@
 package com.axel.notebook.infrastructure.persistence;
 
 import com.axel.notebook.infrastructure.JpaEntities.CellEntity;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import java.util.List;
@@ -24,4 +26,9 @@ public interface JpaCellRepository extends JpaRepository<CellEntity, Integer> {
 
     @Query(value = "SELECT c.id_cell, c.position_col, c.position_row,  c.id_table FROM cell_entity c WHERE c.id_table = :idTable AND c.cell_type = :type",nativeQuery = true)
     public List<Object[]> getAllByIdAndType(int idTable, String type);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE CellEntity c SET c.positionCol = :newPositionCol WHERE c.idCell = :idCell")
+    public void setPositionCol(int idCell, int newPositionCol);
 }

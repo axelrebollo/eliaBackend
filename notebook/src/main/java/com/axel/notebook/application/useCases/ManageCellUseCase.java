@@ -374,7 +374,7 @@ public class ManageCellUseCase implements IManageCellUseCase {
                 }
 
                 if(taskColumn.getNameTask().equals(nameReferenceTask)){
-                    positionCol = taskColumn.getPositionCol()+1;
+                    positionCol = taskColumn.getPositionCol();
                 }
             }
         }
@@ -442,8 +442,51 @@ public class ManageCellUseCase implements IManageCellUseCase {
         }
     }
 
-    public void allocateColumn(int positionCol, Table table, String nameReferenceTask, List<Object[]> taskCells){
-        //TODO
-        //allocate column to include new table (change positionCol into table CellEntity)
+    //allocate column to include new table (change positionCol into table CellEntity)
+    public void allocateColumn(int positionColNewTask, Table table, String nameReferenceTask, List<Object[]> taskCells){
+        if(positionColNewTask <= 0 || table == null || nameReferenceTask == null || taskCells == null){
+            throw new ApplicationException("Error al recolocar columnas para hacer hueco a la nueva tarea.");
+        }
+
+        //sort elements for positionCol Max to Min
+        taskCells.sort((a,b) -> Integer.compare((int)b[1], (int)a[1]));
+
+        //for to tasks ordered for position col
+        for(Object[] task : taskCells){
+            int idTaskCell = (int)task[0];
+            int taskPositionCol = (int)task[1];
+
+            if(idTaskCell <= 0 || taskPositionCol <= 0){
+                throw new ApplicationException("Los indices/identificadoes del movimiento de la tarea no son correctos.");
+            }
+
+            //if positionCol to evaluate is <= to position col to insert enter
+            if(positionColNewTask <= taskPositionCol){
+                //move 1 position to right, cell from task
+                cellRepository.movePositionColCell(idTaskCell, taskPositionCol+1);
+
+                //get all notes for this table
+                List<Object[]> noteCells = cellRepository.getCellsForIdTableAndType(table.getIdTable(), "NOTE");
+
+                //if exist students into table
+                if(!noteCells.isEmpty()) {
+                    //filter to column to move
+                    for (Object[] noteCell : noteCells) {
+                        int idNoteCell = (int) noteCell[0];
+                        int notePositionCol = (int) noteCell[1];
+
+                        if(idNoteCell <= 0 || notePositionCol <= 0){
+                            throw new ApplicationException("Los indices/identificadoes del movimiento de la nota no son correctos.");
+                        }
+
+                        //POR VERIFICAR SI TENGO taskPositionCol bien
+                        if (notePositionCol == taskPositionCol) {
+                            //move 1 position to right all notes for this column task
+                            cellRepository.movePositionColCell(idNoteCell, notePositionCol + 1);
+                        }
+                    }
+                }
+            }
+        }
     }
 }

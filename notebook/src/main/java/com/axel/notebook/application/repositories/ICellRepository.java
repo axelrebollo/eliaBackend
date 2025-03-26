@@ -10,4 +10,6 @@ public interface ICellRepository {
     public int[] getPositionsByIdCell(int idCell);
 
     public Task getTaskByIdCell(int idCell);
+
+    public void movePositionColCell(int idTaskCell, int newTaskPositionCol);
 }

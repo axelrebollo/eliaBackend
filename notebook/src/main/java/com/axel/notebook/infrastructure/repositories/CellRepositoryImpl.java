@@ -85,4 +85,16 @@ public class CellRepositoryImpl implements ICellRepository {
         }
         return taskCellAdapterInfrastructure.toApplication(taskEntity);
     }
+
+    public void movePositionColCell(int idTaskCell, int newTaskPositionCol) {
+        if (idTaskCell <= 0 || newTaskPositionCol <= 0) {
+            throw new InfrastructureException("La nueva posición de la columna o el identificador de celda no son correctos.");
+        }
+
+        try {
+            jpaCellRepository.setPositionCol(idTaskCell, newTaskPositionCol);
+        } catch (InfrastructureException e) {
+            throw new InfrastructureException(e.getMessage());
+        }
+    }
 }
