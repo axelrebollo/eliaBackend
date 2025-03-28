@@ -1,6 +1,7 @@
 package com.axel.notebook.application.useCases;
 
 import com.axel.notebook.application.DTOs.CellResponse;
+import com.axel.notebook.application.DTOs.UpdateResponse;
 import com.axel.notebook.application.exceptions.ApplicationException;
 import com.axel.notebook.application.repositories.*;
 import com.axel.notebook.application.services.IManageCellUseCase;
@@ -484,6 +485,49 @@ public class ManageCellUseCase implements IManageCellUseCase {
                     }
                 }
             }
+        }
+    }
+
+    //update note and returns idCellNote
+    public UpdateResponse updateNoteUseCase(String token, String classCode, String nameStudent, String nameTask, double newNote){
+        //check data
+        if(token == null || classCode == null || nameStudent == null || nameTask == null || newNote < 0){
+            throw new ApplicationException("Alguno de los campos para insertar nota es nulo.");
+        }
+
+        //decode token and get data
+        Map<String,String> dataToken = getProfileData(token);
+        String idTeacherString = dataToken.get("idProfile");
+
+        if(idTeacherString == null || idTeacherString.isEmpty()){
+            throw new ApplicationException("Error con el profesor, el perfil no es correcto o no existe.");
+        }
+
+        //Find idCellStudent for nameStudent and classCode
+        int idCellStudent = cellRepository.getIdCell(nameStudent, classCode, "STUDENT");
+        if(idCellStudent <= 0){
+            throw new ApplicationException("No se han encontrado estudiantes relacionados con esta nota.");
+        }
+
+        //Find idCellTask for nameTask and classCode
+        int idCellTask = cellRepository.getIdCell(nameTask, classCode, "TASK");
+        if(idCellTask <= 0){
+            throw new ApplicationException("No se han encontrado tareas relacionadas con esta nota.");
+        }
+
+        //Find idCellNote for id student and task, classcode
+        int idCellNote = cellRepository.getIdNoteCell(idCellStudent, idCellTask);
+        if(idCellNote <= 0){
+            throw new ApplicationException("No se ha encontrado el identificador de la nota.");
+        }
+
+        //update note
+        int idResponseCellNote = cellRepository.updateNote(idCellNote, newNote);
+        if(idResponseCellNote < 0){
+            return new UpdateResponse(-1);
+        }
+        else{
+            return new UpdateResponse(idResponseCellNote);
         }
     }
 }

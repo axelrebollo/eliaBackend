@@ -1,6 +1,7 @@
 package com.axel.notebook.API.controllers;
 
 import com.axel.notebook.application.DTOs.CellResponse;
+import com.axel.notebook.application.DTOs.UpdateResponse;
 import com.axel.notebook.application.services.IManageCellUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,17 +35,29 @@ public class CellController {
         return new ResponseEntity<>(cellsResponse, HttpStatus.OK);
     }
 
-    @PutMapping("/addTask")
+    //add task right
+    @PostMapping("/addTask")
     public ResponseEntity<?> addTask(@RequestParam String token,
-                                          @RequestParam String classCode,
-                                          @RequestParam String nameNewTask,
-                                          @RequestParam String nameReferenceTask,
-                                          @RequestParam String nameSubject,
-                                          @RequestParam String nameYear,
-                                          @RequestParam String nameCourse,
-                                          @RequestParam String nameGroup){
+                                     @RequestParam String classCode,
+                                     @RequestParam String nameNewTask,
+                                     @RequestParam String nameReferenceTask,
+                                     @RequestParam String nameSubject,
+                                     @RequestParam String nameYear,
+                                     @RequestParam String nameCourse,
+                                     @RequestParam String nameGroup){
         CellResponse cellResponse = manageCellUseCase.addTaskUseCase(token, classCode, nameNewTask, nameReferenceTask,
                 nameSubject, nameYear, nameCourse, nameGroup);
         return new ResponseEntity<>(cellResponse, HttpStatus.OK);
+    }
+
+    //set a note for student and task
+    @PatchMapping("/updateNote")
+    public ResponseEntity<?> updateNote(@RequestParam String token,
+                                        @RequestParam String classCode,
+                                        @RequestParam String student,
+                                        @RequestParam String task,
+                                        @RequestParam double note){
+        UpdateResponse updateResponse = manageCellUseCase.updateNoteUseCase(token, classCode, student, task, note);
+        return new ResponseEntity<>(updateResponse, HttpStatus.OK);
     }
 }

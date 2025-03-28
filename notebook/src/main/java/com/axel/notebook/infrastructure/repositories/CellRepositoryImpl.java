@@ -1,16 +1,20 @@
 package com.axel.notebook.infrastructure.repositories;
 
 import com.axel.notebook.application.repositories.ICellRepository;
+import com.axel.notebook.domain.valueObjects.Note;
 import com.axel.notebook.domain.valueObjects.Task;
 import com.axel.notebook.infrastructure.JpaEntities.CellEntity;
+import com.axel.notebook.infrastructure.JpaEntities.NoteCellEntity;
+import com.axel.notebook.infrastructure.JpaEntities.StudentCellEntity;
 import com.axel.notebook.infrastructure.JpaEntities.TaskCellEntity;
 import com.axel.notebook.infrastructure.adapters.TaskCellAdapterInfrastructure;
 import com.axel.notebook.infrastructure.exceptions.InfrastructureException;
-import com.axel.notebook.infrastructure.persistence.JpaCellRepository;
-import com.axel.notebook.infrastructure.persistence.JpaTaskCellRepository;
+import com.axel.notebook.infrastructure.kafka.producers.CellProducer;
+import com.axel.notebook.infrastructure.persistence.*;
 import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Repository
@@ -19,12 +23,20 @@ public class CellRepositoryImpl implements ICellRepository {
     private final JpaCellRepository jpaCellRepository;
     private final JpaTaskCellRepository jpaTaskCellRepository;
     private final TaskCellAdapterInfrastructure taskCellAdapterInfrastructure;
+    private final JpaTableRepository jpaTableRepository;
+    private final JpaStudentCellRepository jpaStudentCellRepository;
+    private final CellProducer cellProducer;
+    private final JpaNoteCellRepository jpaNoteCellRepository;
 
     //Constructor
-    public CellRepositoryImpl(JpaCellRepository jpaCellRepository, JpaTaskCellRepository jpaTaskCellRepository, TaskCellAdapterInfrastructure taskCellAdapterInfrastructure) {
+    public CellRepositoryImpl(JpaCellRepository jpaCellRepository, JpaTaskCellRepository jpaTaskCellRepository, TaskCellAdapterInfrastructure taskCellAdapterInfrastructure, JpaTableRepository jpaTableRepository, JpaStudentCellRepository jpaStudentCellRepository, CellProducer cellProducer, JpaNoteCellRepository jpaNoteCellRepository) {
         this.jpaCellRepository = jpaCellRepository;
         this.jpaTaskCellRepository = jpaTaskCellRepository;
         this.taskCellAdapterInfrastructure = taskCellAdapterInfrastructure;
+        this.jpaTableRepository = jpaTableRepository;
+        this.jpaStudentCellRepository = jpaStudentCellRepository;
+        this.cellProducer = cellProducer;
+        this.jpaNoteCellRepository = jpaNoteCellRepository;
     }
 
     public List<Object[]> getCellsForIdTableAndType(int idTable, String type){
@@ -96,5 +108,73 @@ public class CellRepositoryImpl implements ICellRepository {
         } catch (InfrastructureException e) {
             throw new InfrastructureException(e.getMessage());
         }
+    }
+
+    public int getIdCell(String name, String classCode, String type){
+        if(name == null || name.isEmpty() || classCode == null || classCode.isEmpty() || type == null || type.isEmpty()){
+            throw new InfrastructureException("Error, algún parámetro es nulo o vacío.");
+        }
+
+        //get idTable from JPAtableEntity(classCode)
+        int idTable = jpaTableRepository.findByClassCode(classCode).getIdTable();
+        if(idTable <= 0){
+            throw new InfrastructureException("Error, la tabla no existe en el sistema.");
+        }
+
+        //get idCell task/student from name and idTable
+        if(type.equals("STUDENT")){
+            Map<String, String> studentProfile = cellProducer.sendNameProfile(name);
+            int idProfile = Integer.parseInt(studentProfile.get("idProfile"));
+            List<StudentCellEntity> studentsInAllTables = jpaStudentCellRepository.findStudentCellEntityByIdProfile(idProfile);
+            if(studentsInAllTables.isEmpty()){
+                return 0;
+            }
+
+            for(StudentCellEntity studentCellEntity : studentsInAllTables){
+                if(classCode.equals(studentCellEntity.getTable().getClassCode())){
+                    return studentCellEntity.getIdCell();
+                }
+            }
+        }
+        else if(type.equals("TASK")){
+            List<TaskCellEntity> tasksForName = jpaTaskCellRepository.findByName(name);
+            if(tasksForName.isEmpty()){
+                return 0;
+            }
+
+            for(TaskCellEntity taskCellEntity : tasksForName){
+                if(classCode.equals(taskCellEntity.getTable().getClassCode())){
+                    return taskCellEntity.getIdCell();
+                }
+            }
+        }
+        else{
+            throw new InfrastructureException("El tipo de celda debe especificarse.");
+        }
+        return 0;
+    }
+
+    public int getIdNoteCell(int idCellStudent, int idCellTask){
+        if(idCellStudent <= 0 || idCellTask <= 0){
+            throw new InfrastructureException("Alguno de los valores para recuperar la nota está vacío.");
+        }
+
+        int idNoteCell = jpaNoteCellRepository.findIdNoteCell(idCellStudent, idCellTask).getIdCell();
+        if(idNoteCell <= 0){
+            return 0;
+        }
+        return idNoteCell;
+    }
+
+    public int updateNote(int idCellNote, double newNote){
+        if(idCellNote <= 0 || newNote < 0){
+            throw new InfrastructureException("Error, el identificador de la nota o la nota no son correctos.");
+        }
+
+        int idNote = jpaNoteCellRepository.updateNote(idCellNote, newNote);
+        if(idNote <= 0){
+            throw new InfrastructureException("Error, hay algún problema con la actualización de la nota.");
+        }
+        return idNote;
     }
 }

@@ -1,6 +1,5 @@
 package com.axel.notebook.infrastructure.persistence;
 
-import com.axel.notebook.domain.valueObjects.Student;
 import com.axel.notebook.infrastructure.JpaEntities.StudentCellEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

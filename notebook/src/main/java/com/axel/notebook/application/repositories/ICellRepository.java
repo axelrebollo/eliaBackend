@@ -12,4 +12,10 @@ public interface ICellRepository {
     public Task getTaskByIdCell(int idCell);
 
     public void movePositionColCell(int idTaskCell, int newTaskPositionCol);
+
+    public int getIdCell(String name, String classCode, String type);
+
+    public int getIdNoteCell(int idCellStudent, int idCellTask);
+
+    public int updateNote(int idCellNote, double newNote);
 }

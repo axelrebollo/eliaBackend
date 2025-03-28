@@ -15,6 +15,8 @@ import org.apache.kafka.common.header.Headers;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
 @Service
 public class CellTokenConsumer {
     //Dependency injection
@@ -109,6 +111,41 @@ public class CellTokenConsumer {
 
         //get idProfile
         ProfileEntity profile = jpaProfileRepository.findByIdProfile(idProfile);
+
+        if(profile == null) {
+            throw new InfrastructureException("El perfil no existe");
+        }
+
+        cellProfileProducer.sendProfile(profile, correlationId);
+    }
+
+    //Listen to topic "petition-idProfile-name"
+    @KafkaListener(topics = "petition-idProfile-name", groupId = "idProfileName-group")
+    public void processNameProfile(ConsumerRecord<String, String> record){
+        //extract data to message
+        String nameProfile = record.value();
+
+        //parse for spaces
+        String[] parts = nameProfile.split(" ");
+        String name = parts.length > 0 ? parts[0] : "";
+        String surname1 = parts.length > 1 ? parts[1] : "";
+        String surname2 = parts.length > 2 ? parts[2] : "";
+
+        //extract id from message
+        Headers headers = record.headers();
+        Header correlationIdHeader = headers.lastHeader("kafka_correlationId");
+
+        if (correlationIdHeader == null) {
+            throw new InfrastructureException("No hay id de correlación en el mensaje recibido");
+        }
+        String correlationId = new String(correlationIdHeader.value());
+
+        if(nameProfile.isEmpty() || Objects.equals(surname1, "") || Objects.equals(surname2, "") || Objects.equals(name, "")) {
+            cellProfileProducer.sendProfile(null, correlationId);
+        }
+
+        //get idProfile
+        ProfileEntity profile = jpaProfileRepository.findByName(name, surname1, surname2);
 
         if(profile == null) {
             throw new InfrastructureException("El perfil no existe");

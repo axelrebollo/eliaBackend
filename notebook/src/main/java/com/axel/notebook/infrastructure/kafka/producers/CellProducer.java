@@ -78,4 +78,31 @@ public class CellProducer implements ICellProducer {
         //waiting response
         return future.join();
     }
+
+    //petition with name and surnames and return idProfile
+    public Map<String, String> sendNameProfile(String name){
+        //topic
+        String topic = "petition-idProfile-name";
+        //Number unique id
+        String correlationId = UUID.randomUUID().toString();
+        //Create a promise to wait response
+        CompletableFuture<Map<String, String>> future = cellConsumer.createFuture(correlationId);
+        //create headers
+        Headers headers = new RecordHeaders();
+        headers.add(new RecordHeader("kafka_correlationId", correlationId.getBytes()));
+
+        //creates and send message to kafka
+        ProducerRecord<String, String> record = new ProducerRecord<>(
+                topic,              //topic
+                null,               //partition
+                null,               //timestamp
+                null,               //key
+                name,               //value
+                headers             //headers
+        );
+        kafkaTemplate.send(record);
+
+        //waiting response
+        return future.join();
+    }
 }
