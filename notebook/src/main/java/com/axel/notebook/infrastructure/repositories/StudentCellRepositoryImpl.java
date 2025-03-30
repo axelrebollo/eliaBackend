@@ -1,6 +1,5 @@
 package com.axel.notebook.infrastructure.repositories;
 
-import com.axel.notebook.application.repositories.INoteCellRepository;
 import com.axel.notebook.application.repositories.IStudentCellRepository;
 import com.axel.notebook.domain.entities.Table;
 import com.axel.notebook.infrastructure.JpaEntities.StudentCellEntity;
@@ -9,7 +8,6 @@ import com.axel.notebook.infrastructure.persistence.JpaCellRepository;
 import com.axel.notebook.infrastructure.persistence.JpaStudentCellRepository;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Repository;
-
 import java.util.Comparator;
 import java.util.List;
 

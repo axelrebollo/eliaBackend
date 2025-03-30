@@ -18,7 +18,6 @@ import com.axel.notebook.infrastructure.persistence.JpaCellRepository;
 import com.axel.notebook.infrastructure.persistence.JpaStudentCellRepository;
 import com.axel.notebook.infrastructure.persistence.JpaTableRepository;
 import org.springframework.stereotype.Repository;
-
 import java.util.*;
 
 @Repository
@@ -51,7 +50,7 @@ public class ClassroomProfileRepositoryImpl implements IClassroomProfileReposito
         this.tableAdapterInfrastructure = tableAdapterInfrastructure;
     }
 
-    //get data with teacher id
+    //get data teacher with teacher id profile
     public List<ClassroomProfile> getTeacherDataByIdProfile(int idProfile){
         List<ClassroomProfile> rows = new ArrayList<>();
 
@@ -88,6 +87,7 @@ public class ClassroomProfileRepositoryImpl implements IClassroomProfileReposito
         return rows;
     }
 
+    //get data teacher with student id profile
     public List<ClassroomProfile> getStudentDataByIdProfile(int idProfile){
         List<ClassroomProfile> rows = new ArrayList<>();
 
@@ -133,6 +133,7 @@ public class ClassroomProfileRepositoryImpl implements IClassroomProfileReposito
         return rows;
     }
 
+    //return boolean if student is into class
     public boolean enrollStudentToTable(Student student, String classCode){
         //check data
         if(student == null){

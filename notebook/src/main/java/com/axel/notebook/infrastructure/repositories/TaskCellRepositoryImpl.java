@@ -12,7 +12,6 @@ import com.axel.notebook.infrastructure.persistence.JpaTableRepository;
 import com.axel.notebook.infrastructure.persistence.JpaTaskCellRepository;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Repository;
-
 import java.util.Comparator;
 import java.util.List;
 

@@ -20,7 +20,7 @@ public class CourseController {
         this.manageCourseUseCase = manageCourseUseCase;
     }
 
-    //endpoints
+    //ENDPOINTS
 
     //add course into year for one teacher
     @PostMapping("/addCourse")

@@ -20,7 +20,9 @@ public class TableController {
         this.manageTableUseCase = manageTableUseCase;
     }
 
-    //endpoints
+    //ENDPOINTS
+
+    //add table to selection
     @PostMapping("/addTable")
     public ResponseEntity<?> addTable(@RequestParam String token, @RequestParam String nameTable,
                                       @RequestParam String nameGroup, @RequestParam String nameCourse,
@@ -29,6 +31,7 @@ public class TableController {
         return new ResponseEntity<>(tableResponse, HttpStatus.OK);
     }
 
+    //get table to selection
     @GetMapping("/getTables")
     public ResponseEntity<?> getTables(@RequestParam String token, @RequestParam String nameGroup,
                                        @RequestParam String nameCourse, @RequestParam String nameSubject,

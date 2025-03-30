@@ -20,7 +20,7 @@ public class SubjectController {
         this.manageSubjectUseCase = manageSubjectUseCase;
     }
 
-    //endpoints
+    //ENDPOINTS
 
     //create subject
     @PostMapping("/addSubject")

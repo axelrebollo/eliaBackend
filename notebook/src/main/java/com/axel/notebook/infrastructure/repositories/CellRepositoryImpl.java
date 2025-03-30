@@ -1,7 +1,6 @@
 package com.axel.notebook.infrastructure.repositories;
 
 import com.axel.notebook.application.repositories.ICellRepository;
-import com.axel.notebook.domain.entities.Table;
 import com.axel.notebook.domain.valueObjects.Task;
 import com.axel.notebook.infrastructure.JpaEntities.*;
 import com.axel.notebook.infrastructure.adapters.TaskCellAdapterInfrastructure;
@@ -36,6 +35,7 @@ public class CellRepositoryImpl implements ICellRepository {
         this.jpaNoteCellRepository = jpaNoteCellRepository;
     }
 
+    //get all cells for idTable and type cell
     public List<Object[]> getCellsForIdTableAndType(int idTable, String type){
         if(idTable <= 0){
             throw new InfrastructureException("El id de la tabla está vacío y no es correcto.");
@@ -84,6 +84,7 @@ public class CellRepositoryImpl implements ICellRepository {
         return listPositions;
     }
 
+    //get task domain by idCell
     public Task getTaskByIdCell(int idCell){
         if(idCell <= 0){
             throw new InfrastructureException("Error al recuperar la tarea en la base de datos.");
@@ -95,6 +96,7 @@ public class CellRepositoryImpl implements ICellRepository {
         return taskCellAdapterInfrastructure.toApplication(taskEntity);
     }
 
+    //move position column cell
     public void movePositionColCell(int idTaskCell, int newTaskPositionCol) {
         if (idTaskCell <= 0 || newTaskPositionCol <= 0) {
             throw new InfrastructureException("La nueva posición de la columna o el identificador de celda no son correctos.");
@@ -107,6 +109,7 @@ public class CellRepositoryImpl implements ICellRepository {
         }
     }
 
+    //get id cell
     public int getIdCell(String name, String classCode, String type){
         if(name == null || name.isEmpty() || classCode == null || classCode.isEmpty() || type == null || type.isEmpty()){
             throw new InfrastructureException("Error, algún parámetro es nulo o vacío.");
@@ -151,6 +154,7 @@ public class CellRepositoryImpl implements ICellRepository {
         return 0;
     }
 
+    //get id note cell
     public int getIdNoteCell(int idCellStudent, int idCellTask){
         if(idCellStudent <= 0 || idCellTask <= 0){
             throw new InfrastructureException("Alguno de los valores para recuperar la nota está vacío.");
@@ -163,6 +167,7 @@ public class CellRepositoryImpl implements ICellRepository {
         return idNoteCell;
     }
 
+    //update note cell
     public int updateNote(int idCellNote, double newNote){
         if(idCellNote <= 0 || newNote < 0){
             throw new InfrastructureException("Error, el identificador de la nota o la nota no son correctos.");
@@ -175,6 +180,7 @@ public class CellRepositoryImpl implements ICellRepository {
         return idNote;
     }
 
+    //return boolean if exist task into table
     public boolean taskExistIntoTable(String classCode, String nameNewTask){
         if(classCode == null || classCode.isEmpty() || nameNewTask == null || nameNewTask.isEmpty()){
             throw new InfrastructureException("Error, el codigo o el nombre de la tabla no son correctos.");

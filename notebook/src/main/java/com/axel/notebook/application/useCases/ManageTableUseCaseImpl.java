@@ -7,6 +7,7 @@ import com.axel.notebook.application.services.IManageTableUseCase;
 import com.axel.notebook.application.services.producers.ITableProducer;
 import com.axel.notebook.domain.entities.Table;
 import com.axel.notebook.domain.services.TableService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ public class ManageTableUseCaseImpl implements IManageTableUseCase {
     private final TableService tableService;
 
     //Constructor
+    @Autowired
     public ManageTableUseCaseImpl(IGroupRepository groupRepository,
                                   ICourseRepository courseRepository,
                                   IYearRepository yearRepository,

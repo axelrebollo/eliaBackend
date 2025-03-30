@@ -21,7 +21,7 @@ public class YearController {
         this.manageYearUseCase = manageYearUseCase;
     }
 
-    //endpoints
+    //ENDPOINTS
 
     //create year
     @PostMapping("/addYear")

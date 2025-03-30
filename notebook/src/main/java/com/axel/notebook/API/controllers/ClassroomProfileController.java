@@ -20,7 +20,7 @@ public class ClassroomProfileController {
         this.manageClassroomProfileUseCase = manageClassroomProfileUseCase;
     }
 
-    //Endpoints
+    //ENDPOINTS
 
     //get data for table profile
     @GetMapping("/getClassroomsData")

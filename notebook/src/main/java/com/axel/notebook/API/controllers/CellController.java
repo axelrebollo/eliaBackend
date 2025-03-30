@@ -22,8 +22,9 @@ public class CellController {
         this.manageCellUseCase = manageCellUseCase;
     }
 
-    //endpoints
+    //ENDPOINTS
 
+    //get all cells to table
     @GetMapping("/getTable")
     public ResponseEntity<?> getCell(@RequestParam String token,
                                      @RequestParam String nameSubject,
@@ -51,7 +52,7 @@ public class CellController {
         return new ResponseEntity<>(cellResponse, HttpStatus.OK);
     }
 
-    //set a note for student and task
+    //set note for student and task
     @PatchMapping("/updateNote")
     public ResponseEntity<?> updateNote(@RequestParam String token,
                                         @RequestParam String classCode,
@@ -62,6 +63,7 @@ public class CellController {
         return new ResponseEntity<>(updateResponse, HttpStatus.OK);
     }
 
+    //delete task column
     @DeleteMapping("/deleteTaskColumn")
     public ResponseEntity<?> deleteTaskColumn(@RequestParam String token,
                                               @RequestParam String classCode,
@@ -70,6 +72,7 @@ public class CellController {
         return new ResponseEntity<>(deleteResponse, HttpStatus.OK);
     }
 
+    //delete student row
     @DeleteMapping("/deleteStudentTable")
     public ResponseEntity<?> deleteStudentTable(@RequestParam String token,
                                                 @RequestParam String classCode,

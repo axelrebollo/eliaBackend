@@ -20,7 +20,9 @@ public class GroupController {
         this.manageGroupUseCase = manageGroupUseCase;
     }
 
-    //endpoints
+    //ENDPOINTS
+
+    //add group to subject, year, course
     @PostMapping("/addGroup")
     public ResponseEntity<?> addGroup(@RequestParam String token,
                                       @RequestParam String nameCourse,
@@ -31,6 +33,7 @@ public class GroupController {
         return new ResponseEntity<>(groupResponse, HttpStatus.OK);
     }
 
+    //get group
     @GetMapping("/getGroup")
     public ResponseEntity<?> getGroups(@RequestParam String token,
                                        @RequestParam String nameCourse,

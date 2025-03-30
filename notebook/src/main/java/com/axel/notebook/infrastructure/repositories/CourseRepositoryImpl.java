@@ -20,7 +20,7 @@ public class CourseRepositoryImpl implements ICourseRepository {
     private final JpaCourseRepository jpaCourseRepository;
     private final CourseAdapterInfrastructure courseAdapter;
 
-    @Autowired
+    //Constructor
     public CourseRepositoryImpl(YearRepositoryImpl yearRepository,
                                 JpaCourseRepository jpaCourseRepository,
                                 CourseAdapterInfrastructure courseAdapter) {
@@ -28,6 +28,7 @@ public class CourseRepositoryImpl implements ICourseRepository {
         this.jpaCourseRepository = jpaCourseRepository;
         this.courseAdapter = courseAdapter;
     }
+
 
     public List<String> getAllCoursesForUser(int idProfile, String nameYear){
         List<String> courses = new ArrayList<>();

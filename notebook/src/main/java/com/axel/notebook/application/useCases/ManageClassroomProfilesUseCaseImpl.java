@@ -8,6 +8,7 @@ import com.axel.notebook.application.services.producers.IClassroomProfileProduce
 import com.axel.notebook.domain.valueObjects.Student;
 import com.axel.notebook.domain.services.ClassroomProfileService;
 import com.axel.notebook.domain.valueObjects.ClassroomProfile;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ public class ManageClassroomProfilesUseCaseImpl implements IManageClassroomProfi
     private final ClassroomProfileService classroomProfileService;
 
     //Constructor
+    @Autowired
     public ManageClassroomProfilesUseCaseImpl(IClassroomProfileProducer classroomProfileProducer,
                                               IClassroomProfileRepository classroomProfileRepository) {
         this.classroomProfileProducer = classroomProfileProducer;
