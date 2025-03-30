@@ -3,10 +3,7 @@ package com.axel.notebook.infrastructure.repositories;
 import com.axel.notebook.application.repositories.ICellRepository;
 import com.axel.notebook.domain.valueObjects.Note;
 import com.axel.notebook.domain.valueObjects.Task;
-import com.axel.notebook.infrastructure.JpaEntities.CellEntity;
-import com.axel.notebook.infrastructure.JpaEntities.NoteCellEntity;
-import com.axel.notebook.infrastructure.JpaEntities.StudentCellEntity;
-import com.axel.notebook.infrastructure.JpaEntities.TaskCellEntity;
+import com.axel.notebook.infrastructure.JpaEntities.*;
 import com.axel.notebook.infrastructure.adapters.TaskCellAdapterInfrastructure;
 import com.axel.notebook.infrastructure.exceptions.InfrastructureException;
 import com.axel.notebook.infrastructure.kafka.producers.CellProducer;
@@ -178,14 +175,30 @@ public class CellRepositoryImpl implements ICellRepository {
         return idNote;
     }
 
-    public boolean deleteCell(int idCell){
-        //borrar la tarea, nota o estudiante por el idCell pasado
-        if(idCell <= 0){
-            throw new InfrastructureException("El identificador de la celda no es correcto.");
+    public boolean taskExistIntoTable(String classCode, String nameNewTask){
+        if(classCode == null || classCode.isEmpty() || nameNewTask == null || nameNewTask.isEmpty()){
+            throw new InfrastructureException("Error, el codigo o el nombre de la tabla no son correctos.");
         }
-        //delete cell into CellEntity
-        jpaCellRepository.deleteByIdCell(idCell);
-        //check if is deleted correctly if not deleted correctly return false else true
-        return jpaCellRepository.findCellEntityByIdCell(idCell) == null;
+
+        //get table
+        TableEntity table = jpaTableRepository.findByClassCode(classCode);
+        if(table == null){
+            throw new InfrastructureException("Error, la tabla no existe en el sistema.");
+        }
+
+        //get all cells tasks into table
+        List<Object[]> tasks = jpaCellRepository.getAllByIdAndType(table.getIdTable(), "TASK");
+        if(tasks.isEmpty()){
+            return false;
+        }
+
+        for(Object[] task : tasks){
+            int idTask = (Integer) task[0];
+            TaskCellEntity taskEntity = jpaTaskCellRepository.findByIdCell(idTask);
+            if(taskEntity != null && taskEntity.getNameTask().equals(nameNewTask)){
+                return true;
+            }
+        }
+        return false;
     }
 }

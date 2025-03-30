@@ -331,6 +331,11 @@ public class ManageCellUseCase implements IManageCellUseCase {
             throw new ApplicationException("No existe la tabla en el sistema.");
         }
 
+        //is not possible create a new column with the same name task
+        if(cellRepository.taskExistIntoTable(classCode, nameNewTask)){
+            throw new ApplicationException("Ya existe una tarea con ese nombre en esta tabla.");
+        }
+
         //add new task into system
         Task newTask = addNewTask(table, nameNewTask, nameReferenceTask);
         if(newTask == null){

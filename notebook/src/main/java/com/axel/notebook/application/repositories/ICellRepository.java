@@ -18,4 +18,6 @@ public interface ICellRepository {
     public int getIdNoteCell(int idCellStudent, int idCellTask);
 
     public int updateNote(int idCellNote, double newNote);
+
+    public boolean taskExistIntoTable(String classCode, String nameNewTask);
 }
