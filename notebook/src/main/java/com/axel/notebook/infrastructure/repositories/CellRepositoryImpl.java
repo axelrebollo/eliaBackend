@@ -1,7 +1,7 @@
 package com.axel.notebook.infrastructure.repositories;
 
 import com.axel.notebook.application.repositories.ICellRepository;
-import com.axel.notebook.domain.valueObjects.Note;
+import com.axel.notebook.domain.entities.Table;
 import com.axel.notebook.domain.valueObjects.Task;
 import com.axel.notebook.infrastructure.JpaEntities.*;
 import com.axel.notebook.infrastructure.adapters.TaskCellAdapterInfrastructure;

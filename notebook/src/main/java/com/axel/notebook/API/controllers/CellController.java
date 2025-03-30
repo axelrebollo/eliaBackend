@@ -69,4 +69,12 @@ public class CellController {
         DeleteResponse deleteResponse = manageCellUseCase.deleteTaskColumnUseCase(token, classCode, positionTaskColumn);
         return new ResponseEntity<>(deleteResponse, HttpStatus.OK);
     }
+
+    @DeleteMapping("/deleteStudentTable")
+    public ResponseEntity<?> deleteStudentTable(@RequestParam String token,
+                                                @RequestParam String classCode,
+                                                @RequestParam String nameStudent){
+        DeleteResponse deleteResponse = manageCellUseCase.deleteStudentTableUseCase(token, classCode, nameStudent);
+        return new ResponseEntity<>(deleteResponse, HttpStatus.OK);
+    }
 }

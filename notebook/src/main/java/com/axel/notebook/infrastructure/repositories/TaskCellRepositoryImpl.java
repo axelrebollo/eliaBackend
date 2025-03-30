@@ -23,7 +23,6 @@ public class TaskCellRepositoryImpl implements ITaskCellRepository {
     private final TaskCellAdapterInfrastructure taskCellAdapter;
     private final JpaTableRepository jpaTableRepository;
     private final JpaCellRepository jpaCellRepository;
-    private final CellRepositoryImpl cellRepositoryImpl;
     private final NoteCellRepositoryImpl noteCellRepositoryImpl;
 
     //Constructor
@@ -31,13 +30,11 @@ public class TaskCellRepositoryImpl implements ITaskCellRepository {
                                   TaskCellAdapterInfrastructure taskCellAdapter,
                                   JpaTableRepository jpaTableRepository,
                                   JpaCellRepository jpaCellRepository,
-                                  CellRepositoryImpl cellRepositoryImpl,
                                   @Lazy NoteCellRepositoryImpl noteCellRepositoryImpl) {
         this.jpaTaskCellRepository = jpaTaskCellRepository;
         this.taskCellAdapter = taskCellAdapter;
         this.jpaTableRepository = jpaTableRepository;
         this.jpaCellRepository = jpaCellRepository;
-        this.cellRepositoryImpl = cellRepositoryImpl;
         this.noteCellRepositoryImpl = noteCellRepositoryImpl;
     }
 

@@ -569,4 +569,37 @@ public class ManageCellUseCase implements IManageCellUseCase {
     private Map<String,String> getProfileId(String token) {
         return cellProducer.sendToken(token);
     }
+
+    public DeleteResponse deleteStudentTableUseCase(String token, String classCode, String nameStudent){
+        boolean isDeleted = false;
+
+        if(token == null || classCode == null || nameStudent == null){
+            throw new ApplicationException("Alguno de los datos para eliminar el estudiante del aula no es correcto.");
+        }
+
+        //Check if token is correct and returns decoded
+        Map<String,String> dataToken = getProfileId(token);
+        String idTeacherString = dataToken.get("idProfile");
+
+        if(idTeacherString == null || idTeacherString.isEmpty()){
+            throw new ApplicationException("Error con el profesor, el perfil no es correcto o no existe.");
+        }
+
+        //get table id
+        Table table = tableRepository.findTableByClassCode(classCode);
+        if(table == null){
+            throw new ApplicationException("La tabla no existe en el sistema.");
+        }
+
+        //get idCell for student into table
+        int idProfile = cellRepository.getIdCell(nameStudent, classCode, "STUDENT");
+        if(idProfile <= 0){
+            throw new ApplicationException("El perfil del estudiante no se ha recuperado correctamente o no está en la tabla");
+        }
+
+        //delete row for this student
+        isDeleted = studentCellRepository.deleteStudentRowIntoTable(table, idProfile);
+
+        return new DeleteResponse(isDeleted,"El estudiante y sus notas fueron borrados con éxito");
+    }
 }

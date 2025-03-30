@@ -17,10 +17,6 @@ public interface JpaCellRepository extends JpaRepository<CellEntity, Integer> {
             nativeQuery = true)
     public int countStudentsIntoTable(int idTable);
 
-    @Query(value = "SELECT COUNT(*) FROM cell_entity WHERE id_table = :idTable AND cell_type = 'TASK'",
-            nativeQuery = true)
-    public int countTasksIntoTable(int idTable);
-
     @Query(value = "SELECT cell_entity.id_cell FROM cell_entity WHERE cell_entity.id_table = :idTable AND cell_entity.cell_type = 'STUDENT'",nativeQuery = true)
     public List<Integer> findByTableIdAndStudentType(int idTable);
 
@@ -32,13 +28,25 @@ public interface JpaCellRepository extends JpaRepository<CellEntity, Integer> {
     @Query("UPDATE CellEntity c SET c.positionCol = :newPositionCol WHERE c.idCell = :idCell")
     public void setPositionCol(int idCell, int newPositionCol);
 
+    @Transactional
+    @Modifying
+    @Query("UPDATE CellEntity c SET c.positionRow = :newPositionRow WHERE c.idCell = :idCell")
+    public void setPositionRow(int idCell, int newPositionRow);
+
     @Query(value = "SELECT cell_entity.id_cell FROM cell_entity WHERE cell_entity.id_table = :idTable AND cell_entity.cell_type = :type AND  cell_entity.position_col = :positionColumn", nativeQuery = true)
     public List<Integer> findForTypeIdAndColumn(int idTable, int positionColumn, String type);
 
-    public CellEntity findCellEntityByIdCell(Integer idCell);
+    @Query(value = "SELECT cell_entity.id_cell FROM cell_entity WHERE cell_entity.id_table = :idTable AND cell_entity.cell_type = :type AND  cell_entity.position_row = :positionRow", nativeQuery = true)
+    public List<Integer> findForTypeIdAndRow(int idTable, int positionRow, String type);
 
     @Transactional
     @Modifying
     @Query("DELETE FROM CellEntity c WHERE c.idCell = :idCell")
     public void deleteByIdCell(int idCell);
+
+    @Query(value = "SELECT cell_entity.idCell FROM cell_entity WHERE cell_entity.id_cell = :idCell AND cell_entity.id_table = :idTable", nativeQuery = true)
+    public int findByCellAndTable(int idCell, int idTable);
+
+    @Query(value = "SELECT cell_entity.position_row FROM cell_entity WHERE cell_entity.id_cell = :idCell", nativeQuery = true)
+    public int findPositionRowByIdCell(int idCell);
 }

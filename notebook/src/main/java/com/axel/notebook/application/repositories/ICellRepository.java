@@ -1,5 +1,6 @@
 package com.axel.notebook.application.repositories;
 
+import com.axel.notebook.domain.entities.Table;
 import com.axel.notebook.domain.valueObjects.Task;
 
 import java.util.List;

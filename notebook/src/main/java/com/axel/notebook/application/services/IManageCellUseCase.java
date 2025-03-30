@@ -14,4 +14,6 @@ public interface IManageCellUseCase {
     public UpdateResponse updateNoteUseCase(String token, String classCode, String nameStudent, String nameTask, double newNote);
 
     public DeleteResponse deleteTaskColumnUseCase(String token, String classCode, int positionTaskColumn);
+
+    public DeleteResponse deleteStudentTableUseCase(String token, String classCode, String nameStudent);
 }
