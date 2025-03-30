@@ -7,4 +7,6 @@ public interface ITaskCellRepository{
     public Task getTaskByIdCell(int idCell);
 
     public Task addTask(Task task, Table table);
+
+    public boolean deleteTaskColumn(int idTable, int positionColumnTask);
 }

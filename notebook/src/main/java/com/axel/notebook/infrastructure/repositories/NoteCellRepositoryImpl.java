@@ -12,6 +12,7 @@ import com.axel.notebook.infrastructure.adapters.NoteAdapterInfrastructure;
 import com.axel.notebook.infrastructure.exceptions.InfrastructureException;
 import com.axel.notebook.infrastructure.persistence.JpaNoteCellRepository;
 import com.axel.notebook.infrastructure.persistence.JpaTableRepository;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -26,8 +27,9 @@ public class NoteCellRepositoryImpl implements INoteCellRepository {
     //Constructor
     public NoteCellRepositoryImpl(JpaNoteCellRepository jpaNoteCellRepository,
                                   NoteAdapterInfrastructure noteAdapterInfrastructure,
-                                  JpaTableRepository jpaTableRepository, StudentCellRepositoryImpl studentCellRepositoryImpl,
-                                  TaskCellRepositoryImpl taskCellRepositoryImpl) {
+                                  JpaTableRepository jpaTableRepository,
+                                  StudentCellRepositoryImpl studentCellRepositoryImpl,
+                                  @Lazy TaskCellRepositoryImpl taskCellRepositoryImpl) {
         this.jpaNoteCellRepository = jpaNoteCellRepository;
         this.noteAdapterInfrastructure = noteAdapterInfrastructure;
         this.jpaTableRepository = jpaTableRepository;
@@ -76,5 +78,16 @@ public class NoteCellRepositoryImpl implements INoteCellRepository {
         }
 
         return noteAdapterInfrastructure.toApplication(noteCellEntity);
+    }
+
+    public boolean deleteNote(int idCell){
+        //borrar la nota para ese idCell en la tabla noteCellEntity
+        if(idCell <= 0){
+            throw new InfrastructureException("El identificador de la nota no es correcto.");
+        }
+        //delete note into noteCellEntity
+        jpaNoteCellRepository.deleteByIdCell(idCell);
+        //check if is deleted correctly if not deleted correctly return false else true
+        return jpaNoteCellRepository.findByIdCell(idCell) == null;
     }
 }

@@ -18,4 +18,9 @@ public interface JpaNoteCellRepository extends JpaRepository<NoteCellEntity, Int
     @Modifying
     @Query("UPDATE NoteCellEntity c SET c.note = :newNote WHERE c.idCell = :idNoteCell")
     public int updateNote(int idNoteCell, double newNote);
+
+    @Transactional
+    @Modifying
+    @Query("DELETE FROM NoteCellEntity n WHERE n.idCell = :idCell")
+    public void deleteByIdCell(int idCell);
 }

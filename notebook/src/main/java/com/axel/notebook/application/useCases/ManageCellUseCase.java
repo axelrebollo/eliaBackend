@@ -1,6 +1,7 @@
 package com.axel.notebook.application.useCases;
 
 import com.axel.notebook.application.DTOs.CellResponse;
+import com.axel.notebook.application.DTOs.DeleteResponse;
 import com.axel.notebook.application.DTOs.UpdateResponse;
 import com.axel.notebook.application.exceptions.ApplicationException;
 import com.axel.notebook.application.repositories.*;
@@ -529,5 +530,38 @@ public class ManageCellUseCase implements IManageCellUseCase {
         else{
             return new UpdateResponse(idResponseCellNote);
         }
+    }
+
+    public DeleteResponse deleteTaskColumnUseCase(String token, String classCode, int positionTaskColumn){
+        if(token == null || classCode == null || positionTaskColumn <= 0){
+            throw new ApplicationException("Alguno de los datos para borrar la columna no es correcto.");
+        }
+
+        //Check if token is correct and returns decoded
+        Map<String,String> dataToken = getProfileId(token);
+        String idTeacherString = dataToken.get("idProfile");
+
+        if(idTeacherString == null || idTeacherString.isEmpty()){
+            throw new ApplicationException("Error con el profesor, el perfil no es correcto o no existe.");
+        }
+
+        //get table id
+        Table table = tableRepository.findTableByClassCode(classCode);
+        if(table == null){
+            throw new ApplicationException("La tabla no existe en el sistema.");
+        }
+
+        //delete column
+        boolean isDeleted = taskCellRepository.deleteTaskColumn(table.getIdTable(), positionTaskColumn);
+        if(!isDeleted){
+            throw new ApplicationException("La columna no ha podido ser borrada con éxito.");
+        }
+
+        //return response
+        return new DeleteResponse(isDeleted,"La columa fué borrada con éxito");
+    }
+
+    private Map<String,String> getProfileId(String token) {
+        return cellProducer.sendToken(token);
     }
 }

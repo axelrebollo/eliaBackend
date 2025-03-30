@@ -71,4 +71,9 @@ public class StudentCellRepositoryImpl implements IStudentCellRepository {
         }
         return -1;
     }
+
+    public boolean deleteStudent(){
+        //TODO
+        return false;
+    }
 }

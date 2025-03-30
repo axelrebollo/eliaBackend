@@ -31,4 +31,14 @@ public interface JpaCellRepository extends JpaRepository<CellEntity, Integer> {
     @Modifying
     @Query("UPDATE CellEntity c SET c.positionCol = :newPositionCol WHERE c.idCell = :idCell")
     public void setPositionCol(int idCell, int newPositionCol);
+
+    @Query(value = "SELECT cell_entity.id_cell FROM cell_entity WHERE cell_entity.id_table = :idTable AND cell_entity.cell_type = :type AND  cell_entity.position_col = :positionColumn", nativeQuery = true)
+    public List<Integer> findForTypeIdAndColumn(int idTable, int positionColumn, String type);
+
+    public CellEntity findCellEntityByIdCell(Integer idCell);
+
+    @Transactional
+    @Modifying
+    @Query("DELETE FROM CellEntity c WHERE c.idCell = :idCell")
+    public void deleteByIdCell(int idCell);
 }

@@ -177,4 +177,15 @@ public class CellRepositoryImpl implements ICellRepository {
         }
         return idNote;
     }
+
+    public boolean deleteCell(int idCell){
+        //borrar la tarea, nota o estudiante por el idCell pasado
+        if(idCell <= 0){
+            throw new InfrastructureException("El identificador de la celda no es correcto.");
+        }
+        //delete cell into CellEntity
+        jpaCellRepository.deleteByIdCell(idCell);
+        //check if is deleted correctly if not deleted correctly return false else true
+        return jpaCellRepository.findCellEntityByIdCell(idCell) == null;
+    }
 }

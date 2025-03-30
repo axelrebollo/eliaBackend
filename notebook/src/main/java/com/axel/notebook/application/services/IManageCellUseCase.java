@@ -1,6 +1,7 @@
 package com.axel.notebook.application.services;
 
 import com.axel.notebook.application.DTOs.CellResponse;
+import com.axel.notebook.application.DTOs.DeleteResponse;
 import com.axel.notebook.application.DTOs.UpdateResponse;
 
 public interface IManageCellUseCase {
@@ -11,4 +12,6 @@ public interface IManageCellUseCase {
                                        String nameSubject, String nameYear, String nameCourse, String nameGroup);
 
     public UpdateResponse updateNoteUseCase(String token, String classCode, String nameStudent, String nameTask, double newNote);
+
+    public DeleteResponse deleteTaskColumnUseCase(String token, String classCode, int positionTaskColumn);
 }

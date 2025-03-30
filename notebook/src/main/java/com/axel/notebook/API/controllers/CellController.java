@@ -1,6 +1,7 @@
 package com.axel.notebook.API.controllers;
 
 import com.axel.notebook.application.DTOs.CellResponse;
+import com.axel.notebook.application.DTOs.DeleteResponse;
 import com.axel.notebook.application.DTOs.UpdateResponse;
 import com.axel.notebook.application.services.IManageCellUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,5 +60,13 @@ public class CellController {
                                         @RequestParam double note){
         UpdateResponse updateResponse = manageCellUseCase.updateNoteUseCase(token, classCode, student, task, note);
         return new ResponseEntity<>(updateResponse, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/deleteTaskColumn")
+    public ResponseEntity<?> deleteTaskColumn(@RequestParam String token,
+                                              @RequestParam String classCode,
+                                              @RequestParam int positionTaskColumn){
+        DeleteResponse deleteResponse = manageCellUseCase.deleteTaskColumnUseCase(token, classCode, positionTaskColumn);
+        return new ResponseEntity<>(deleteResponse, HttpStatus.OK);
     }
 }
