@@ -1,5 +1,6 @@
 package com.axel.notebook.API.controllers;
 
+import com.axel.notebook.application.DTOs.DeleteResponse;
 import com.axel.notebook.application.DTOs.TableResponse;
 import com.axel.notebook.application.services.IManageTableUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,5 +39,11 @@ public class TableController {
                                        @RequestParam String nameYear) {
         TableResponse tableResponse = manageTableUseCase.getAllTablesFromTokenUseCase(token, nameGroup, nameCourse, nameSubject, nameYear);
         return new ResponseEntity<>(tableResponse, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/deleteTable")
+    public ResponseEntity<?> deleteTable(@RequestParam String token, @RequestParam String classCode){
+        DeleteResponse deleteResponse = manageTableUseCase.deleteTableUseCase(token, classCode);
+        return new ResponseEntity<>(deleteResponse, HttpStatus.OK);
     }
 }

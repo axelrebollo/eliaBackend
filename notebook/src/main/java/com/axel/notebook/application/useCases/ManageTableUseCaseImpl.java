@@ -1,5 +1,6 @@
 package com.axel.notebook.application.useCases;
 
+import com.axel.notebook.application.DTOs.DeleteResponse;
 import com.axel.notebook.application.DTOs.TableResponse;
 import com.axel.notebook.application.exceptions.ApplicationException;
 import com.axel.notebook.application.repositories.*;
@@ -165,5 +166,23 @@ public class ManageTableUseCaseImpl implements IManageTableUseCase {
             return 0;
         }
         return idGroup;
+    }
+
+    public DeleteResponse deleteTableUseCase(String token, String classCode){
+        if(token == null || token.isEmpty() || classCode == null || classCode.isEmpty()){
+            throw new ApplicationException("El usuario o el codigo de la tabla no son correctos.");
+        }
+
+        //check if exist into the system
+        int idProfile = getProfileId(token);
+
+        if(idProfile <= 0){
+            throw new ApplicationException("Error al recuperar el usuario, el perfil no existe.");
+        }
+
+        boolean isDeleted = false;
+        isDeleted = tableRepository.deleteTable(classCode);
+
+        return new DeleteResponse(isDeleted, "La tabla se ha eliminado correctamente.");
     }
 }

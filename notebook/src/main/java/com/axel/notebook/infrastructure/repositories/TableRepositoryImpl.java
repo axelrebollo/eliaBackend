@@ -92,4 +92,23 @@ public class TableRepositoryImpl implements ITableRepository {
 
         return tableAdapterInfrastructure.toApplication(table);
     }
+
+    public boolean deleteTable(String classCode){
+        if(classCode == null || !existTableWithClassCode(classCode)){
+            throw new InfrastructureException("El codigo de la clase es nulo o la clase no existe");
+        }
+
+        boolean isDeleted = false;
+        int idTable = jpaTableRepository.findByClassCode(classCode).getIdTable();
+        if(idTable <= 0){
+            throw new InfrastructureException("La tabla no existe");
+        }
+
+        jpaTableRepository.deleteById(idTable);
+        if(!existTableWithClassCode(classCode)){
+            isDeleted = true;
+        }
+
+        return isDeleted;
+    }
 }

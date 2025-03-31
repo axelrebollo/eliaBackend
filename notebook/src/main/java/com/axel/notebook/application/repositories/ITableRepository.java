@@ -14,4 +14,6 @@ public interface ITableRepository {
     public boolean existTableWithClassCode(String classCode);
 
     public Table findTableByClassCode(String classCode);
+
+    public boolean deleteTable(String classCode);
 }
