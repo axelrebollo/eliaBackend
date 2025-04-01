@@ -12,4 +12,6 @@ public interface ICourseRepository {
     public boolean existCourseForUser(int idYear, String nameCourse);
 
     public Course updateCourse(Course course);
+
+    public boolean deleteCourse(int idProfile, String nameCourse, String nameYear);
 }

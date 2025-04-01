@@ -1,5 +1,6 @@
 package com.axel.notebook.application.services;
 
+import com.axel.notebook.application.DTOs.DeleteResponse;
 import com.axel.notebook.application.DTOs.SubjectResponse;
 
 public interface IManageSubjectUseCase {
@@ -13,5 +14,5 @@ public interface IManageSubjectUseCase {
     public void updateSubjectUseCase();
 
     //delete all information about this subject
-    public void deleteSubjectUseCase();
+    public DeleteResponse deleteSubjectUseCase(String token, String nameSubject);
 }

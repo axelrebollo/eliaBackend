@@ -20,7 +20,7 @@ public interface JpaSubjectRepository extends JpaRepository<SubjectEntity, Integ
     public SubjectEntity findById(int idSubject);
 
     //Delete Subject
-    public void deleteById(Integer idSubject);
+    public void deleteById(int idSubject);
 
     @Query("SELECT s FROM SubjectEntity s WHERE s.idProfile = :idProfile AND s.nameSubject = :name")
     public SubjectEntity findByNameAndIdProfile(String name, int idProfile);

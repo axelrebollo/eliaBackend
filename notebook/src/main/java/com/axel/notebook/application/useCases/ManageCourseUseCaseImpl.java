@@ -1,6 +1,7 @@
 package com.axel.notebook.application.useCases;
 
 import com.axel.notebook.application.DTOs.CourseResponse;
+import com.axel.notebook.application.DTOs.DeleteResponse;
 import com.axel.notebook.application.exceptions.ApplicationException;
 import com.axel.notebook.application.repositories.ICourseRepository;
 import com.axel.notebook.application.repositories.IYearRepository;
@@ -131,5 +132,23 @@ public class ManageCourseUseCaseImpl implements IManageCourseUseCase {
         }
 
         return new CourseResponse(courseToYear);
+    }
+
+    public DeleteResponse deleteCourseUseCase(String token, String nameCourse, String nameYear){
+        if(token == null || token.isEmpty() || nameCourse == null || nameCourse.isEmpty() || nameYear == null || nameYear.isEmpty()){
+            throw new ApplicationException("Algún dato no es correcto para borrar el curso.");
+        }
+
+        //decode token and get idProfile
+        int idProfile = getProfileId(token);
+
+        if(idProfile <= 0){
+            throw new ApplicationException("Error al recuperar los usuarios, el perfil no existe");
+        }
+
+        boolean isDeleted = false;
+        isDeleted = courseRepository.deleteCourse(idProfile, nameCourse, nameYear);
+
+        return new DeleteResponse(isDeleted, "El curso se ha borrado correctamente.");
     }
 }

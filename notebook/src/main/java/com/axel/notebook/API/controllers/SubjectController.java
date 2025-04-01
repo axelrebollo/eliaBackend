@@ -1,5 +1,6 @@
 package com.axel.notebook.API.controllers;
 
+import com.axel.notebook.application.DTOs.DeleteResponse;
 import com.axel.notebook.application.DTOs.SubjectResponse;
 import com.axel.notebook.application.services.IManageSubjectUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,5 +35,11 @@ public class SubjectController {
     public ResponseEntity<?> getSubject(@RequestParam String token) {
         SubjectResponse subjectResponse = manageSubjectUseCase.getAllSubjectsFromTokenUseCase(token);
         return new ResponseEntity<>(subjectResponse, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/deleteSubject")
+    public ResponseEntity<?> deleteSubject(@RequestParam String token, @RequestParam String nameSubject) {
+        DeleteResponse deleteResponse = manageSubjectUseCase.deleteSubjectUseCase(token, nameSubject);
+        return new ResponseEntity<>(deleteResponse, HttpStatus.OK);
     }
 }

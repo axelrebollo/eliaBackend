@@ -18,5 +18,5 @@ public interface IYearRepository {
     public int getIdYearForUser(int idProfile, String nameYear);
 
     //delete year that user are created
-    public void deleteYear(int idUser, int idYear);
+    public boolean deleteYear(int idUser, String nameYear);
 }

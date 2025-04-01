@@ -92,7 +92,25 @@ public class YearRepositoryImpl implements IYearRepository {
     }
 
     //delete year that user are created
-    public void deleteYear(int idUser, int idYear) {
-        //TODO
+    public boolean deleteYear(int idProfile, String nameYear) {
+        if(idProfile <= 0 || nameYear == null || nameYear.isEmpty()) {
+            throw new InfrastructureException("Alguno de los datos para borrar el año no es correcto.");
+        }
+
+        boolean isDeleted = false;
+        YearEntity year = jpaYearRepository.findByNameAndIdProfile(nameYear, idProfile);
+        if(year == null){
+            throw new InfrastructureException("No se ha encontrado el año.");
+        }
+
+        try{
+            jpaYearRepository.deleteById(year.getIdYear());
+            isDeleted = true;
+        }
+        catch(InfrastructureException e){
+            throw new InfrastructureException("Error al eliminar el año.");
+        }
+
+        return isDeleted;
     }
 }

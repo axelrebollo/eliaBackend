@@ -1,5 +1,6 @@
 package com.axel.notebook.application.useCases;
 
+import com.axel.notebook.application.DTOs.DeleteResponse;
 import com.axel.notebook.application.DTOs.SubjectResponse;
 import com.axel.notebook.application.exceptions.ApplicationException;
 import com.axel.notebook.application.repositories.ISubjectRepository;
@@ -95,15 +96,27 @@ public class ManageSubjectUseCaseImpl implements IManageSubjectUseCase {
         return subjectRepository.getAllSubjectsNameForUser(idProfile);
     }
 
+    //delete all information about this subject
+    public DeleteResponse deleteSubjectUseCase(String token, String nameSubject) {
+        if(token == null || token.isEmpty() || nameSubject == null || nameSubject.isEmpty()){
+            throw new ApplicationException("Algún dato no es correcto para borrar la asignatura correctamente.");
+        }
+
+        //decode token and get idProfile
+        int idProfile = getProfileId(token);
+
+        if(idProfile <= 0){
+            throw new ApplicationException("Error al recuperar los usuarios, el perfil no existe");
+        }
+
+        boolean idDeleted = false;
+        idDeleted = subjectRepository.deleteSubject(idProfile, nameSubject);
+
+        return new DeleteResponse(idDeleted, "La asignatura se ha borrado correctamente.");
+    }
+
     //update name subject
     public void updateSubjectUseCase() {
         //TODO
     }
-
-    //delete all information about this subject
-    public void deleteSubjectUseCase() {
-        //delete in cascade
-        //TODO
-    }
-
 }

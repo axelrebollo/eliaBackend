@@ -1,6 +1,7 @@
 package com.axel.notebook.application.services;
 
 import com.axel.notebook.application.DTOs.CourseResponse;
+import com.axel.notebook.application.DTOs.DeleteResponse;
 
 public interface IManageCourseUseCase {
     //get all courses with token + idYear
@@ -8,4 +9,6 @@ public interface IManageCourseUseCase {
 
     //create a new course into year selected
     public CourseResponse addCourseUseCase(String token, String nameCourse, String nameYear);
+
+    public DeleteResponse deleteCourseUseCase(String token, String nameCourse, String nameYear);
 }

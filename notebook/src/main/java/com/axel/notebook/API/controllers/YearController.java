@@ -1,5 +1,6 @@
 package com.axel.notebook.API.controllers;
 
+import com.axel.notebook.application.DTOs.DeleteResponse;
 import com.axel.notebook.application.DTOs.YearResponse;
 import com.axel.notebook.application.services.IManageYearUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,5 +37,11 @@ public class YearController {
         //get all years
         YearResponse yearResponse = manageYearUseCase.getAllYearsFromTokenUseCase(token);
         return new ResponseEntity<>(yearResponse, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/deleteYear")
+    public ResponseEntity<?> deleteYear(@RequestParam String token, @RequestParam String nameYear) {
+        DeleteResponse deleteResponse = manageYearUseCase.deleteYearUseCase(token, nameYear);
+        return new ResponseEntity<>(deleteResponse, HttpStatus.OK);
     }
 }

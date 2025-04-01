@@ -21,5 +21,5 @@ public interface ISubjectRepository {
     public int getIdSubjectForUser(int idProfile, String nameSubject);
 
     //delete Subjects that user are created
-    public void deleteSubject(int idUser, int idSubject);
+    public boolean deleteSubject(int idUser, String nameSubject);
 }

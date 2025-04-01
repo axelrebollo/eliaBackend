@@ -93,7 +93,24 @@ public class SubjectRepositoryImpl implements ISubjectRepository {
     }
 
     //delete Subject that user are created
-    public void deleteSubject(int idUser, int idSubject) {
-        //TODO
+    public boolean deleteSubject(int idProfile, String nameSubject) {
+        if(idProfile <= 0 || nameSubject == null || nameSubject.isEmpty()) {
+            throw new InfrastructureException("Alguno de los datos para borrar la asignatura no es correco.");
+        }
+
+        boolean isDeleted = false;
+        SubjectEntity subjectEntity = jpaSubjectRepository.findByNameAndIdProfile(nameSubject, idProfile);
+        if(subjectEntity == null) {
+            throw new InfrastructureException("No se ha encontrado la asignatura.");
+        }
+
+        try{
+            jpaSubjectRepository.deleteById(subjectEntity.getIdSubject());
+            isDeleted = true;
+        }
+        catch(InfrastructureException e){
+            throw new InfrastructureException("Error al eliminar la asignatura");
+        }
+        return isDeleted;
     }
 }

@@ -3,10 +3,12 @@ package com.axel.notebook.infrastructure.repositories;
 import com.axel.notebook.application.repositories.ICourseRepository;
 import com.axel.notebook.domain.entities.Course;
 import com.axel.notebook.infrastructure.JpaEntities.CourseEntity;
+import com.axel.notebook.infrastructure.JpaEntities.YearEntity;
 import com.axel.notebook.infrastructure.adapters.CourseAdapterInfrastructure;
 import com.axel.notebook.infrastructure.adapters.YearAdapterInfrastructure;
 import com.axel.notebook.infrastructure.exceptions.InfrastructureException;
 import com.axel.notebook.infrastructure.persistence.JpaCourseRepository;
+import com.axel.notebook.infrastructure.persistence.JpaYearRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -19,14 +21,16 @@ public class CourseRepositoryImpl implements ICourseRepository {
     private final YearRepositoryImpl yearRepository;
     private final JpaCourseRepository jpaCourseRepository;
     private final CourseAdapterInfrastructure courseAdapter;
+    private final JpaYearRepository jpaYearRepository;
 
     //Constructor
     public CourseRepositoryImpl(YearRepositoryImpl yearRepository,
                                 JpaCourseRepository jpaCourseRepository,
-                                CourseAdapterInfrastructure courseAdapter) {
+                                CourseAdapterInfrastructure courseAdapter, JpaYearRepository jpaYearRepository) {
         this.yearRepository = yearRepository;
         this.jpaCourseRepository = jpaCourseRepository;
         this.courseAdapter = courseAdapter;
+        this.jpaYearRepository = jpaYearRepository;
     }
 
 
@@ -88,5 +92,32 @@ public class CourseRepositoryImpl implements ICourseRepository {
         CourseEntity courseEntity = courseAdapter.fromApplicationWithoutId(course);
         courseEntity = jpaCourseRepository.save(courseEntity);
         return courseAdapter.toApplication(courseEntity);
+    }
+
+    public boolean deleteCourse(int idProfile, String nameCourse, String nameYear){
+        boolean isDeleted = false;
+
+        if(idProfile <= 0 || nameCourse == null || nameCourse.isEmpty() || nameYear == null || nameYear.isEmpty()){
+            throw new InfrastructureException("Alguno de los datos para borrar el curso no es correcto.");
+        }
+
+        YearEntity year = jpaYearRepository.findByNameAndIdProfile(nameYear, idProfile);
+        if(year == null){
+            throw new InfrastructureException("No se ha encontrado el año.");
+        }
+
+        CourseEntity course = jpaCourseRepository.findByYearSubjectName(year, nameCourse);
+        if(course == null){
+            throw new InfrastructureException("No se ha encontrado el curso.");
+        }
+
+        try{
+            jpaCourseRepository.deleteById(course.getIdCourse());
+            isDeleted = true;
+        }
+        catch(InfrastructureException e){
+            throw new InfrastructureException("Error al eliminar el curso.");
+        }
+        return isDeleted;
     }
 }
