@@ -4,7 +4,6 @@ import com.axel.user.domain.entities.User;
 import com.axel.user.infrastructure.JpaEntities.ProfileEntity;
 import com.axel.user.infrastructure.exceptions.InfrastructureException;
 import com.axel.user.infrastructure.kafka.producers.CellProfileProducer;
-import com.axel.user.infrastructure.kafka.producers.ClassroomProfileProducer;
 import com.axel.user.infrastructure.persistence.JpaProfileRepository;
 import com.axel.user.infrastructure.persistence.JpaUserRepository;
 import com.axel.user.infrastructure.repositories.UserRepositoryImpl;
@@ -14,7 +13,6 @@ import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.header.Headers;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
-
 import java.util.Objects;
 
 @Service
@@ -126,10 +124,13 @@ public class CellTokenConsumer {
         String nameProfile = record.value();
 
         //parse for spaces
-        String[] parts = nameProfile.split(" ");
+        String[] parts = nameProfile.split(",");
         String name = parts.length > 0 ? parts[0] : "";
         String surname1 = parts.length > 1 ? parts[1] : "";
         String surname2 = parts.length > 2 ? parts[2] : "";
+        name = name.trim();
+        surname1 = surname1.trim();
+        surname2 = surname2.trim();
 
         //extract id from message
         Headers headers = record.headers();

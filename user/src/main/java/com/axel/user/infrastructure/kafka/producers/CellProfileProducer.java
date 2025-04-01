@@ -72,8 +72,8 @@ public class CellProfileProducer {
         //creates JSON data to send
         Map<String, String> data = new HashMap<>();
         data.put("idProfile", String.valueOf(profile.getId()));
-        data.put("name", profile.getName());
-        data.put("surname1", profile.getSurname1());
+        data.put("name", profile.getName() + ",");
+        data.put("surname1", profile.getSurname1() + ",");
         data.put("surname2", profile.getSurname2());
 
         String jsonMessage;

@@ -91,6 +91,11 @@ public class ManageProfileUseCaseImpl implements IManageProfileUseCase {
             throw new ApplicationException("Algún dato está vacío o incompleto. (nombre o apellidos");
         }
 
+        //spaces in blank after and later
+        name = name.trim();
+        surname1 = surname1.trim();
+        surname2 = surname2.trim();
+
         //deserialize token to email
         String email = jwtRepository.getEmailFromToken(token);
 
