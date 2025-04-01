@@ -1,6 +1,8 @@
 package com.axel.notebook.infrastructure.persistence;
 
+import com.axel.notebook.infrastructure.JpaEntities.CourseEntity;
 import com.axel.notebook.infrastructure.JpaEntities.GroupEntity;
+import com.axel.notebook.infrastructure.JpaEntities.SubjectEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -14,4 +16,9 @@ public interface JpaGroupRepository extends JpaRepository<GroupEntity, Integer> 
     public List<GroupEntity> findAllGroupsBySubjectAndCourse(int idSubject, int idCourse);
 
     public GroupEntity findById(int idGroup);
+
+    @Query("SELECT g FROM GroupEntity g WHERE g.nameGroup = :nameGroup AND g.course = :course AND g.subject = :subject")
+    public GroupEntity findByNameCourseSubject(String nameGroup, CourseEntity course, SubjectEntity subject);
+
+    public void deleteById(int idGroup);
 }

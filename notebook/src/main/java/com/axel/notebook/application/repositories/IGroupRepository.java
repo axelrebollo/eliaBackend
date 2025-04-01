@@ -12,4 +12,6 @@ public interface IGroupRepository {
     public Group updateGroup(Group newGroup);
 
     public Group getGroup(int idCourse, int idSubject, String nameGroup);
+
+    public boolean deleteGroup(int idProfile, String nameCourse, String nameSubject, String nameYear, String nameGroup);
 }

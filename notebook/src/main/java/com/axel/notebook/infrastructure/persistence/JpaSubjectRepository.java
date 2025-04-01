@@ -2,6 +2,7 @@ package com.axel.notebook.infrastructure.persistence;
 
 import com.axel.notebook.infrastructure.JpaEntities.SubjectEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 
@@ -20,4 +21,7 @@ public interface JpaSubjectRepository extends JpaRepository<SubjectEntity, Integ
 
     //Delete Subject
     public void deleteById(Integer idSubject);
+
+    @Query("SELECT s FROM SubjectEntity s WHERE s.idProfile = :idProfile AND s.nameSubject = :name")
+    public SubjectEntity findByNameAndIdProfile(String name, int idProfile);
 }

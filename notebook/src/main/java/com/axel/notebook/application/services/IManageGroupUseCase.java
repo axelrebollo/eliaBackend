@@ -1,5 +1,6 @@
 package com.axel.notebook.application.services;
 
+import com.axel.notebook.application.DTOs.DeleteResponse;
 import com.axel.notebook.application.DTOs.GroupResponse;
 
 public interface IManageGroupUseCase {
@@ -7,4 +8,6 @@ public interface IManageGroupUseCase {
     public GroupResponse getAllGroupsUseCase(String token, String nameCourse, String nameSubject, String nameYear);
     //add group
     public GroupResponse addGroupUseCase(String token, String nameCourse, String nameSubject, String nameYear, String nameGroup);
+
+    public DeleteResponse deleteGroupUseCase(String token, String nameCourse, String nameSubject, String nameYear, String nameGroup);
 }

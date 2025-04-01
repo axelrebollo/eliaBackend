@@ -1,5 +1,6 @@
 package com.axel.notebook.API.controllers;
 
+import com.axel.notebook.application.DTOs.DeleteResponse;
 import com.axel.notebook.application.DTOs.GroupResponse;
 import com.axel.notebook.application.services.IManageGroupUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,5 +42,15 @@ public class GroupController {
                                        @RequestParam String nameYear) {
         GroupResponse groupResponse = manageGroupUseCase.getAllGroupsUseCase(token, nameCourse, nameSubject, nameYear);
         return new ResponseEntity<>(groupResponse, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/deleteGroup")
+    public ResponseEntity<?> deleteGroup(@RequestParam String token,
+                                         @RequestParam String nameCourse,
+                                         @RequestParam String nameSubject,
+                                         @RequestParam String nameYear,
+                                         @RequestParam String nameGroup) {
+        DeleteResponse deleteResponse = manageGroupUseCase.deleteGroupUseCase(token, nameCourse, nameSubject, nameYear, nameGroup);
+        return new ResponseEntity<>(deleteResponse, HttpStatus.OK);
     }
 }

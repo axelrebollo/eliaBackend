@@ -2,6 +2,7 @@ package com.axel.notebook.infrastructure.persistence;
 
 import com.axel.notebook.infrastructure.JpaEntities.YearEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 
@@ -21,4 +22,7 @@ public interface JpaYearRepository extends JpaRepository<YearEntity, Integer> {
 
     //find by id
     public YearEntity findByIdYear(int idYear);
+
+    @Query("SELECT y FROM YearEntity y WHERE y.idProfile = :idProfile AND y.nameYear = :name")
+    public YearEntity findByNameAndIdProfile(String name, int idProfile);
 }

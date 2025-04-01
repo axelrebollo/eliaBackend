@@ -1,5 +1,6 @@
 package com.axel.notebook.application.useCases;
 
+import com.axel.notebook.application.DTOs.DeleteResponse;
 import com.axel.notebook.application.DTOs.GroupResponse;
 import com.axel.notebook.application.exceptions.ApplicationException;
 import com.axel.notebook.application.repositories.ICourseRepository;
@@ -147,5 +148,25 @@ public class ManageGroupUseCaseImpl implements IManageGroupUseCase {
             groups = getAllGroupsForSelection(idProfile, nameCourse, nameSubject, nameYear);
         }
         return new GroupResponse(groups);
+    }
+
+    public DeleteResponse deleteGroupUseCase(String token, String nameCourse, String nameSubject, String nameYear, String nameGroup){
+        if(token == null || token.isEmpty() || nameCourse == null || nameCourse.isEmpty() ||
+                nameSubject == null || nameSubject.isEmpty() || nameYear == null || nameYear.isEmpty() ||
+                nameGroup == null || nameGroup.isEmpty()){
+            throw new ApplicationException("Algún dato no es correcto para borrar el grupo correctamente.");
+        }
+
+        //decode token and get idProfile
+        int idProfile = getProfileId(token);
+
+        if(idProfile <= 0){
+            throw new ApplicationException("Error al recuperar los usuarios, el perfil no existe");
+        }
+
+        boolean idDeleted = false;
+        idDeleted = groupRepository.deleteGroup(idProfile, nameCourse, nameSubject, nameYear, nameGroup);
+
+        return new DeleteResponse(idDeleted, "El grupo se ha borrado correctamente.");
     }
 }
