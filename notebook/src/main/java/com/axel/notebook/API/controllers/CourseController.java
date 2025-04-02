@@ -2,6 +2,7 @@ package com.axel.notebook.API.controllers;
 
 import com.axel.notebook.application.DTOs.CourseResponse;
 import com.axel.notebook.application.DTOs.DeleteResponse;
+import com.axel.notebook.application.DTOs.UpdateResponse;
 import com.axel.notebook.application.services.IManageCourseUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -52,7 +53,7 @@ public class CourseController {
                                               @RequestParam String nameCourse,
                                               @RequestParam String nameYear,
                                               @RequestParam String newNameCourse) {
-        CourseResponse courseResponse = manageCourseUseCase.updateCourseUseCase(token, nameCourse, nameYear, newNameCourse);
-        return new ResponseEntity<>(courseResponse, HttpStatus.OK);
+        UpdateResponse updateResponse = manageCourseUseCase.updateCourseUseCase(token, nameCourse, nameYear, newNameCourse);
+        return new ResponseEntity<>(updateResponse, HttpStatus.OK);
     }
 }

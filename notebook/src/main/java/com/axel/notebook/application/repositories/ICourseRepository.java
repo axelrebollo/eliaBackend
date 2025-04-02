@@ -14,4 +14,6 @@ public interface ICourseRepository {
     public Course updateCourse(Course course);
 
     public boolean deleteCourse(int idProfile, String nameCourse, String nameYear);
+
+    public int updateNameCourse(int idProfile, String nameYear, String nameCourse, String newNameCourse);
 }

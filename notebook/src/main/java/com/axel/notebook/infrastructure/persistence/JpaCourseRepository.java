@@ -2,7 +2,9 @@ package com.axel.notebook.infrastructure.persistence;
 
 import com.axel.notebook.infrastructure.JpaEntities.CourseEntity;
 import com.axel.notebook.infrastructure.JpaEntities.YearEntity;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import java.util.List;
@@ -19,4 +21,9 @@ public interface JpaCourseRepository extends JpaRepository<CourseEntity, Integer
     public CourseEntity findByYearSubjectName(YearEntity year, String name);
 
     public void deleteById(int idCourse);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE CourseEntity c SET c.nameCourse = :newNameCourse WHERE c.idCourse = :idCourse")
+    public int updateNameByIdCourse(int idCourse, String newNameCourse);
 }

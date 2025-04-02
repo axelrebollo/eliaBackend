@@ -120,4 +120,28 @@ public class CourseRepositoryImpl implements ICourseRepository {
         }
         return isDeleted;
     }
+
+    public int updateNameCourse(int idProfile, String nameYear, String nameCourse, String newNameCourse){
+        if(idProfile <= 0 || nameCourse == null || nameCourse.isEmpty() || nameYear == null || nameYear.isEmpty() ||
+        newNameCourse == null || newNameCourse.isEmpty()){
+            throw new InfrastructureException("No es posible actualizar el nombre del curso con los datos obtenidos.");
+        }
+
+        YearEntity year = jpaYearRepository.findByNameAndIdProfile(nameYear, idProfile);
+        if(year == null){
+            throw new InfrastructureException("No se ha encontrado el año asociado al curso.");
+        }
+
+        CourseEntity courseEntity = jpaCourseRepository.findByYearSubjectName(year, nameCourse);
+        if(courseEntity == null){
+            throw new InfrastructureException("No se ha encontrado el curso.");
+        }
+
+        int isUploaded = jpaCourseRepository.updateNameByIdCourse(courseEntity.getIdCourse(), newNameCourse);
+
+        if(isUploaded == 1){
+            return courseEntity.getIdCourse();
+        }
+        return -1;
+    }
 }

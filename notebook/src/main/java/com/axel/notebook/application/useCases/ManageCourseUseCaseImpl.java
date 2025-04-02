@@ -2,6 +2,7 @@ package com.axel.notebook.application.useCases;
 
 import com.axel.notebook.application.DTOs.CourseResponse;
 import com.axel.notebook.application.DTOs.DeleteResponse;
+import com.axel.notebook.application.DTOs.UpdateResponse;
 import com.axel.notebook.application.exceptions.ApplicationException;
 import com.axel.notebook.application.repositories.ICourseRepository;
 import com.axel.notebook.application.repositories.IYearRepository;
@@ -152,8 +153,24 @@ public class ManageCourseUseCaseImpl implements IManageCourseUseCase {
         return new DeleteResponse(isDeleted, "El curso se ha borrado correctamente.");
     }
 
-    public CourseResponse updateCourseUseCase(String token, String nameCourse, String nameYear, String newNameCourse){
-        //TODO
-        return null;
+    public UpdateResponse updateCourseUseCase(String token, String nameCourse, String nameYear, String newNameCourse){
+        if(token == null || token.isEmpty() || nameCourse == null || nameCourse.isEmpty() ||
+                nameYear == null || nameYear.isEmpty() || newNameCourse == null || newNameCourse.isEmpty()){
+            throw new ApplicationException("Algún dato no es correcto para actualizar el nombre del curso.");
+        }
+
+        //decode token and get idProfile
+        int idProfile = getProfileId(token);
+
+        if(idProfile <= 0){
+            throw new ApplicationException("Error al recuperar los usuarios, el perfil no existe");
+        }
+
+        int idCourse = courseRepository.updateNameCourse(idProfile, nameYear, nameCourse, newNameCourse);
+        if(idCourse <= 0){
+            throw new ApplicationException("El nombre del curso no se ha actualizado correctamente.");
+        }
+
+        return new UpdateResponse(idCourse);
     }
 }
