@@ -1,7 +1,9 @@
 package com.axel.notebook.infrastructure.persistence;
 
 import com.axel.notebook.infrastructure.JpaEntities.SubjectEntity;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import java.util.List;
@@ -24,4 +26,9 @@ public interface JpaSubjectRepository extends JpaRepository<SubjectEntity, Integ
 
     @Query("SELECT s FROM SubjectEntity s WHERE s.idProfile = :idProfile AND s.nameSubject = :name")
     public SubjectEntity findByNameAndIdProfile(String name, int idProfile);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE SubjectEntity s SET s.nameSubject = :newNameSubject WHERE s.idSubject = :idSubject")
+    public int updateNameByIdSubject(int idSubject, String newNameSubject);
 }

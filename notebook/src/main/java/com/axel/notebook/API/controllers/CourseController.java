@@ -46,4 +46,13 @@ public class CourseController {
         DeleteResponse deleteResponse = manageCourseUseCase.deleteCourseUseCase(token, nameCourse, nameYear);
         return new ResponseEntity<>(deleteResponse, HttpStatus.OK);
     }
+
+    @PatchMapping("/updateNameCourse")
+    public ResponseEntity<?> updateNameCourse(@RequestParam String token,
+                                              @RequestParam String nameCourse,
+                                              @RequestParam String nameYear,
+                                              @RequestParam String newNameCourse) {
+        CourseResponse courseResponse = manageCourseUseCase.updateCourseUseCase(token, nameCourse, nameYear, newNameCourse);
+        return new ResponseEntity<>(courseResponse, HttpStatus.OK);
+    }
 }

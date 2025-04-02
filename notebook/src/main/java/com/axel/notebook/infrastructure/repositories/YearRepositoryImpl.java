@@ -113,4 +113,22 @@ public class YearRepositoryImpl implements IYearRepository {
 
         return isDeleted;
     }
+
+    public int updateNameYear(int idProfile, String nameYear, String newNameYear){
+        if(idProfile <= 0 || nameYear == null || nameYear.isEmpty() || newNameYear == null || newNameYear.isEmpty()) {
+            throw new InfrastructureException("No es posible actualizar el nombre del año con los datos obtenidos.");
+        }
+
+        YearEntity yearEntity = jpaYearRepository.findByNameAndIdProfile(nameYear, idProfile);
+        if(yearEntity == null){
+            throw new InfrastructureException("No se ha encontrado el año.");
+        }
+
+        int isUpdated = jpaYearRepository.updateNameByIdYear(yearEntity.getIdYear(), newNameYear);
+
+        if(isUpdated == 1){
+            return yearEntity.getIdYear();
+        }
+        return -1;
+    }
 }

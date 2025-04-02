@@ -169,4 +169,9 @@ public class ManageGroupUseCaseImpl implements IManageGroupUseCase {
 
         return new DeleteResponse(idDeleted, "El grupo se ha borrado correctamente.");
     }
+
+    public GroupResponse updateGroupUseCase(String token, String nameSubject, String nameYear, String nameCourse, String nameGroup, String newNameGroup){
+        //TODO
+        return null;
+    }
 }

@@ -22,4 +22,6 @@ public interface ISubjectRepository {
 
     //delete Subjects that user are created
     public boolean deleteSubject(int idUser, String nameSubject);
+
+    public int updateNameSubject(int idProfile, String nameSubject, String newNameSubject);
 }

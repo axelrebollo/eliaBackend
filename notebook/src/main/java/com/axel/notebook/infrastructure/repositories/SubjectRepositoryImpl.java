@@ -113,4 +113,22 @@ public class SubjectRepositoryImpl implements ISubjectRepository {
         }
         return isDeleted;
     }
+
+    public int updateNameSubject(int idProfile, String nameSubject, String newNameSubject){
+        if(idProfile <= 0 || nameSubject == null || nameSubject.isEmpty() || newNameSubject == null || newNameSubject.isEmpty()) {
+            throw new InfrastructureException("No es posible actualizar el nombre del año con los datos obtenidos.");
+        }
+
+        SubjectEntity subjectEntity = jpaSubjectRepository.findByNameAndIdProfile(nameSubject, idProfile);
+        if(subjectEntity == null) {
+            throw new InfrastructureException("No se ha encontrado la asignatura.");
+        }
+
+        int isUpdated = jpaSubjectRepository.updateNameByIdSubject(subjectEntity.getIdSubject(), newNameSubject);
+
+        if(isUpdated == 1){
+            return subjectEntity.getIdSubject();
+        }
+        return -1;
+    }
 }

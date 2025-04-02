@@ -2,6 +2,7 @@ package com.axel.notebook.application.useCases;
 
 import com.axel.notebook.application.DTOs.DeleteResponse;
 import com.axel.notebook.application.DTOs.SubjectResponse;
+import com.axel.notebook.application.DTOs.UpdateResponse;
 import com.axel.notebook.application.exceptions.ApplicationException;
 import com.axel.notebook.application.repositories.ISubjectRepository;
 import com.axel.notebook.application.services.IManageSubjectUseCase;
@@ -116,7 +117,23 @@ public class ManageSubjectUseCaseImpl implements IManageSubjectUseCase {
     }
 
     //update name subject
-    public void updateSubjectUseCase() {
-        //TODO
+    public UpdateResponse updateSubjectUseCase(String token, String nameSubject, String newNameSubject){
+        if(token == null || token.isEmpty() || nameSubject == null || nameSubject.isEmpty() || newNameSubject == null || newNameSubject.isEmpty()){
+            throw new ApplicationException("Algún dato no es correcto para actualizar el nombre del año.");
+        }
+
+        //decode token and get idProfile
+        int idProfile = getProfileId(token);
+
+        if(idProfile <= 0){
+            throw new ApplicationException("Error al recuperar los usuarios, el perfil no existe");
+        }
+
+        int idSubject = subjectRepository.updateNameSubject(idProfile, nameSubject, newNameSubject);
+        if(idSubject <= 0){
+            throw new ApplicationException("El nombre de la asignatura no se ha actualizado correctamente.");
+        }
+
+        return new UpdateResponse(idSubject);
     }
 }

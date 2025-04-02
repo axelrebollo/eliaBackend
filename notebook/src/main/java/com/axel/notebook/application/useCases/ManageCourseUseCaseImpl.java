@@ -151,4 +151,9 @@ public class ManageCourseUseCaseImpl implements IManageCourseUseCase {
 
         return new DeleteResponse(isDeleted, "El curso se ha borrado correctamente.");
     }
+
+    public CourseResponse updateCourseUseCase(String token, String nameCourse, String nameYear, String newNameCourse){
+        //TODO
+        return null;
+    }
 }

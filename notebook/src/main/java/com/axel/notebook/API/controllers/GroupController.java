@@ -53,4 +53,15 @@ public class GroupController {
         DeleteResponse deleteResponse = manageGroupUseCase.deleteGroupUseCase(token, nameCourse, nameSubject, nameYear, nameGroup);
         return new ResponseEntity<>(deleteResponse, HttpStatus.OK);
     }
+
+    @PatchMapping("/updateNameGroup")
+    public ResponseEntity<?> updateNameGroup(@RequestParam String token,
+                                             @RequestParam String nameSubject,
+                                             @RequestParam String nameYear,
+                                             @RequestParam String nameCourse,
+                                             @RequestParam String nameGroup,
+                                             @RequestParam String newNameGroup) {
+        GroupResponse groupResponse = manageGroupUseCase.updateGroupUseCase(token, nameSubject, nameYear, nameCourse, nameGroup, newNameGroup);
+        return new ResponseEntity<>(groupResponse, HttpStatus.OK);
+    }
 }

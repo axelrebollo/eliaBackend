@@ -1,6 +1,7 @@
 package com.axel.notebook.application.useCases;
 
 import com.axel.notebook.application.DTOs.DeleteResponse;
+import com.axel.notebook.application.DTOs.UpdateResponse;
 import com.axel.notebook.domain.entities.Year;
 import com.axel.notebook.application.DTOs.YearResponse;
 import com.axel.notebook.application.exceptions.ApplicationException;
@@ -116,7 +117,23 @@ public class ManageYearUseCaseImpl implements IManageYearUseCase {
     }
 
     //update name year
-    public void updateYearUseCase() {
-        //TODO
+    public UpdateResponse updateYearUseCase(String token, String nameYear, String newNameYear){
+        if(token == null || token.isEmpty() || nameYear == null || nameYear.isEmpty() || newNameYear == null || newNameYear.isEmpty()){
+            throw new ApplicationException("Algún dato no es correcto para actualizar el nombre del año.");
+        }
+
+        //decode token and get idProfile
+        int idProfile = getProfileId(token);
+
+        if(idProfile <= 0){
+            throw new ApplicationException("Error al recuperar los usuarios, el perfil no existe");
+        }
+
+        int idYear = yearRepository.updateNameYear(idProfile, nameYear, newNameYear);
+        if(idYear <= 0){
+            throw new ApplicationException("El nombre del año no se ha actualizado correctamente.");
+        }
+
+        return new UpdateResponse(idYear);
     }
 }

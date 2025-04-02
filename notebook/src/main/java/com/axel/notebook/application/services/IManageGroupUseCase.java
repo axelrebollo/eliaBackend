@@ -10,4 +10,6 @@ public interface IManageGroupUseCase {
     public GroupResponse addGroupUseCase(String token, String nameCourse, String nameSubject, String nameYear, String nameGroup);
 
     public DeleteResponse deleteGroupUseCase(String token, String nameCourse, String nameSubject, String nameYear, String nameGroup);
+
+    public GroupResponse updateGroupUseCase(String token, String nameSubject, String nameYear, String nameCourse, String nameGroup, String newNameGroup);
 }

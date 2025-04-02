@@ -1,6 +1,7 @@
 package com.axel.notebook.application.services;
 
 import com.axel.notebook.application.DTOs.DeleteResponse;
+import com.axel.notebook.application.DTOs.UpdateResponse;
 import com.axel.notebook.application.DTOs.YearResponse;
 
 public interface IManageYearUseCase {
@@ -10,9 +11,9 @@ public interface IManageYearUseCase {
     //create a new year
     public YearResponse addYearUseCase(String token, String nameYear);
 
-    //update name year
-    public void updateYearUseCase();
-
     //delete all information about this year
     public DeleteResponse deleteYearUseCase(String token, String nameYear);
+
+    //update name year
+    public UpdateResponse updateYearUseCase(String token, String nameYear, String newNameYear);
 }

@@ -46,4 +46,17 @@ public class TableController {
         DeleteResponse deleteResponse = manageTableUseCase.deleteTableUseCase(token, classCode);
         return new ResponseEntity<>(deleteResponse, HttpStatus.OK);
     }
+
+    @PatchMapping("/updateNameTable")
+    public ResponseEntity<?> updateNameTable(@RequestParam String token,
+                                         @RequestParam String nameSubject,
+                                         @RequestParam String nameYear,
+                                         @RequestParam String nameCourse,
+                                         @RequestParam String nameGroup,
+                                         @RequestParam String nameTable,
+                                         @RequestParam String newNameTable){
+        TableResponse tableResponse = manageTableUseCase.updateTableUseCase(token, nameSubject, nameYear, nameCourse,
+                nameGroup, nameTable, newNameTable);
+        return new ResponseEntity<>(tableResponse, HttpStatus.OK);
+    }
 }

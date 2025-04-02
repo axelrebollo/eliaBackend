@@ -2,6 +2,7 @@ package com.axel.notebook.API.controllers;
 
 import com.axel.notebook.application.DTOs.DeleteResponse;
 import com.axel.notebook.application.DTOs.SubjectResponse;
+import com.axel.notebook.application.DTOs.UpdateResponse;
 import com.axel.notebook.application.services.IManageSubjectUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -41,5 +42,11 @@ public class SubjectController {
     public ResponseEntity<?> deleteSubject(@RequestParam String token, @RequestParam String nameSubject) {
         DeleteResponse deleteResponse = manageSubjectUseCase.deleteSubjectUseCase(token, nameSubject);
         return new ResponseEntity<>(deleteResponse, HttpStatus.OK);
+    }
+
+    @PatchMapping("/updateNameSubject")
+    public ResponseEntity<?> updateNameSubject(@RequestParam String token, @RequestParam String nameSubject, @RequestParam String newNameSubject) {
+        UpdateResponse updateResponse = manageSubjectUseCase.updateSubjectUseCase(token, nameSubject, newNameSubject);
+        return new ResponseEntity<>(updateResponse, HttpStatus.OK);
     }
 }

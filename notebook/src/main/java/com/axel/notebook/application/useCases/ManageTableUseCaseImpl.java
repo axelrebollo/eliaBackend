@@ -185,4 +185,10 @@ public class ManageTableUseCaseImpl implements IManageTableUseCase {
 
         return new DeleteResponse(isDeleted, "La tabla se ha eliminado correctamente.");
     }
+
+    public TableResponse updateTableUseCase(String token, String nameSubject, String nameYear, String nameCourse,
+                                                String nameGroup, String nameTable, String newNameTable){
+        //TODO
+        return null;
+    }
 }

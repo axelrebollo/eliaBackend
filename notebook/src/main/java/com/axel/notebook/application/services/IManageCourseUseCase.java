@@ -11,4 +11,6 @@ public interface IManageCourseUseCase {
     public CourseResponse addCourseUseCase(String token, String nameCourse, String nameYear);
 
     public DeleteResponse deleteCourseUseCase(String token, String nameCourse, String nameYear);
+
+    public CourseResponse updateCourseUseCase(String token, String nameCourse, String nameYear, String newNameCourse);
 }

@@ -1,7 +1,9 @@
 package com.axel.notebook.infrastructure.persistence;
 
 import com.axel.notebook.infrastructure.JpaEntities.YearEntity;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import java.util.List;
@@ -25,4 +27,9 @@ public interface JpaYearRepository extends JpaRepository<YearEntity, Integer> {
 
     @Query("SELECT y FROM YearEntity y WHERE y.idProfile = :idProfile AND y.nameYear = :name")
     public YearEntity findByNameAndIdProfile(String name, int idProfile);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE YearEntity y SET y.nameYear = :newNameYear WHERE y.idYear = :idYear")
+    public int updateNameByIdYear(int idYear, String newNameYear);
 }
