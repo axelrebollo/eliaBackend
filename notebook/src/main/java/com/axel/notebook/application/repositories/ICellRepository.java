@@ -27,4 +27,6 @@ public interface ICellRepository {
 
     //return boolean if exist task into table
     public boolean taskExistIntoTable(String classCode, String nameNewTask);
+
+    public int updateNameTask(int positionCol, String classCode, String newNameTask);
 }

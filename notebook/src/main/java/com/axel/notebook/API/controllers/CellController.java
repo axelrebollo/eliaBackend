@@ -80,4 +80,13 @@ public class CellController {
         DeleteResponse deleteResponse = manageCellUseCase.deleteStudentTableUseCase(token, classCode, nameStudent);
         return new ResponseEntity<>(deleteResponse, HttpStatus.OK);
     }
+
+    @PatchMapping("/updateNameTask")
+    public ResponseEntity<?> updateNameTask(@RequestParam String token,
+                                            @RequestParam String classCode,
+                                            @RequestParam int positionTaskColumn,
+                                            @RequestParam String nameNewTask){
+        UpdateResponse updateResponse = manageCellUseCase.updateNameTask(token, classCode, positionTaskColumn, nameNewTask);
+        return new ResponseEntity<>(updateResponse, HttpStatus.OK);
+    }
 }

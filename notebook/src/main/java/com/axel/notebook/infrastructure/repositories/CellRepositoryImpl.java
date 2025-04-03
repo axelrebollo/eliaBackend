@@ -207,4 +207,32 @@ public class CellRepositoryImpl implements ICellRepository {
         }
         return false;
     }
+
+    public int updateNameTask(int positionCol, String classCode, String newNameTask){
+        if(positionCol <= 0 || classCode == null || classCode.isEmpty()){
+            throw new InfrastructureException("Error, la posicion de la columna o el codigo de la clase están vacíos.");
+        }
+
+        TableEntity table = jpaTableRepository.findByClassCode(classCode);
+        if(table == null){
+            throw new InfrastructureException("Error, la tabla no existe en el sistema.");
+        }
+
+        int idCell = jpaCellRepository.findByTypeColRowTable("TASK", positionCol, 0, table.getIdTable());
+        if(idCell <= 0){
+            throw new InfrastructureException("Error, celda no existe en el sistema.");
+        }
+
+        TaskCellEntity task = jpaTaskCellRepository.findByIdCell(idCell);
+        if(task == null){
+            throw new InfrastructureException("Error, la tarea(columna) no existe en el sistema.");
+        }
+
+        int isUploaded = jpaTaskCellRepository.updateNameByIdTask(task.getIdCell(), newNameTask);
+
+        if(isUploaded == 1){
+            return task.getIdCell();
+        }
+        return -1;
+    }
 }

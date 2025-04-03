@@ -602,4 +602,25 @@ public class ManageCellUseCase implements IManageCellUseCase {
 
         return new DeleteResponse(isDeleted,"El estudiante y sus notas fueron borrados con éxito");
     }
+
+    public UpdateResponse updateNameTask(String token, String classCode, int positionTaskColumn, String nameNewTask){
+        //check data
+        if(token == null || classCode == null || classCode.isEmpty() || positionTaskColumn <= 0 || nameNewTask == null || nameNewTask.isEmpty()){
+            throw new ApplicationException("Alguno de los campos para actualizar el nombre de la tarea es nulo.");
+        }
+
+        //decode token and get data
+        Map<String,String> dataToken = getProfileData(token);
+        String idTeacherString = dataToken.get("idProfile");
+        if(idTeacherString == null || idTeacherString.isEmpty()){
+            throw new ApplicationException("Error con el profesor, el perfil no es correcto o no existe.");
+        }
+
+        int idTask = cellRepository.updateNameTask(positionTaskColumn, classCode, nameNewTask);
+        if(idTask <= 0){
+            throw new ApplicationException("Error al recuperar la tabla. La actualización del nombre no se ha realizado correctamente.");
+        }
+
+        return new UpdateResponse(idTask);
+    }
 }

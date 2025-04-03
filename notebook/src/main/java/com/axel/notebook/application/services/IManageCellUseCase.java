@@ -3,6 +3,7 @@ package com.axel.notebook.application.services;
 import com.axel.notebook.application.DTOs.CellResponse;
 import com.axel.notebook.application.DTOs.DeleteResponse;
 import com.axel.notebook.application.DTOs.UpdateResponse;
+import org.hibernate.sql.Update;
 
 public interface IManageCellUseCase {
     public CellResponse getCellsFromTableUseCase(String token, String nameSubject, String nameYear, String nameCourse,
@@ -16,4 +17,6 @@ public interface IManageCellUseCase {
     public DeleteResponse deleteTaskColumnUseCase(String token, String classCode, int positionTaskColumn);
 
     public DeleteResponse deleteStudentTableUseCase(String token, String classCode, String nameStudent);
+
+    public UpdateResponse updateNameTask(String token, String classCode, int positionTaskColumn, String nameNewTask);
 }

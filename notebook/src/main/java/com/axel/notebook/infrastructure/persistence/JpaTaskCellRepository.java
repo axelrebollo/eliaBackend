@@ -21,4 +21,9 @@ public interface JpaTaskCellRepository extends JpaRepository<TaskCellEntity, Int
     @Modifying
     @Query("DELETE FROM TaskCellEntity t WHERE t.idCell = :idCell")
     public void deleteByIdCell(int idCell);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE TaskCellEntity t SET t.nameTask = :newNameTask WHERE t.idCell = :idCell")
+    public int updateNameByIdTask(int idCell, String newNameTask);
 }

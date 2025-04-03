@@ -49,4 +49,7 @@ public interface JpaCellRepository extends JpaRepository<CellEntity, Integer> {
 
     @Query(value = "SELECT cell_entity.position_row FROM cell_entity WHERE cell_entity.id_cell = :idCell", nativeQuery = true)
     public int findPositionRowByIdCell(int idCell);
+
+    @Query(value = "SELECT cell_entity.id_cell FROM cell_entity WHERE cell_entity.cell_type = :type AND cell_entity.position_col = :positionCol AND cell_entity.position_row = :positionRow AND cell_entity.id_table = :idTable", nativeQuery = true)
+    public int findByTypeColRowTable(String type, int positionCol, int positionRow, int idTable);
 }
