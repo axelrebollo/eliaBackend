@@ -2,6 +2,7 @@ package com.axel.notebook.application.useCases;
 
 import com.axel.notebook.application.DTOs.DeleteResponse;
 import com.axel.notebook.application.DTOs.GroupResponse;
+import com.axel.notebook.application.DTOs.UpdateResponse;
 import com.axel.notebook.application.exceptions.ApplicationException;
 import com.axel.notebook.application.repositories.ICourseRepository;
 import com.axel.notebook.application.repositories.IGroupRepository;
@@ -170,8 +171,25 @@ public class ManageGroupUseCaseImpl implements IManageGroupUseCase {
         return new DeleteResponse(idDeleted, "El grupo se ha borrado correctamente.");
     }
 
-    public GroupResponse updateGroupUseCase(String token, String nameSubject, String nameYear, String nameCourse, String nameGroup, String newNameGroup){
-        //TODO
-        return null;
+    public UpdateResponse updateGroupUseCase(String token, String nameSubject, String nameYear, String nameCourse, String nameGroup, String newNameGroup){
+        if(token == null || token.isEmpty() || nameSubject == null || nameSubject.isEmpty() ||
+        nameYear == null || nameYear.isEmpty() ||nameGroup == null || nameGroup.isEmpty() ||
+        newNameGroup == null || newNameGroup.isEmpty() || nameCourse == null || nameCourse.isEmpty()){
+            throw new ApplicationException("Algún dato no es correcto para actualizar el grupo.");
+        }
+
+        //decode token and get idProfile
+        int idProfile = getProfileId(token);
+
+        if(idProfile <= 0){
+            throw new ApplicationException("Error al recuperar los usuarios, el perfil no existe");
+        }
+
+        int idGroup = groupRepository.updateNameGroup(idProfile, nameSubject, nameYear, nameCourse, nameGroup, newNameGroup);
+        if(idGroup <= 0){
+            throw new ApplicationException("Error al recuperar el grupo. La actualización no se ha realizado correctamente.");
+        }
+
+        return new UpdateResponse(idGroup);
     }
 }

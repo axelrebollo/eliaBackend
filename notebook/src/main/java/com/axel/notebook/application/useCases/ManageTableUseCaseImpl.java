@@ -2,6 +2,7 @@ package com.axel.notebook.application.useCases;
 
 import com.axel.notebook.application.DTOs.DeleteResponse;
 import com.axel.notebook.application.DTOs.TableResponse;
+import com.axel.notebook.application.DTOs.UpdateResponse;
 import com.axel.notebook.application.exceptions.ApplicationException;
 import com.axel.notebook.application.repositories.*;
 import com.axel.notebook.application.services.IManageTableUseCase;
@@ -186,9 +187,27 @@ public class ManageTableUseCaseImpl implements IManageTableUseCase {
         return new DeleteResponse(isDeleted, "La tabla se ha eliminado correctamente.");
     }
 
-    public TableResponse updateTableUseCase(String token, String nameSubject, String nameYear, String nameCourse,
-                                                String nameGroup, String nameTable, String newNameTable){
-        //TODO
-        return null;
+    public UpdateResponse updateTableUseCase(String token, String nameSubject, String nameYear, String nameCourse,
+                                             String nameGroup, String nameTable, String newNameTable){
+        if(token == null || token.isEmpty() || nameSubject == null || nameSubject.isEmpty() ||
+                nameYear == null || nameYear.isEmpty() ||nameGroup == null || nameGroup.isEmpty() ||
+                newNameTable == null || newNameTable.isEmpty() || nameCourse == null || nameCourse.isEmpty() ||
+                nameTable == null || nameTable.isEmpty()){
+            throw new ApplicationException("Algún dato no es correcto para actualizar el grupo.");
+        }
+
+        //decode token and get idProfile
+        int idProfile = getProfileId(token);
+
+        if(idProfile <= 0){
+            throw new ApplicationException("Error al recuperar los usuarios, el perfil no existe");
+        }
+
+        int idTable = tableRepository.updateNameTable(idProfile, nameSubject, nameYear, nameCourse, nameGroup, nameTable, newNameTable);
+        if(idTable <= 0){
+            throw new ApplicationException("Error al recuperar la tabla. La actualización no se ha realizado correctamente.");
+        }
+
+        return new UpdateResponse(idTable);
     }
 }

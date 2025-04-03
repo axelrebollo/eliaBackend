@@ -16,4 +16,6 @@ public interface ITableRepository {
     public Table findTableByClassCode(String classCode);
 
     public boolean deleteTable(String classCode);
+
+    public int updateNameTable(int idProfile, String nameSubject, String nameYear, String nameCourse, String nameGroup, String nameTable, String newNameTable);
 }

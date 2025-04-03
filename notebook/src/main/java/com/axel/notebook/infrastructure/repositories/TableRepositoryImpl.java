@@ -1,11 +1,12 @@
 package com.axel.notebook.infrastructure.repositories;
 
+import com.axel.notebook.application.exceptions.ApplicationException;
 import com.axel.notebook.application.repositories.ITableRepository;
 import com.axel.notebook.domain.entities.Table;
-import com.axel.notebook.infrastructure.JpaEntities.TableEntity;
+import com.axel.notebook.infrastructure.JpaEntities.*;
 import com.axel.notebook.infrastructure.adapters.TableAdapterInfrastructure;
 import com.axel.notebook.infrastructure.exceptions.InfrastructureException;
-import com.axel.notebook.infrastructure.persistence.JpaTableRepository;
+import com.axel.notebook.infrastructure.persistence.*;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -18,12 +19,20 @@ public class TableRepositoryImpl implements ITableRepository {
     private final JpaTableRepository jpaTableRepository;
     private final TableAdapterInfrastructure tableAdapter;
     private final TableAdapterInfrastructure tableAdapterInfrastructure;
+    private final JpaSubjectRepository jpaSubjectRepository;
+    private final JpaYearRepository jpaYearRepository;
+    private final JpaCourseRepository jpaCourseRepository;
+    private final JpaGroupRepository jpaGroupRepository;
 
     //Constructor
-    public TableRepositoryImpl(JpaTableRepository jpaTableRepository, TableAdapterInfrastructure tableAdapter, TableAdapterInfrastructure tableAdapterInfrastructure) {
+    public TableRepositoryImpl(JpaTableRepository jpaTableRepository, TableAdapterInfrastructure tableAdapter, TableAdapterInfrastructure tableAdapterInfrastructure, JpaSubjectRepository jpaSubjectRepository, JpaYearRepository jpaYearRepository, JpaCourseRepository jpaCourseRepository, JpaGroupRepository jpaGroupRepository) {
         this.jpaTableRepository = jpaTableRepository;
         this.tableAdapter = tableAdapter;
         this.tableAdapterInfrastructure = tableAdapterInfrastructure;
+        this.jpaSubjectRepository = jpaSubjectRepository;
+        this.jpaYearRepository = jpaYearRepository;
+        this.jpaCourseRepository = jpaCourseRepository;
+        this.jpaGroupRepository = jpaGroupRepository;
     }
 
     public List<String> getAllTablesForNameSubject(int idProfile, int idGroup){
@@ -110,5 +119,46 @@ public class TableRepositoryImpl implements ITableRepository {
         }
 
         return isDeleted;
+    }
+
+    public int updateNameTable(int idProfile, String nameSubject, String nameYear, String nameCourse, String nameGroup, String nameTable, String newNameTable){
+        if(idProfile <= 0 || nameSubject == null || nameSubject.isEmpty() ||
+                nameYear == null || nameYear.isEmpty() ||nameGroup == null || nameGroup.isEmpty() ||
+                newNameTable == null || newNameTable.isEmpty() || nameCourse == null || nameCourse.isEmpty() ||
+                nameTable == null || nameTable.isEmpty()){
+            throw new ApplicationException("Algún dato no es correcto para actualizar el grupo.");
+        }
+
+        SubjectEntity subject = jpaSubjectRepository.findByNameAndIdProfile(nameSubject, idProfile);
+        if(subject == null){
+            throw new ApplicationException("Error al recuperar la asignatura.");
+        }
+
+        YearEntity year = jpaYearRepository.findByNameAndIdProfile(nameYear, idProfile);
+        if(year == null){
+            throw new ApplicationException("Error al recuperar el año.");
+        }
+
+        CourseEntity course = jpaCourseRepository.findByYearSubjectName(year, nameCourse);
+        if(course == null){
+            throw new ApplicationException("Error al recuperar el curso.");
+        }
+
+        GroupEntity group = jpaGroupRepository.findByNameCourseSubject(nameGroup, course, subject);
+        if(group == null){
+            throw new ApplicationException("Error al recuperar el grupo.");
+        }
+
+        TableEntity table = jpaTableRepository.findByProfileGroupName(idProfile, group.getIdGroup(), nameTable);
+        if(table == null){
+            throw new ApplicationException("Error al recuperar la tabla.");
+        }
+
+        int isUploaded = jpaTableRepository.updateNameByIdTable(table.getIdTable(), newNameTable);
+
+        if(isUploaded == 1){
+            return group.getIdGroup();
+        }
+        return -1;
     }
 }

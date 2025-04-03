@@ -2,6 +2,7 @@ package com.axel.notebook.API.controllers;
 
 import com.axel.notebook.application.DTOs.DeleteResponse;
 import com.axel.notebook.application.DTOs.TableResponse;
+import com.axel.notebook.application.DTOs.UpdateResponse;
 import com.axel.notebook.application.services.IManageTableUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -55,8 +56,8 @@ public class TableController {
                                          @RequestParam String nameGroup,
                                          @RequestParam String nameTable,
                                          @RequestParam String newNameTable){
-        TableResponse tableResponse = manageTableUseCase.updateTableUseCase(token, nameSubject, nameYear, nameCourse,
+        UpdateResponse updateResponse = manageTableUseCase.updateTableUseCase(token, nameSubject, nameYear, nameCourse,
                 nameGroup, nameTable, newNameTable);
-        return new ResponseEntity<>(tableResponse, HttpStatus.OK);
+        return new ResponseEntity<>(updateResponse, HttpStatus.OK);
     }
 }

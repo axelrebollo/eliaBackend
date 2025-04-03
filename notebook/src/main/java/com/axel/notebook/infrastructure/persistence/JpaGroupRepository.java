@@ -3,7 +3,9 @@ package com.axel.notebook.infrastructure.persistence;
 import com.axel.notebook.infrastructure.JpaEntities.CourseEntity;
 import com.axel.notebook.infrastructure.JpaEntities.GroupEntity;
 import com.axel.notebook.infrastructure.JpaEntities.SubjectEntity;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import java.util.List;
@@ -21,4 +23,9 @@ public interface JpaGroupRepository extends JpaRepository<GroupEntity, Integer> 
     public GroupEntity findByNameCourseSubject(String nameGroup, CourseEntity course, SubjectEntity subject);
 
     public void deleteById(int idGroup);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE GroupEntity g SET g.nameGroup = :newNameGroup WHERE g.idGroup = :idGroup")
+    public int updateNameByIdGroup(int idGroup, String newNameGroup);
 }

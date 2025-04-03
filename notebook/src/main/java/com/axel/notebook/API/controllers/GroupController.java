@@ -2,6 +2,7 @@ package com.axel.notebook.API.controllers;
 
 import com.axel.notebook.application.DTOs.DeleteResponse;
 import com.axel.notebook.application.DTOs.GroupResponse;
+import com.axel.notebook.application.DTOs.UpdateResponse;
 import com.axel.notebook.application.services.IManageGroupUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -61,7 +62,7 @@ public class GroupController {
                                              @RequestParam String nameCourse,
                                              @RequestParam String nameGroup,
                                              @RequestParam String newNameGroup) {
-        GroupResponse groupResponse = manageGroupUseCase.updateGroupUseCase(token, nameSubject, nameYear, nameCourse, nameGroup, newNameGroup);
-        return new ResponseEntity<>(groupResponse, HttpStatus.OK);
+        UpdateResponse updateResponse = manageGroupUseCase.updateGroupUseCase(token, nameSubject, nameYear, nameCourse, nameGroup, newNameGroup);
+        return new ResponseEntity<>(updateResponse, HttpStatus.OK);
     }
 }

@@ -2,6 +2,7 @@ package com.axel.notebook.application.services;
 
 import com.axel.notebook.application.DTOs.DeleteResponse;
 import com.axel.notebook.application.DTOs.TableResponse;
+import com.axel.notebook.application.DTOs.UpdateResponse;
 
 public interface IManageTableUseCase {
 
@@ -15,6 +16,6 @@ public interface IManageTableUseCase {
 
     public DeleteResponse deleteTableUseCase(String token, String classCode);
 
-    public TableResponse updateTableUseCase(String token, String nameSubject, String nameYear, String nameCourse,
-                                                String nameGroup, String nameTable, String newNameTable);
+    public UpdateResponse updateTableUseCase(String token, String nameSubject, String nameYear, String nameCourse,
+                                             String nameGroup, String nameTable, String newNameTable);
 }

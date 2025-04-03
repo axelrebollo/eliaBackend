@@ -1,7 +1,9 @@
 package com.axel.notebook.infrastructure.repositories;
 
+import com.axel.notebook.application.exceptions.ApplicationException;
 import com.axel.notebook.application.repositories.IGroupRepository;
 import com.axel.notebook.domain.entities.Group;
+import com.axel.notebook.domain.entities.Subject;
 import com.axel.notebook.infrastructure.JpaEntities.CourseEntity;
 import com.axel.notebook.infrastructure.JpaEntities.GroupEntity;
 import com.axel.notebook.infrastructure.JpaEntities.SubjectEntity;
@@ -25,14 +27,20 @@ public class GroupRepositoryImpl implements IGroupRepository {
     private final JpaSubjectRepository jpaSubjectRepository;
     private final JpaYearRepository jpaYearRepository;
     private final JpaCourseRepository jpaCourseRepository;
+    private final SubjectRepositoryImpl subjectRepositoryImpl;
+    private final YearRepositoryImpl yearRepositoryImpl;
+    private final CourseRepositoryImpl courseRepositoryImpl;
 
     //Constructor
-    public GroupRepositoryImpl(JpaGroupRepository jpaGroupRepository, GroupAdapterInfrastructure groupAdapter, JpaSubjectRepository jpaSubjectRepository, JpaYearRepository jpaYearRepository, JpaCourseRepository jpaCourseRepository) {
+    public GroupRepositoryImpl(JpaGroupRepository jpaGroupRepository, GroupAdapterInfrastructure groupAdapter, JpaSubjectRepository jpaSubjectRepository, JpaYearRepository jpaYearRepository, JpaCourseRepository jpaCourseRepository, SubjectRepositoryImpl subjectRepositoryImpl, YearRepositoryImpl yearRepositoryImpl, CourseRepositoryImpl courseRepositoryImpl) {
         this.jpaGroupRepository = jpaGroupRepository;
         this.groupAdapter = groupAdapter;
         this.jpaSubjectRepository = jpaSubjectRepository;
         this.jpaYearRepository = jpaYearRepository;
         this.jpaCourseRepository = jpaCourseRepository;
+        this.subjectRepositoryImpl = subjectRepositoryImpl;
+        this.yearRepositoryImpl = yearRepositoryImpl;
+        this.courseRepositoryImpl = courseRepositoryImpl;
     }
 
     public List<String> getAllGroupsForSubjectAndCourse(int idSubject, int idCourse){
@@ -134,5 +142,40 @@ public class GroupRepositoryImpl implements IGroupRepository {
         }
 
         return isDeleted;
+    }
+
+    public int updateNameGroup(int idProfile, String nameSubject, String nameYear, String nameCourse, String nameGroup, String newNameGroup){
+        if(idProfile <= 0 || nameSubject == null || nameSubject.isEmpty() ||
+                nameYear == null || nameYear.isEmpty() ||nameGroup == null || nameGroup.isEmpty() ||
+                newNameGroup == null || newNameGroup.isEmpty() || nameCourse == null || nameCourse.isEmpty()){
+            throw new ApplicationException("Algún dato no es correcto para actualizar el grupo.");
+        }
+
+        SubjectEntity subject = jpaSubjectRepository.findByNameAndIdProfile(nameSubject, idProfile);
+        if(subject == null){
+            throw new ApplicationException("Error al recuperar la asignatura.");
+        }
+
+        YearEntity year = jpaYearRepository.findByNameAndIdProfile(nameYear, idProfile);
+        if(year == null){
+            throw new ApplicationException("Error al recuperar el año.");
+        }
+
+        CourseEntity course = jpaCourseRepository.findByYearSubjectName(year, nameCourse);
+        if(course == null){
+            throw new ApplicationException("Error al recuperar el curso.");
+        }
+
+        GroupEntity group = jpaGroupRepository.findByNameCourseSubject(nameGroup, course, subject);
+        if(group == null){
+            throw new ApplicationException("Error al recuperar el grupo.");
+        }
+
+        int isUploaded = jpaGroupRepository.updateNameByIdGroup(group.getIdGroup(), newNameGroup);
+
+        if(isUploaded == 1){
+            return group.getIdGroup();
+        }
+        return -1;
     }
 }
