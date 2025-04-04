@@ -11,6 +11,7 @@ import com.axel.notebook.application.services.producers.ICellProducer;
 import com.axel.notebook.domain.entities.*;
 import com.axel.notebook.domain.services.CellService;
 import com.axel.notebook.domain.valueObjects.*;
+import com.axel.notebook.infrastructure.JpaEntities.TableEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
@@ -622,5 +623,191 @@ public class ManageCellUseCase implements IManageCellUseCase {
         }
 
         return new UpdateResponse(idTask);
+    }
+
+    public UpdateResponse moveTaskLeftUseCase(String token, String classCode, int positionTaskColumn){
+        //check data
+        if(token == null || token.isEmpty() || classCode == null || classCode.isEmpty() || positionTaskColumn <= 0){
+            throw new ApplicationException("Alguno de los campos para mover la columna es nulo.");
+        }
+
+        //decode token and get data
+        Map<String,String> dataToken = getProfileData(token);
+        String idTeacherString = dataToken.get("idProfile");
+        if(idTeacherString == null || idTeacherString.isEmpty()){
+            throw new ApplicationException("Error con el profesor, el perfil no es correcto o no existe.");
+        }
+
+        moveTaskColumnLeft(classCode, positionTaskColumn);
+
+        //if not finish throw exception
+        return new UpdateResponse(1);
+    }
+
+    public UpdateResponse moveTaskRightUseCase(String token, String classCode, int positionTaskColumn){
+        //check data
+        if(token == null || token.isEmpty() || classCode == null || classCode.isEmpty() || positionTaskColumn <= 0){
+            throw new ApplicationException("Alguno de los campos para mover la columna es nulo.");
+        }
+
+        //decode token and get data
+        Map<String,String> dataToken = getProfileData(token);
+        String idTeacherString = dataToken.get("idProfile");
+        if(idTeacherString == null || idTeacherString.isEmpty()){
+            throw new ApplicationException("Error con el profesor, el perfil no es correcto o no existe.");
+        }
+
+        moveTaskColumnRight(classCode, positionTaskColumn);
+
+        //if not finish throw exception
+        return new UpdateResponse(1);
+    }
+
+    private void moveTaskColumnLeft(String classCode, int positionTaskColumn){
+        Table table = tableRepository.findTableByClassCode(classCode);
+        if(table == null){
+            throw new ApplicationException("La tabla no existe.");
+        }
+        //get notes and tasks
+        List<Object[]> taskCells = cellRepository.getCellsForIdTableAndType(table.getIdTable(), "TASK");
+        List<Object[]> noteCells = cellRepository.getCellsForIdTableAndType(table.getIdTable(), "NOTE");
+        //not exist task, not exist notes
+        if(taskCells.isEmpty()){
+            return;
+        }
+
+        //join all cells
+        List<Object[]> allCells = new ArrayList<>();
+        allCells.addAll(taskCells);
+        allCells.addAll(noteCells);
+
+        //sort elements for positionCol Max to Min
+        allCells.sort((a,b) -> Integer.compare((int)b[1], (int)a[1]));
+
+        try{
+            //get last position col
+            Object[] lastCellColumn = allCells.get(0);
+            int auxPosition = (int)lastCellColumn[1]+1;
+
+            //if is the first task or column 0
+            if(positionTaskColumn == 1 || positionTaskColumn == 0) {
+                return;
+            }
+
+            //move positionTaskColumn to auxiliary, move positionTaskColumn-1 to positionTaskColumn
+            for(Object[] cell : allCells){
+                int positionCol = (int) cell[1];
+                //send selected column to auxiliary position
+                if (positionCol == positionTaskColumn) {
+                    cellRepository.movePositionColCell((int)cell[0], auxPosition);
+                }
+                //move left column to right column
+                if (positionCol == positionTaskColumn - 1) {
+                    cellRepository.movePositionColCell((int)cell[0], positionTaskColumn);
+                }
+            }
+
+            //get notes and tasks
+            List<Object[]> taskCellsUpdated = cellRepository.getCellsForIdTableAndType(table.getIdTable(), "TASK");
+            List<Object[]> noteCellsUpdated = cellRepository.getCellsForIdTableAndType(table.getIdTable(), "NOTE");
+
+            //join all cells
+            List<Object[]> allCellsUpdated = new ArrayList<>();
+            allCellsUpdated.addAll(taskCellsUpdated);
+            allCellsUpdated.addAll(noteCellsUpdated);
+
+            //sort elements for positionCol Max to Min
+            allCellsUpdated.sort((a,b) -> Integer.compare((int)b[1], (int)a[1]));
+
+            //get last position col
+            Object[] lastCellColumnUpdated = allCellsUpdated.get(0);
+            auxPosition = (int)lastCellColumnUpdated[1];
+
+            //move auxiliary to positionTaskColumn
+            for(Object[] cell : allCellsUpdated){
+                int positionCol = (int) cell[1];
+                if (positionCol == auxPosition) {
+                    //move auxiliary position to left position
+                    cellRepository.movePositionColCell((int)cell[0], positionTaskColumn-1);
+                }
+            }
+        }
+        catch(ApplicationException e){
+            throw new ApplicationException(e.getMessage());
+        }
+    }
+
+    private void moveTaskColumnRight(String classCode, int positionTaskColumn){
+        Table table = tableRepository.findTableByClassCode(classCode);
+        if(table == null){
+            throw new ApplicationException("La tabla no existe.");
+        }
+        //get notes and tasks
+        List<Object[]> taskCells = cellRepository.getCellsForIdTableAndType(table.getIdTable(), "TASK");
+        List<Object[]> noteCells = cellRepository.getCellsForIdTableAndType(table.getIdTable(), "NOTE");
+        //not exist task, not exist notes
+        if(taskCells.isEmpty()){
+            return;
+        }
+
+        //join all cells
+        List<Object[]> allCells = new ArrayList<>();
+        allCells.addAll(taskCells);
+        allCells.addAll(noteCells);
+
+        //sort elements for positionCol Max to Min
+        allCells.sort((a,b) -> Integer.compare((int)b[1], (int)a[1]));
+
+        try{
+            //get last position col
+            Object[] lastCellColumn = allCells.get(0);
+            int auxPosition = (int)lastCellColumn[1]+1;
+
+            //if is the last task or column 0
+            if(positionTaskColumn == auxPosition-1 || positionTaskColumn == 0) {
+                return;
+            }
+
+            //move positionTaskColumn to auxiliary, move positionTaskColumn+1 to positionTaskColumn
+            for(Object[] cell : allCells){
+                int positionCol = (int) cell[1];
+                //send selected column to auxiliary position
+                if (positionCol == positionTaskColumn) {
+                    cellRepository.movePositionColCell((int)cell[0], auxPosition);
+                }
+                //move right column to left column
+                if (positionCol == positionTaskColumn + 1) {
+                    cellRepository.movePositionColCell((int)cell[0], positionTaskColumn);
+                }
+            }
+
+            //get notes and tasks
+            List<Object[]> taskCellsUpdated = cellRepository.getCellsForIdTableAndType(table.getIdTable(), "TASK");
+            List<Object[]> noteCellsUpdated = cellRepository.getCellsForIdTableAndType(table.getIdTable(), "NOTE");
+
+            //join all cells
+            List<Object[]> allCellsUpdated = new ArrayList<>();
+            allCellsUpdated.addAll(taskCellsUpdated);
+            allCellsUpdated.addAll(noteCellsUpdated);
+
+            //sort elements for positionCol Max to Min
+            allCellsUpdated.sort((a,b) -> Integer.compare((int)b[1], (int)a[1]));
+
+            //get last position col
+            Object[] lastCellColumnUpdated = allCellsUpdated.get(0);
+            auxPosition = (int)lastCellColumnUpdated[1];
+
+            //move auxiliary to positionTaskColumn
+            for(Object[] cell : allCellsUpdated){
+                int positionCol = (int) cell[1];
+                if (positionCol == auxPosition) {
+                    //move auxiliary position to right position
+                    cellRepository.movePositionColCell((int)cell[0], positionTaskColumn+1);
+                }
+            }
+        }
+        catch(ApplicationException e){
+            throw new ApplicationException(e.getMessage());
+        }
     }
 }

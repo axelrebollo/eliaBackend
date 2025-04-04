@@ -89,4 +89,20 @@ public class CellController {
         UpdateResponse updateResponse = manageCellUseCase.updateNameTask(token, classCode, positionTaskColumn, nameNewTask);
         return new ResponseEntity<>(updateResponse, HttpStatus.OK);
     }
+
+    @PatchMapping("/moveTaskLeft")
+    public ResponseEntity<?> moveTaskLeft(@RequestParam String token,
+                                          @RequestParam String classCode,
+                                          @RequestParam int positionTaskColumn){
+        UpdateResponse updateResponse = manageCellUseCase.moveTaskLeftUseCase(token, classCode, positionTaskColumn);
+        return new ResponseEntity<>(updateResponse, HttpStatus.OK);
+    }
+
+    @PatchMapping("/moveTaskRight")
+    public ResponseEntity<?> moveTaskRight(@RequestParam String token,
+                                           @RequestParam String classCode,
+                                           @RequestParam int positionTaskColumn){
+        UpdateResponse updateResponse = manageCellUseCase.moveTaskRightUseCase(token, classCode, positionTaskColumn);
+        return new ResponseEntity<>(updateResponse, HttpStatus.OK);
+    }
 }
