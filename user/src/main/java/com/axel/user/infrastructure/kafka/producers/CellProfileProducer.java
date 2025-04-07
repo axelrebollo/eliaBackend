@@ -97,4 +97,33 @@ public class CellProfileProducer {
         //send to kafka this message
         kafkaTemplate.send(responseRecord);
     }
+
+    public void sendError(String correlationId, String errorMessage) {
+        String topic = "response-data-cell";
+
+        Headers headers = new RecordHeaders();
+        headers.add(new RecordHeader("kafka_correlationId", correlationId.getBytes()));
+
+        Map<String, String> errorData = new HashMap<>();
+        errorData.put("status", "error");
+        errorData.put("message", errorMessage);
+
+        String jsonMessage;
+        try {
+            jsonMessage = objectMapper.writeValueAsString(errorData);
+        } catch (Exception e) {
+            throw new InfrastructureException("Error al serializar el mensaje JSON de error", e);
+        }
+
+        ProducerRecord<String, String> responseRecord = new ProducerRecord<>(
+                topic,
+                null,
+                null,
+                null,
+                jsonMessage,
+                headers
+        );
+
+        kafkaTemplate.send(responseRecord);
+    }
 }

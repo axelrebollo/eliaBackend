@@ -1,6 +1,7 @@
 package com.axel.notebook.infrastructure.kafka.producers;
 
 import com.axel.notebook.application.services.producers.ICellProducer;
+import com.axel.notebook.infrastructure.exceptions.InfrastructureException;
 import com.axel.notebook.infrastructure.kafka.consumers.CellConsumer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.header.Headers;
@@ -46,8 +47,14 @@ public class CellProducer implements ICellProducer {
         );
         kafkaTemplate.send(record);
 
-        //waiting response
-        return future.join();
+        Map<String, String> response = future.join();
+
+        //check if exit an error
+        if ("error".equalsIgnoreCase(response.get("status"))) {
+            throw new InfrastructureException("Error desde el microservicio user: " + response.get("message"));
+        }
+
+        return response;
     }
 
     //petition with token about data token

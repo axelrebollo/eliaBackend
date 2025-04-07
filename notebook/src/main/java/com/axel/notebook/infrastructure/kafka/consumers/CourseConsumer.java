@@ -1,6 +1,7 @@
 package com.axel.notebook.infrastructure.kafka.consumers;
 
 import com.axel.notebook.application.services.consumers.ICourseConsumer;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.header.Header;
@@ -9,7 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaAdmin;
 import org.springframework.stereotype.Service;
-
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -44,15 +45,37 @@ public class CourseConsumer implements ICourseConsumer {
             throw new IllegalStateException("No hay id de correlacion en el mensaje de respuesta");
         }
         String correlationId = new String(correlationIdHeader.value());
-
-        //get profileId
-        Integer profileId = Integer.parseInt(record.value());
+        String value = record.value();
 
         //delete pending request and finalize process
         CompletableFuture<Integer> future = pendingRequests.remove(correlationId);
-        //check if request exist
-        if (future != null) {
-            future.complete(profileId);
+        if (future == null) {
+            return;
+        }
+
+        try{
+            //check if is a JSON error
+            if (value.contains("\"status\"") && value.contains("\"error\"")) {
+                String message = extractMessageFromJson(value);
+                future.completeExceptionally(new RuntimeException("Error del microservicio user: " + message));
+            } else {
+                //parse profile id
+                Integer profileId = Integer.parseInt(value);
+                future.complete(profileId);
+            }
+        }
+        catch (Exception e){
+            future.completeExceptionally(new RuntimeException("Error al procesar la respuesta", e));
+        }
+    }
+
+    private String extractMessageFromJson(String json) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            Map<String, String> map = mapper.readValue(json, Map.class);
+            return map.getOrDefault("message", "Error desconocido");
+        } catch (Exception e) {
+            return "Error desconocido (no se pudo parsear)";
         }
     }
 }

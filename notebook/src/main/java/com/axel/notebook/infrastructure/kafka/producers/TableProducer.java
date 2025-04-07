@@ -1,6 +1,7 @@
 package com.axel.notebook.infrastructure.kafka.producers;
 
 import com.axel.notebook.application.services.producers.ITableProducer;
+import com.axel.notebook.infrastructure.exceptions.InfrastructureException;
 import com.axel.notebook.infrastructure.kafka.consumers.TableConsumer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.header.Headers;
@@ -45,8 +46,12 @@ public class TableProducer implements ITableProducer {
         );
         kafkaTemplate.send(record);
 
-        //waiting response
-        return future.join();
+        try {
+            return future.join();
+        }
+        catch (Exception e) {
+            throw new InfrastructureException("Error desde el microservicio user", e);
+        }
     }
 
 }

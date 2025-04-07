@@ -1,6 +1,7 @@
 package com.axel.notebook.infrastructure.kafka.producers;
 
 import com.axel.notebook.application.services.producers.ISubjectProducer;
+import com.axel.notebook.infrastructure.exceptions.InfrastructureException;
 import org.springframework.stereotype.Service;
 import com.axel.notebook.infrastructure.kafka.consumers.SubjectConsumer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -45,7 +46,11 @@ public class SubjectProducer implements ISubjectProducer {
         );
         kafkaTemplate.send(record);
 
-        //waiting response
-        return future.join();
+        try {
+            return future.join();
+        }
+        catch (Exception e) {
+            throw new InfrastructureException("Error desde el microservicio user", e);
+        }
     }
 }

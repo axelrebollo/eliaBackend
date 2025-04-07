@@ -54,36 +54,38 @@ public class CellTokenConsumer {
         String correlationId = new String(correlationIdHeader.value());
 
         //decrypt token and extract email
-        String email = jwtRepository.getEmailFromToken(token);
-        if (email == null) {
-            throw new InfrastructureException("Token inválido");
+        try{
+            String email = jwtRepository.getEmailFromToken(token);
+
+            //validate token and extract idUser
+            Boolean isAutenticated = jwtRepository.isTokenValid(token, email);
+            if (isAutenticated) {
+                User user = userRepository.findByEmail(email);
+                if (user == null) {
+                    throw new InfrastructureException("No existe el usuario con el email " + email);
+                }
+                //get idUser
+                int idUser = user.getId();
+
+                //get idProfile
+                ProfileEntity profile = jpaProfileRepository.findByUser_Id(idUser);
+
+                if(profile == null) {
+                    throw new InfrastructureException("El perfil no existe");
+                }
+
+                //get role
+                String role = jpaUserRepository.findByEmail(email).getRole();
+
+                if(role == null) {
+                    throw new InfrastructureException("Error con el rol, el usuario no tiene.");
+                }
+
+                cellProfileProducer.sendData(token, profile, role, correlationId);
+            }
         }
-
-        //validate token and extract idUser
-        Boolean isAutenticated = jwtRepository.isTokenValid(token, email);
-        if (isAutenticated) {
-            User user = userRepository.findByEmail(email);
-            if (user == null) {
-                throw new InfrastructureException("No existe el usuario con el email " + email);
-            }
-            //get idUser
-            int idUser = user.getId();
-
-            //get idProfile
-            ProfileEntity profile = jpaProfileRepository.findByUser_Id(idUser);
-
-            if(profile == null) {
-                throw new InfrastructureException("El perfil no existe");
-            }
-
-            //get role
-            String role = jpaUserRepository.findByEmail(email).getRole();
-
-            if(role == null) {
-                throw new InfrastructureException("Error con el rol, el usuario no tiene.");
-            }
-
-            cellProfileProducer.sendData(token, profile, role, correlationId);
+        catch(Exception e) {
+            cellProfileProducer.sendError(correlationId, "Token inválido");
         }
     }
 

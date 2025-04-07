@@ -58,30 +58,32 @@ public class CourseTokenConsumer {
         String correlationId = new String(correlationIdHeader.value());
 
         //decrypt token and extract email
-        String email = jwtRepository.getEmailFromToken(token);
-        if (email == null) {
-            throw new InfrastructureException("Token inválido");
-        }
+        try{
+            String email = jwtRepository.getEmailFromToken(token);
 
-        //validate token and extract idUser
-        Boolean isAutenticated = jwtRepository.isTokenValid(token, email);
-        if (isAutenticated) {
-            User user = userRepository.findByEmail(email);
-            if(user == null) {
-                throw new InfrastructureException("No existe el usuario con el email " + email);
+            //validate token and extract idUser
+            Boolean isAutenticated = jwtRepository.isTokenValid(token, email);
+            if (isAutenticated) {
+                User user = userRepository.findByEmail(email);
+                if(user == null) {
+                    throw new InfrastructureException("No existe el usuario con el email " + email);
+                }
+                //get idUser
+                int idUser = user.getId();
+
+                //get idProfile
+                idProfile = jpaProfileRepository.findByUser_Id(idUser).getId();
             }
-            //get idUser
-            int idUser = user.getId();
 
-            //get idProfile
-            idProfile = jpaProfileRepository.findByUser_Id(idUser).getId();
+            if(idProfile <= 0) {
+                throw new InfrastructureException("El perfil no existe");
+            }
+
+            //return response with idProfile
+            courseProfileProducer.sendProfileId(token, idProfile, correlationId);
         }
-
-        if(idProfile <= 0) {
-            throw new InfrastructureException("El perfil no existe");
+        catch(Exception e){
+            courseProfileProducer.sendError(correlationId, "Token inválido");
         }
-
-        //return response with idProfile
-        courseProfileProducer.sendProfileId(token, idProfile, correlationId);
     }
 }

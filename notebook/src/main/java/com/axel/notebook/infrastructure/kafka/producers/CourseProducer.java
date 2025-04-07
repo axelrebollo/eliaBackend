@@ -1,6 +1,7 @@
 package com.axel.notebook.infrastructure.kafka.producers;
 
 import com.axel.notebook.application.services.producers.ICourseProducer;
+import com.axel.notebook.infrastructure.exceptions.InfrastructureException;
 import com.axel.notebook.infrastructure.kafka.consumers.CourseConsumer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.header.Headers;
@@ -8,7 +9,6 @@ import org.apache.kafka.common.header.internals.RecordHeader;
 import org.apache.kafka.common.header.internals.RecordHeaders;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
-
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -46,7 +46,10 @@ public class CourseProducer implements ICourseProducer {
         );
         kafkaTemplate.send(record);
 
-        //waiting response
-        return future.join();
+        try {
+            return future.join();
+        } catch (Exception e) {
+            throw new InfrastructureException("Error desde el microservicio user", e);
+        }
     }
 }
