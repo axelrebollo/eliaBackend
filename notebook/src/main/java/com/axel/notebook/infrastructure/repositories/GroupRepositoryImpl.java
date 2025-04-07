@@ -3,7 +3,6 @@ package com.axel.notebook.infrastructure.repositories;
 import com.axel.notebook.application.exceptions.ApplicationException;
 import com.axel.notebook.application.repositories.IGroupRepository;
 import com.axel.notebook.domain.entities.Group;
-import com.axel.notebook.domain.entities.Subject;
 import com.axel.notebook.infrastructure.JpaEntities.CourseEntity;
 import com.axel.notebook.infrastructure.JpaEntities.GroupEntity;
 import com.axel.notebook.infrastructure.JpaEntities.SubjectEntity;
@@ -17,7 +16,6 @@ import com.axel.notebook.infrastructure.persistence.JpaYearRepository;
 import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public class GroupRepositoryImpl implements IGroupRepository {
@@ -27,20 +25,18 @@ public class GroupRepositoryImpl implements IGroupRepository {
     private final JpaSubjectRepository jpaSubjectRepository;
     private final JpaYearRepository jpaYearRepository;
     private final JpaCourseRepository jpaCourseRepository;
-    private final SubjectRepositoryImpl subjectRepositoryImpl;
-    private final YearRepositoryImpl yearRepositoryImpl;
-    private final CourseRepositoryImpl courseRepositoryImpl;
 
     //Constructor
-    public GroupRepositoryImpl(JpaGroupRepository jpaGroupRepository, GroupAdapterInfrastructure groupAdapter, JpaSubjectRepository jpaSubjectRepository, JpaYearRepository jpaYearRepository, JpaCourseRepository jpaCourseRepository, SubjectRepositoryImpl subjectRepositoryImpl, YearRepositoryImpl yearRepositoryImpl, CourseRepositoryImpl courseRepositoryImpl) {
+    public GroupRepositoryImpl(JpaGroupRepository jpaGroupRepository,
+                               GroupAdapterInfrastructure groupAdapter,
+                               JpaSubjectRepository jpaSubjectRepository,
+                               JpaYearRepository jpaYearRepository,
+                               JpaCourseRepository jpaCourseRepository) {
         this.jpaGroupRepository = jpaGroupRepository;
         this.groupAdapter = groupAdapter;
         this.jpaSubjectRepository = jpaSubjectRepository;
         this.jpaYearRepository = jpaYearRepository;
         this.jpaCourseRepository = jpaCourseRepository;
-        this.subjectRepositoryImpl = subjectRepositoryImpl;
-        this.yearRepositoryImpl = yearRepositoryImpl;
-        this.courseRepositoryImpl = courseRepositoryImpl;
     }
 
     public List<String> getAllGroupsForSubjectAndCourse(int idSubject, int idCourse){
@@ -150,6 +146,9 @@ public class GroupRepositoryImpl implements IGroupRepository {
                 newNameGroup == null || newNameGroup.isEmpty() || nameCourse == null || nameCourse.isEmpty()){
             throw new ApplicationException("Algún dato no es correcto para actualizar el grupo.");
         }
+
+        //TODO
+        //recuperar todos los cgrupos y comprobar que el nuevo nombre no es igual a alguno existente
 
         SubjectEntity subject = jpaSubjectRepository.findByNameAndIdProfile(nameSubject, idProfile);
         if(subject == null){

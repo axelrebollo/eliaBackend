@@ -129,6 +129,9 @@ public class TableRepositoryImpl implements ITableRepository {
             throw new ApplicationException("Algún dato no es correcto para actualizar el grupo.");
         }
 
+        //TODO
+        //recuperar todas las tablas y comprobar que el nuevo nombre no es igual a alguno existente
+
         SubjectEntity subject = jpaSubjectRepository.findByNameAndIdProfile(nameSubject, idProfile);
         if(subject == null){
             throw new ApplicationException("Error al recuperar la asignatura.");

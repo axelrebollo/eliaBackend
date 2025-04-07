@@ -33,7 +33,6 @@ public class CourseRepositoryImpl implements ICourseRepository {
         this.jpaYearRepository = jpaYearRepository;
     }
 
-
     public List<String> getAllCoursesForUser(int idProfile, String nameYear){
         List<String> courses = new ArrayList<>();
 
@@ -126,6 +125,9 @@ public class CourseRepositoryImpl implements ICourseRepository {
         newNameCourse == null || newNameCourse.isEmpty()){
             throw new InfrastructureException("No es posible actualizar el nombre del curso con los datos obtenidos.");
         }
+
+        //TODO
+        //recuperar todos los cursos y comprobar que el nuevo nombre no es igual a alguno existente
 
         YearEntity year = jpaYearRepository.findByNameAndIdProfile(nameYear, idProfile);
         if(year == null){
