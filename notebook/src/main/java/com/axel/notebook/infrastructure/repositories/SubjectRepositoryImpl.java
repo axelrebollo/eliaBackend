@@ -119,8 +119,9 @@ public class SubjectRepositoryImpl implements ISubjectRepository {
             throw new InfrastructureException("No es posible actualizar el nombre del año con los datos obtenidos.");
         }
 
-        //TODO
-        //recuperar todas las asignaturas y comprobar que el nuevo nombre no es igual a alguno existente
+        if(existSubjectForUser(nameSubject, idProfile)){
+            throw new InfrastructureException("El nombre de la asignatura existe para este usuario.");
+        }
 
         SubjectEntity subjectEntity = jpaSubjectRepository.findByNameAndIdProfile(nameSubject, idProfile);
         if(subjectEntity == null) {

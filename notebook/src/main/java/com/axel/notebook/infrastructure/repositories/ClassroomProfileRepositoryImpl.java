@@ -231,6 +231,7 @@ public class ClassroomProfileRepositoryImpl implements IClassroomProfileReposito
                         }
                     }
                 }
+                return true;
             }
         }
         catch(InfrastructureException e){

@@ -119,8 +119,10 @@ public class YearRepositoryImpl implements IYearRepository {
             throw new InfrastructureException("No es posible actualizar el nombre del año con los datos obtenidos.");
         }
 
-        //TODO
-        //recuperar todos los años y comprobar que el nuevo nombre no es igual a alguno existente
+        //check if this name not exist into DB for this user
+        if(existYearForUser(nameYear,idProfile)){
+            throw new InfrastructureException("El nombre del año existe para este usuario.");
+        }
 
         YearEntity yearEntity = jpaYearRepository.findByNameAndIdProfile(nameYear, idProfile);
         if(yearEntity == null){

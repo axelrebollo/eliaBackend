@@ -121,6 +121,14 @@ public class TableRepositoryImpl implements ITableRepository {
         return isDeleted;
     }
 
+    private boolean existTable(int idProfile, int idGroup, String nameTable){
+        List<String> nameTables = getAllTablesForNameSubject(idProfile, idGroup);
+        if(nameTables.contains(nameTable)){
+            return true;
+        }
+        return false;
+    }
+
     public int updateNameTable(int idProfile, String nameSubject, String nameYear, String nameCourse, String nameGroup, String nameTable, String newNameTable){
         if(idProfile <= 0 || nameSubject == null || nameSubject.isEmpty() ||
                 nameYear == null || nameYear.isEmpty() ||nameGroup == null || nameGroup.isEmpty() ||
@@ -128,9 +136,6 @@ public class TableRepositoryImpl implements ITableRepository {
                 nameTable == null || nameTable.isEmpty()){
             throw new ApplicationException("Algún dato no es correcto para actualizar el grupo.");
         }
-
-        //TODO
-        //recuperar todas las tablas y comprobar que el nuevo nombre no es igual a alguno existente
 
         SubjectEntity subject = jpaSubjectRepository.findByNameAndIdProfile(nameSubject, idProfile);
         if(subject == null){
@@ -150,6 +155,10 @@ public class TableRepositoryImpl implements ITableRepository {
         GroupEntity group = jpaGroupRepository.findByNameCourseSubject(nameGroup, course, subject);
         if(group == null){
             throw new ApplicationException("Error al recuperar el grupo.");
+        }
+
+        if(existTable(idProfile, group.getIdGroup(), newNameTable)){
+            throw new InfrastructureException("El nombre de la tabla existe para este usuario y la selección.");
         }
 
         TableEntity table = jpaTableRepository.findByProfileGroupName(idProfile, group.getIdGroup(), nameTable);

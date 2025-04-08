@@ -147,9 +147,6 @@ public class GroupRepositoryImpl implements IGroupRepository {
             throw new ApplicationException("Algún dato no es correcto para actualizar el grupo.");
         }
 
-        //TODO
-        //recuperar todos los cgrupos y comprobar que el nuevo nombre no es igual a alguno existente
-
         SubjectEntity subject = jpaSubjectRepository.findByNameAndIdProfile(nameSubject, idProfile);
         if(subject == null){
             throw new ApplicationException("Error al recuperar la asignatura.");
@@ -163,6 +160,10 @@ public class GroupRepositoryImpl implements IGroupRepository {
         CourseEntity course = jpaCourseRepository.findByYearSubjectName(year, nameCourse);
         if(course == null){
             throw new ApplicationException("Error al recuperar el curso.");
+        }
+
+        if(existGroup(course.getIdCourse(), subject.getIdSubject(),nameGroup)){
+            throw new InfrastructureException("El nombre del grupo existe para este usuario, dentro de este año y curso.");
         }
 
         GroupEntity group = jpaGroupRepository.findByNameCourseSubject(nameGroup, course, subject);

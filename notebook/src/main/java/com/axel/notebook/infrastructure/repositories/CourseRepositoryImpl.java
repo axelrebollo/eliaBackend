@@ -126,12 +126,13 @@ public class CourseRepositoryImpl implements ICourseRepository {
             throw new InfrastructureException("No es posible actualizar el nombre del curso con los datos obtenidos.");
         }
 
-        //TODO
-        //recuperar todos los cursos y comprobar que el nuevo nombre no es igual a alguno existente
-
         YearEntity year = jpaYearRepository.findByNameAndIdProfile(nameYear, idProfile);
         if(year == null){
             throw new InfrastructureException("No se ha encontrado el año asociado al curso.");
+        }
+
+        if(existCourseForUser(year.getIdYear(),nameCourse)){
+            throw new InfrastructureException("El nombre del curso existe para este usuario y dentro de este año.");
         }
 
         CourseEntity courseEntity = jpaCourseRepository.findByYearSubjectName(year, nameCourse);
