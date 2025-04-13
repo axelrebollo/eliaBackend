@@ -119,14 +119,14 @@ public class YearRepositoryImpl implements IYearRepository {
             throw new InfrastructureException("No es posible actualizar el nombre del año con los datos obtenidos.");
         }
 
-        //check if this name not exist into DB for this user
-        if(existYearForUser(nameYear,idProfile)){
-            throw new InfrastructureException("El nombre del año existe para este usuario.");
-        }
-
         YearEntity yearEntity = jpaYearRepository.findByNameAndIdProfile(nameYear, idProfile);
         if(yearEntity == null){
             throw new InfrastructureException("No se ha encontrado el año.");
+        }
+
+        //check if this name not exist into DB for this user
+        if(existMoreThan1YearWithSameName(newNameYear,idProfile, yearEntity)){
+            throw new InfrastructureException("No es posible cambiar el nombre ya que existe en el desplegable.");
         }
 
         int isUpdated = jpaYearRepository.updateNameByIdYear(yearEntity.getIdYear(), newNameYear);
@@ -135,5 +135,21 @@ public class YearRepositoryImpl implements IYearRepository {
             return yearEntity.getIdYear();
         }
         return -1;
+    }
+
+    private boolean existMoreThan1YearWithSameName(String name, int idProfile, YearEntity yearToUpdate) {
+        List<YearEntity> yearEntities = jpaYearRepository.findByIdProfile(idProfile);
+
+        int count = 0;
+        for (YearEntity yearEntity : yearEntities) {
+            if(yearEntity.getNameYear().equals(name) && yearEntity.getIdYear() != yearToUpdate.getIdYear()) {
+                count++;
+            }
+        }
+
+        if(count > 0){
+            return true;
+        }
+        return false;
     }
 }

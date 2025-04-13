@@ -162,13 +162,13 @@ public class GroupRepositoryImpl implements IGroupRepository {
             throw new ApplicationException("Error al recuperar el curso.");
         }
 
-        if(existGroup(course.getIdCourse(), subject.getIdSubject(),nameGroup)){
-            throw new InfrastructureException("El nombre del grupo existe para este usuario, dentro de este año y curso.");
-        }
-
         GroupEntity group = jpaGroupRepository.findByNameCourseSubject(nameGroup, course, subject);
         if(group == null){
             throw new ApplicationException("Error al recuperar el grupo.");
+        }
+
+        if(existMoreThan1GroupWithSameName(course.getIdCourse(), subject.getIdSubject(), newNameGroup, group)){
+            throw new InfrastructureException("No es posible cambiar el nombre ya que existe en el desplegable.");
         }
 
         int isUploaded = jpaGroupRepository.updateNameByIdGroup(group.getIdGroup(), newNameGroup);
@@ -177,5 +177,28 @@ public class GroupRepositoryImpl implements IGroupRepository {
             return group.getIdGroup();
         }
         return -1;
+    }
+
+    private boolean existMoreThan1GroupWithSameName(int idCourse, int idSubject, String nameGroup, GroupEntity groupToUpdate){
+        if(idCourse <= 0 || idSubject <= 0 || nameGroup == null || nameGroup.isEmpty()){
+            throw new InfrastructureException("Algun dato es incompleto o nulo para determinar si existe el grupo.");
+        }
+
+        List<GroupEntity> groups;
+        groups = jpaGroupRepository.findAllGroupsBySubjectAndCourse(idSubject, idCourse);
+
+        int count = 0;
+        if(!groups.isEmpty()){
+            for(GroupEntity group : groups){
+                if(group.getNameGroup().equals(nameGroup) && groupToUpdate.getIdGroup() != group.getIdGroup()){
+                    count++;
+                }
+            }
+        }
+
+        if(count > 0){
+            return true;
+        }
+        return false;
     }
 }

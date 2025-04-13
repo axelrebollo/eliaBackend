@@ -22,7 +22,7 @@ public class KafkaConfig {
     private Environment env;
 
     private String getBootstrapServers() {
-        return env.getProperty("spring.kafka.bootstrap-servers", "kafka:9092");
+        return env.getProperty("spring.kafka.bootstrap-servers", "localhost:9092");
     }
 
     // Producer Config

@@ -157,13 +157,13 @@ public class TableRepositoryImpl implements ITableRepository {
             throw new ApplicationException("Error al recuperar el grupo.");
         }
 
-        if(existTable(idProfile, group.getIdGroup(), newNameTable)){
-            throw new InfrastructureException("El nombre de la tabla existe para este usuario y la selección.");
-        }
-
         TableEntity table = jpaTableRepository.findByProfileGroupName(idProfile, group.getIdGroup(), nameTable);
         if(table == null){
             throw new ApplicationException("Error al recuperar la tabla.");
+        }
+
+        if(existMoreThan1TableWithSameName(group.getIdGroup(), newNameTable, table)){
+            throw new InfrastructureException("El nombre de la tabla existe para este usuario y la selección.");
         }
 
         int isUploaded = jpaTableRepository.updateNameByIdTable(table.getIdTable(), newNameTable);
@@ -172,5 +172,21 @@ public class TableRepositoryImpl implements ITableRepository {
             return group.getIdGroup();
         }
         return -1;
+    }
+
+    private boolean existMoreThan1TableWithSameName(int idGroup, String nameTable, TableEntity tableToUpdate){
+        List<TableEntity> tablesEntities = jpaTableRepository.findAllTablesByIdGroup(idGroup);
+
+        int count = 0;
+        for(TableEntity table : tablesEntities){
+            if(table.getNameTable().equals(nameTable) && table.getIdTable() != tableToUpdate.getIdTable()){
+                count++;
+            }
+        }
+
+        if(count > 0){
+            return true;
+        }
+        return false;
     }
 }

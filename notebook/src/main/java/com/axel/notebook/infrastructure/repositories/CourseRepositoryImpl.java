@@ -131,13 +131,14 @@ public class CourseRepositoryImpl implements ICourseRepository {
             throw new InfrastructureException("No se ha encontrado el año asociado al curso.");
         }
 
-        if(existCourseForUser(year.getIdYear(),nameCourse)){
-            throw new InfrastructureException("El nombre del curso existe para este usuario y dentro de este año.");
-        }
-
         CourseEntity courseEntity = jpaCourseRepository.findByYearSubjectName(year, nameCourse);
         if(courseEntity == null){
             throw new InfrastructureException("No se ha encontrado el curso.");
+        }
+
+
+        if(existMoreThan1CourseWithSameName(year.getIdYear(),newNameCourse, courseEntity)){
+            throw new InfrastructureException("No es posible cambiar el nombre ya que existe en el desplegable.");
         }
 
         int isUploaded = jpaCourseRepository.updateNameByIdCourse(courseEntity.getIdCourse(), newNameCourse);
@@ -146,5 +147,21 @@ public class CourseRepositoryImpl implements ICourseRepository {
             return courseEntity.getIdCourse();
         }
         return -1;
+    }
+
+    private boolean existMoreThan1CourseWithSameName(int idYear, String nameCourse, CourseEntity courseToUpdate){
+        List<CourseEntity> coursesEntities = jpaCourseRepository.findAllCoursesByIdYear(idYear);
+
+        int count = 0;
+        for(CourseEntity course : coursesEntities){
+            if(course.getNameCourse().equals(nameCourse) && course.getIdCourse() != courseToUpdate.getIdCourse()){
+                count++;
+            }
+        }
+
+        if(count > 0){
+            return true;
+        }
+        return false;
     }
 }

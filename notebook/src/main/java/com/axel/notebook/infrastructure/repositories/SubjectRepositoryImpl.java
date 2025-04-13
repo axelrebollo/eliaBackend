@@ -23,9 +23,9 @@ public class SubjectRepositoryImpl implements ISubjectRepository {
     }
 
     //find all subjects for user and check that this subject not exists
-    public Boolean existSubjectForUser(String name, int idProfile) {
+    public boolean existSubjectForUser(String name, int idProfile) {
         List<SubjectEntity> subjectEntities = jpaSubjectRepository.findByIdProfile(idProfile);
-        Boolean exist = false;
+        boolean exist = false;
         for (SubjectEntity subjectEntity : subjectEntities) {
             if(subjectEntity.getNameSubject().equals(name)) {
                 exist = true;
@@ -119,13 +119,13 @@ public class SubjectRepositoryImpl implements ISubjectRepository {
             throw new InfrastructureException("No es posible actualizar el nombre del año con los datos obtenidos.");
         }
 
-        if(existSubjectForUser(nameSubject, idProfile)){
-            throw new InfrastructureException("El nombre de la asignatura existe para este usuario.");
-        }
-
         SubjectEntity subjectEntity = jpaSubjectRepository.findByNameAndIdProfile(nameSubject, idProfile);
         if(subjectEntity == null) {
             throw new InfrastructureException("No se ha encontrado la asignatura.");
+        }
+
+        if(existMoreThan1SubjectWithSameName(newNameSubject, idProfile, subjectEntity)){
+            throw new InfrastructureException("No es posible cambiar el nombre ya que existe en el desplegable.");
         }
 
         int isUpdated = jpaSubjectRepository.updateNameByIdSubject(subjectEntity.getIdSubject(), newNameSubject);
@@ -134,5 +134,21 @@ public class SubjectRepositoryImpl implements ISubjectRepository {
             return subjectEntity.getIdSubject();
         }
         return -1;
+    }
+
+    private boolean existMoreThan1SubjectWithSameName(String name, int idProfile, SubjectEntity subjectToUpdate) {
+        List<SubjectEntity> subjectEntities = jpaSubjectRepository.findByIdProfile(idProfile);
+
+        int count = 0;
+        for (SubjectEntity subjectEntity : subjectEntities) {
+            if(subjectEntity.getNameSubject().equals(name) && subjectEntity.getIdSubject() != subjectToUpdate.getIdSubject()) {
+                count++;
+            }
+        }
+
+        if(count > 0){
+            return true;
+        }
+        return false;
     }
 }

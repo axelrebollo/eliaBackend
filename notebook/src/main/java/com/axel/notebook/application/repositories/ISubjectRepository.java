@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface ISubjectRepository {
     //find all Subjects for user and check that this Subject not exists
-    public Boolean existSubjectForUser(String nameSubject, int idProfile);
+    public boolean existSubjectForUser(String nameSubject, int idProfile);
 
     //update Subject that user are created
     public Subject updateSubject(Subject subject);
