@@ -1,4 +1,4 @@
-#Base img with JDK21
+#Base img with JDK17
 FROM openjdk:17
 
 #Work folder into container
@@ -11,4 +11,4 @@ COPY target/user-0.0.1-SNAPSHOT.jar user.jar
 EXPOSE 18090
 
 #Execute application
-ENTRYPOINT ["java", "-jar", "user.jar"]
+ENTRYPOINT ["java", "-jar", "/app/user.jar"]

@@ -49,31 +49,5 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
-#  user-service:
-#    build: ./user
-#    container_name: user_service
-#    restart: always
-#    ports:
-#      - "18080:18080"
-#    depends_on:
-#      - postgres-user
-#    environment:
-#      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/userdb
-#      SPRING_DATASOURCE_USERNAME: admin
-#      SPRING_DATASOURCE_PASSWORD: axelia
-
-#  notebook-service:
-#    build: ./notebook
-#    container_name: notebook_service
-#    restart: always
-#    ports:
-#      - "18081:18081"
-#    depends_on:
-#      - postgres-notebook
-#    environment:
-#      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5433/notebookdb
-#      SPRING_DATASOURCE_USERNAME: admin
-#      SPRING_DATASOURCE_PASSWORD: axelia
-
 volumes:
   postgres_data:

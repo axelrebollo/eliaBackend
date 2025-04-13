@@ -1,4 +1,4 @@
-#Base img with JDK21
+#Base img with JDK17
 FROM openjdk:17
 
 #Work folder into container
@@ -11,4 +11,4 @@ COPY target/notebook-0.0.1-SNAPSHOT.jar notebook.jar
 EXPOSE 18091
 
 #Execute application
-ENTRYPOINT ["java", "-jar", "notebook.jar"]
+ENTRYPOINT ["java", "-jar", "/app/notebook.jar"]
