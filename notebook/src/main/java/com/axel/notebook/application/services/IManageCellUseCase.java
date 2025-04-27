@@ -2,6 +2,7 @@ package com.axel.notebook.application.services;
 
 import com.axel.notebook.application.DTOs.CellResponse;
 import com.axel.notebook.application.DTOs.DeleteResponse;
+import com.axel.notebook.application.DTOs.StudentNotesResponse;
 import com.axel.notebook.application.DTOs.UpdateResponse;
 import org.hibernate.sql.Update;
 
@@ -23,4 +24,6 @@ public interface IManageCellUseCase {
     public UpdateResponse moveTaskLeftUseCase(String token, String classCode, int positionTaskColumn);
 
     public UpdateResponse moveTaskRightUseCase(String token, String classCode, int positionTaskColumn);
+
+    public StudentNotesResponse getNotesForStudent(String token);
 }

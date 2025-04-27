@@ -1,22 +1,22 @@
 package com.axel.notebook.application.useCases;
 
-import com.axel.notebook.application.DTOs.CellResponse;
-import com.axel.notebook.application.DTOs.DeleteResponse;
-import com.axel.notebook.application.DTOs.UpdateResponse;
+import com.axel.notebook.application.DTOs.*;
 import com.axel.notebook.application.exceptions.ApplicationException;
 import com.axel.notebook.application.repositories.*;
 import com.axel.notebook.application.services.IManageCellUseCase;
+import com.axel.notebook.application.services.IManageClassroomProfileUseCase;
 import com.axel.notebook.application.services.IManageTableUseCase;
 import com.axel.notebook.application.services.producers.ICellProducer;
 import com.axel.notebook.domain.entities.*;
 import com.axel.notebook.domain.services.CellService;
+import com.axel.notebook.domain.services.StudentNotesService;
 import com.axel.notebook.domain.valueObjects.*;
-import com.axel.notebook.infrastructure.JpaEntities.TableEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class ManageCellUseCase implements IManageCellUseCase {
@@ -29,6 +29,8 @@ public class ManageCellUseCase implements IManageCellUseCase {
     private final IStudentCellRepository studentCellRepository;
     private final INoteCellRepository noteCellRepository;
     private final CellService cellService;
+    private final IManageClassroomProfileUseCase manageClassroomProfileUseCase;
+    private final StudentNotesService studentNotesService;
 
     //Constructor
     @Autowired
@@ -38,7 +40,8 @@ public class ManageCellUseCase implements IManageCellUseCase {
                              final ICellRepository cellRepository,
                              final ITaskCellRepository taskCellRepository,
                              final IStudentCellRepository studentCellRepository,
-                             final INoteCellRepository noteCellRepository) {
+                             final INoteCellRepository noteCellRepository,
+                             final IManageClassroomProfileUseCase manageClassroomProfileUseCase) {
         this.manageTableUseCase = manageTableUseCase;
         this.cellProducer = cellProducer;
         this.tableRepository = tableRepository;
@@ -47,6 +50,8 @@ public class ManageCellUseCase implements IManageCellUseCase {
         this.studentCellRepository = studentCellRepository;
         this.cellService = new CellService();
         this.noteCellRepository = noteCellRepository;
+        this.manageClassroomProfileUseCase = manageClassroomProfileUseCase;
+        this.studentNotesService = new StudentNotesService();
     }
 
     //get all cells from table
@@ -809,5 +814,133 @@ public class ManageCellUseCase implements IManageCellUseCase {
         catch(ApplicationException e){
             throw new ApplicationException(e.getMessage());
         }
+    }
+
+    public StudentNotesResponse getNotesForStudent(String token){
+        if(token == null || token.isEmpty()){
+            throw new ApplicationException("El token es incorrecto para realizar esta operación.");
+        }
+
+        //decode token and get data
+        Map<String,String> dataToken = getProfileData(token);
+        String idStudentString = dataToken.get("idProfile");
+
+        if(idStudentString == null || idStudentString.isEmpty()){
+            throw new ApplicationException("No existe información para este usuario.");
+        }
+
+        //convert string to int
+        int idStudent = Integer.parseInt(idStudentString);
+        if(idStudent <= 0){
+            throw new ApplicationException("Error al recuperar el identificador de estudiante, el perfil no existe");
+        }
+
+        //Extract classCode and subject
+        ClassroomProfileResponse dataClassrooms = manageClassroomProfileUseCase.getClassroomsForProfile(token);
+
+        if(dataClassrooms.getRows().isEmpty()){
+            return new StudentNotesResponse(null);
+        }
+
+        //adapt ClassroomProfileResponse to domain
+        List<ClassroomProfile> listClassrooms = dataClassrooms.getRows();
+
+        List<StudentClassroomNotes> listToResponse = new ArrayList<>();
+
+        //add class codes
+        listToResponse = studentNotesService.addClassrooms(listClassrooms);
+
+        if(listToResponse.isEmpty()){
+            return new StudentNotesResponse(null);
+        }
+
+        //add subject names into class codes
+        listToResponse = studentNotesService.addSubjects(listClassrooms, listToResponse);
+
+        int idTable = -1;
+
+        //add tasks into list to response
+        for(ClassroomProfile classroom: dataClassrooms.getRows()){
+            try{
+                //get tasks for class
+                idTable = tableRepository.findTableByClassCode(classroom.getClassCode()).getIdTable();
+                List<Object[]> tasksCells = cellRepository.getCellsForIdTableAndType(idTable, "TASK");
+
+                //sort for column
+                tasksCells.sort((o1, o2) -> {
+                    Integer c1 = (Integer) o1[1];
+                    Integer c2 = (Integer) o2[1];
+                    return c1.compareTo(c2);
+                });
+
+                //get tasks names
+                ArrayList<String> tasks = new ArrayList<>();
+                for(Object[] cell : tasksCells){
+                    tasks.add(taskCellRepository.getTaskByIdCell((Integer) cell[0]).getNameTask());
+                }
+
+                //add tasks into listToResponse in domain
+                listToResponse = studentNotesService.addTasks(classroom.getClassCode(), tasks, listToResponse);
+            }
+            catch(ApplicationException e){
+                throw new ApplicationException("Ocurrió un error al recuperar las tareas de las clases.");
+            }
+        }
+
+        //add notes into list to response
+        for(ClassroomProfile classroom: dataClassrooms.getRows()){
+            try{
+                //get classroom id
+                idTable = tableRepository.findTableByClassCode(classroom.getClassCode()).getIdTable();
+
+                //get row student into class
+                List<Object[]> studentsCells = cellRepository.getCellsForIdTableAndType(idTable, "STUDENT");
+
+                //get row student into class
+                int rowStudentClass = -1;
+                for (Object[] cellStudent : studentsCells){
+                    int idCell = (int) cellStudent[0];
+                    int idProfileStudent = studentCellRepository.getIdStudentByIdCell(idCell);
+
+                    //if student is same student into class
+                    if(idProfileStudent == idStudent){
+                        rowStudentClass = (int) cellStudent[2];
+                    }
+                }
+
+                //find notes for this student into class
+                List<Object[]> notesClass = cellRepository.getCellsForIdTableAndType(idTable, "NOTE");
+
+                //filter idCell notes for this student into class
+                List<Object[]> idCellNotesForStudent = new ArrayList<>();
+                for (Object[] note : notesClass) {
+                    if (((Integer) note[2]).equals(rowStudentClass)) {
+                        idCellNotesForStudent.add(note);
+                    }
+                }
+
+                //sort for column
+                idCellNotesForStudent.sort((o1, o2) -> {
+                    Integer c1 = (Integer) o1[1];
+                    Integer c2 = (Integer) o2[1];
+                    return c1.compareTo(c2);
+                });
+
+                //get notes for idCell
+                ArrayList<Double> notes = new ArrayList<>();
+                for(Object[] idCellNote : idCellNotesForStudent) {
+                    notes.add(noteCellRepository.getNoteForId((Integer)idCellNote[0]).getNote());
+                }
+
+                //add to map into class with domain
+                listToResponse = studentNotesService.addNotes(classroom.getClassCode(), notes, listToResponse);
+            }
+            catch(ApplicationException e){
+                throw new ApplicationException("Ocurrió un error al recuperar las notas de las clases.");
+            }
+        }
+
+        //create response and send
+        return new StudentNotesResponse(listToResponse);
     }
 }
