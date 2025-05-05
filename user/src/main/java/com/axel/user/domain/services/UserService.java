@@ -25,7 +25,16 @@ public class UserService{
 
         //Crypt Password
         CriptoService criptoService = new CriptoService();
-        String passwordEncripted = criptoService.encrypt(password);
+
+        String passwordEncripted = null;
+
+        try{
+            passwordEncripted = criptoService.encrypt(password);
+        }
+        catch(Exception e){
+            throw new DomainException("Error al encriptar el password.");
+        }
+
         if(passwordEncripted == null){
             throw new DomainException("Error con la encriptación del password.");
         }
@@ -36,7 +45,17 @@ public class UserService{
     //Decrypt password
     public String decryptPassword(String password){
         CriptoService criptoService = new CriptoService();
-        return criptoService.decrypt(password);
+
+        String passwordDecripted = null;
+
+        try{
+            passwordDecripted = criptoService.decrypt(password);
+        }
+        catch(Exception e){
+            throw new DomainException("Error al desencriptar el password.");
+        }
+
+        return passwordDecripted;
     }
 
     //Compare passwords and return bool
