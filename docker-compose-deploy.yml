@@ -1,0 +1,123 @@
+services:
+  postgres-user:
+    image: postgres:latest
+    container_name: postgres_container_userdb
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: axelia
+      POSTGRES_DB: userdb
+    ports:
+      - "54320:5432"
+    volumes:
+      - postgres_user_data:/var/lib/postgresql/data
+    networks:
+      - backend
+
+  postgres-notebook:
+    image: postgres:latest
+    container_name: postgres_container_notebookdb
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: axelia
+      POSTGRES_DB: notebookdb
+    ports:
+      - "54321:5432"
+    volumes:
+      - postgres_notebook_data:/var/lib/postgresql/data
+    networks:
+      - backend
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper
+    restart: always
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+    networks:
+      - backend
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: kafka
+    restart: always
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+      - backend
+
+  user-service:
+    image: eliabackend-user-service
+    container_name: user_service
+    restart: always
+    ports:
+      - "18090:18090"
+    depends_on:
+      - kafka
+      - postgres-user
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-user:5432/userdb
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: axelia
+
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SPRING_KAFKA_CONSUMER_KEY_DESERIALIZER: org.apache.kafka.common.serialization.StringDeserializer
+      SPRING_KAFKA_CONSUMER_VALUE_DESERIALIZER: org.apache.kafka.common.serialization.StringDeserializer
+      SPRING_KAFKA_PRODUCER_KEY_SERIALIZER: org.apache.kafka.common.serialization.StringSerializer
+      SPRING_KAFKA_PRODUCER_VALUE_SERIALIZER: org.apache.kafka.common.serialization.StringSerializer
+    networks:
+      - backend
+
+  notebook-service:
+    image: eliabackend-notebook-service
+    container_name: notebook_service
+    restart: always
+    ports:
+      - "18091:18091"
+    depends_on:
+      - kafka
+      - postgres-notebook
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-notebook:5432/notebookdb
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: axelia
+
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SPRING_KAFKA_CONSUMER_KEY_DESERIALIZER: org.apache.kafka.common.serialization.StringDeserializer
+      SPRING_KAFKA_CONSUMER_VALUE_DESERIALIZER: org.apache.kafka.common.serialization.StringDeserializer
+      SPRING_KAFKA_PRODUCER_KEY_SERIALIZER: org.apache.kafka.common.serialization.StringSerializer
+      SPRING_KAFKA_PRODUCER_VALUE_SERIALIZER: org.apache.kafka.common.serialization.StringSerializer
+    networks:
+      - backend
+
+  frontend:
+    image: eliafrontend
+    container_name: frontend
+    ports:
+      - "3000:3000"
+    networks:
+      - backend
+    depends_on:
+      - user-service
+      - notebook-service
+
+volumes:
+  postgres_user_data:
+  postgres_notebook_data:
+
+networks:
+  backend:
+    name: backend
